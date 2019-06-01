@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator
+
+from .models import Post
 
 def news_list(request):
     posts = Post.objects.all()

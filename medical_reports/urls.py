@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 
-from .views import index
+from .views import redirect_news
 
 urlpatterns = [
-    path('', redirect_news, name='redirect_news_url')
+    path('', redirect_news),
+    path('news/', include('blog.urls'), name='redirect_news_url'),
     path('admin/', admin.site.urls),
-    path('reports/', include('reports.urls')),
+    #path('reports/', include('reports.urls')),
 ]
