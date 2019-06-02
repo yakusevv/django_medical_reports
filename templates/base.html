@@ -7,31 +7,31 @@
 
     <title>
       {% block title %}
-        Reports
+        Medical reports
       {% endblock %}
     </title>
   </head>
   <body>
 
-    <ul class="nav">
+    <ul class="nav ml-3">
       <li class="nav-item">
-        <a class="nav-link active" href="#">Active</a>
+        <a class="nav-link active" href="{% url 'news_list_url' %}">News</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a class="nav-link" href="#">Reports</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <a class="nav-link" href="#">Profile</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        <a class="nav-link{% if not request.user.is_staff %} disabled {% endif %}" href="/admin" tabindex="-1" aria-disabled="true">Admin</a>
       </li>
     </ul>
 
     <div class="container mt-3">
           <div class="row">
             <div class="col-11 offset-md-0">
-    {% block body %}
+    {% block content %}
 
     {% endblock %}
     {% if is_paginated %}
