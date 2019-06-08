@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import View
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 from .forms import PostForm
@@ -39,15 +39,16 @@ def news_list(request):
     return render(request, 'blog/index.html', context)
 
 
-class PostDetail(View):
+class PostDetail(LoginRequiredMixin, View):
     model = Post
     template = 'blog/post_detail.html'
 
     def get(self, request, pk):
-        obj = get_object_or_404(self.model, pk=pk)
+        post = get_object_or_404(self.model, pk=pk)
         return render(request, self.template, context={
-                                                self.model.__name__.lower(): obj,
-                                                'admin_object': obj,
+                                                'post': post,
+                                                'admin_obj': post,
+                                                'detail': True,
                                                 })
 
 
@@ -55,7 +56,6 @@ class PostCreate(PermissionRequiredMixin, View):
     model_form = PostForm
     template = 'blog/post_create_form.html'
     permission_required = 'blog.can_create'
-    raise_exception = True
 
     def get(self, request):
         form = self.model_form()
@@ -74,7 +74,6 @@ class PostUpdate(PermissionRequiredMixin, View):
     model_form = PostForm
     template = 'blog/post_update_form.html'
     permission_required = 'blog.can_update'
-    raise_exception = True
 
     def get(self, request, pk):
         obj = self.model.objects.get(pk=pk)
@@ -102,7 +101,6 @@ class PostDelete(PermissionRequiredMixin, View):
     template = 'blog/post_delete_form.html'
     redirect_url = 'posts_list_url'
     permission_required = 'blog.can_delete'
-    raise_exception = True
 
     def get(self, request, pk):
         obj = self.model.objects.get(pk=pk)

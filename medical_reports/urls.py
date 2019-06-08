@@ -9,4 +9,5 @@ urlpatterns = [
     path('news/', include('blog.urls')),
     path('admin/', admin.site.urls),
     #path('reports/', include('reports.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
