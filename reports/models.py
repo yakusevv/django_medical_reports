@@ -1,6 +1,12 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
+
+
+def get_image_path(instance, filename):
+    return os.path.join(instance.company, instance.doctor, filename)
 
 
 class Profile(models.Model):
@@ -20,7 +26,7 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
-
+'''
 class Patient(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -33,17 +39,20 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.last_name + ' ' + self.first_name + ' ' + self.date_of_birth
-
-#class PatientAdditionalImages(models.Model):
-    #image = models.ImageField()
-    #patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='additional_images')
+'''
 
 class Report(models.Model):
     ref_number = models.CharField(max_length=50)
     company_ref_number = models.CharField(max_length=50)
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    patients_first_name = models.CharField(max_length=50)
+    patients_last_name = models.CharField(max_length=50)
+    patients_date_of_birth = models.DateField()
+    patients_policy_number = models.CharField(max_length=100)
+    patients_passport_number = models.CharField(max_length=100)
+    #policy_image = models.ImageField(upload_to=get_image_path)
+    #passport_image = models.ImageField(upload_to=get_image_path)
     date_of_visit = models.DateTimeField()
-    patient = models.ForeignKey(Patient, on_delete=models.PROTECT)
     location = models.CharField(max_length=100)
     cause = models.TextField(max_length=700)
     checkup = models.TextField(max_length=1200)
@@ -55,18 +64,24 @@ class Report(models.Model):
     doctor = models.ForeignKey(Profile, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.ref_number + ' ' + self.patient.last_name + ' ' + self.patient.first_name
+        return self.ref_number + ' ' + self.patients_last_name + ' ' + self.patients_first_name
 
+    def get_absolute_url(self):
+        return reverse('report_detail_url', kwargs={'pk': self.pk})
 
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in Report._meta.fields]
+
+'''
+class PatientAdditionalImages(models.Model):
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
+    image = models.ImageField(upload_to=get_image_path)
+'''
 class Disease(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
-
-
-class Summary(models.Model):
-    report = models.ForeignKey(Report, related_name='Summary', on_delete=models.CASCADE)
 
 
 class Service(models.Model):
@@ -78,12 +93,14 @@ class Service(models.Model):
 
 
 class ServiceItem(models.Model):
-    summary = models.ForeignKey(Summary, related_name='items', on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, related_name='service_items', on_delete=models.CASCADE)
+    report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, related_name='items', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return '{}'.format(self.id)
+        if self.quantity > 1:
+            return str(self.service) + ' [{}]'.format(self.quantity)
+        return self.service.name
 
     @property
     def cost(self):

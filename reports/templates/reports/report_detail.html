@@ -1,0 +1,10 @@
+{% extends 'reports/base_reports.html' %}
+
+{% block content %}
+{% for name, value in report.get_fields %}
+  {% if value %}
+    <p><b>{{ name }}</b> : {{ value }}</p>
+  {% endif %}
+{% endfor %}
+<p>{{report.display_services}}</p>
+{% endblock %}

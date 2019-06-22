@@ -1,0 +1,13 @@
+{% extends 'reports/base_reports.html' %}
+
+
+{% block content %}
+
+    {% if report_list %}
+      {% for report in report_list %}
+      <p><a href="{{ report.get_absolute_url }}">{{ report }}</a></p>
+      {% endfor %}
+    {% else %}
+      <p>There are no reports</p>
+    {% endif %}
+{% endblock %}
