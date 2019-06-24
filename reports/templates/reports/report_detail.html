@@ -1,10 +1,148 @@
 {% extends 'reports/base_reports.html' %}
 
 {% block content %}
-{% for name, value in report.get_fields %}
-  {% if value %}
-    <p><b>{{ name }}</b> : {{ value }}</p>
+<div class="container">
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Ref. number: </b>
+    </div>
+    <div class="col">
+      {{ report.ref_number }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Company ref. number: </b>
+    </div>
+    <div class="col">
+      {{ report.company_ref_number }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Last name: </b>
+    </div>
+    <div class="col">
+      {{ report.patients_last_name }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> First name: </b>
+    </div>
+    <div class="col">
+      {{ report.patients_first_name }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Date of birth </b>
+    </div>
+    <div class="col">
+      {{ report.patients_date_of_birth }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Passport: </b>
+    </div>
+    <div class="col">
+      {{ report.patients_passport_number }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Policy: </b>
+    </div>
+    <div class="col">
+      {{ report.patients_policy_number }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Company </b>
+    </div>
+    <div class="col">
+      {{ report.company }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Date of visit </b>
+    </div>
+    <div class="col">
+      {{ report.date_of_visit }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Location: </b>
+    </div>
+    <div class="col">
+      {{ report.location }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Cause: </b>
+    </div>
+    <div class="col">
+      {{ report.cause }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Checkup </b>
+    </div>
+    <div class="col">
+      {{ report.checkup }}
+    </div>
+  </div>
+  {% if report.additional_checkup %}
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Additional checkup: </b>
+    </div>
+    <div class="col">
+      {{ report.additional_checkup }}
+    </div>
+  </div>
   {% endif %}
-{% endfor %}
-<p>{{report.display_services}}</p>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Diagnosis: </b>
+    </div>
+    <div class="col">
+      {% for disease in report.diagnosis.get_queryset %}
+        <p class='mb-1'> {{ disease }}</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Prescription: </b>
+    </div>
+    <div class="col">
+      {{ report.prescription }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Doctor: </b>
+    </div>
+    <div class="col">
+      {{ report.doctor }}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Service items: </b>
+    </div>
+    <div class="col">
+      {% for service in report.service_items.get_queryset %}
+        <p class='mb-1'>{{ service }} {{ service.cost }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 {% endblock %}

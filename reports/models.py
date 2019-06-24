@@ -72,6 +72,7 @@ class Report(models.Model):
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in Report._meta.fields]
 
+
 '''
 class PatientAdditionalImages(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
