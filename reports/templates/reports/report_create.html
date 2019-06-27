@@ -9,7 +9,7 @@
   </table>
   <table class="table">
     {{ service_items.management_form }}
-
+    {{ service_items.non_form_errors }} 
     {% for form in service_items.forms %}
     {% if forloop.first %}
     <thead>
