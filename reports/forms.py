@@ -49,32 +49,30 @@ class ServiceItemForm(forms.ModelForm):
             'quantity'
             ]
 
-def service_formset_validating():
-    class UniqueFieldFormSet(BaseInlineFormSet):
+class ServiceItemsFormset(BaseInlineFormSet):
 
-        def clean(self):
-            if any(self.errors):
-                return
-            services = set()
-            number_of_forms = 0
-            for form in self.forms:
-                if form.cleaned_data:
-                    if not form.cleaned_data['DELETE']:
-                        service = form.cleaned_data['service']
-                        quantity = form.cleaned_data['quantity']
-                        number_of_forms += 1
-                        if service in services:
-                            form.add_error('service','Duplicate values for "Service" are not allowed.')
-                        else:
-                            services.add(service)
-                        if quantity < 1:
-                            form.add_error('quantity', "Quantity must be equal to or greater than 1")
-            if number_of_forms == 0:
-                raise forms.ValidationError('At least one service must be chosen')
+    def clean(self):
+        if any(self.errors):
+            return
+        services = set()
+        number_of_forms = 0
+        for form in self.forms:
+            if form.cleaned_data:
+                if not form.cleaned_data['DELETE']:
+                    service = form.cleaned_data['service']
+                    quantity = form.cleaned_data['quantity']
+                    number_of_forms += 1
+                    if service in services:
+                        form.add_error('service','Duplicate values for "Service" are not allowed.')
+                    else:
+                        services.add(service)
+                    if quantity < 1:
+                        form.add_error('quantity', "Quantity must be equal to or greater than 1")
+        if number_of_forms == 0:
+            raise forms.ValidationError('At least one service must be chosen')
 
-    return UniqueFieldFormSet
 
 ServiceItemsFormSet = inlineformset_factory(
-                    Report, ServiceItem, formset=service_formset_validating(),
+                    Report, ServiceItem, formset=ServiceItemsFormset,
                     form=ServiceItemForm, extra=1
                     )

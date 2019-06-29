@@ -1,21 +1,22 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, DeleteView, View, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 
 from .models import Report
 from .forms import ReportCreateForm, ServiceItemsFormSet
 
-class ReportsListView(ListView):
+class ReportsListView(LoginRequiredMixin, ListView):
     model = Report
     template_name = 'reports/reports_list.html'
 
 
-class ReportDetailView(DetailView):
+class ReportDetailView(LoginRequiredMixin, DetailView):
     model = Report
     template_name = 'reports/report_detail.html'
 
 
-class ReportCreateView(CreateView):
+class ReportCreateView(LoginRequiredMixin, CreateView):
     template_name = 'reports/report_create.html'
     form_class = ReportCreateForm
 

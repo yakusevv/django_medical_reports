@@ -71,7 +71,8 @@ DATABASES = {
         'HOST': DB_HOST,
         'PORT': DB_PORT,
         'OPTIONS': {
-            'autocommit': True
+            'autocommit': True,
+            'charset': 'utf8'
         }
     }
 }
