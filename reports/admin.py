@@ -2,7 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import Company, Profile, Service, Disease, ServiceItem, Report
+from .models import (
+                Company,
+                Profile,
+                Service,
+                Disease,
+                ServiceItem,
+                Report,
+                AdditionalImage
+                )
 
 admin.site.unregister(User)
 
@@ -45,4 +53,9 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Report)
 class ServiceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(AdditionalImage)
+class AdditionalImageAdmin(admin.ModelAdmin):
     pass

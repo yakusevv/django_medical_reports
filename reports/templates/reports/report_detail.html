@@ -144,5 +144,15 @@
       {% endfor %}
     </div>
   </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Images: </b>
+    </div>
+    <div class="col">
+      {% for image in report.additional_images.get_queryset %}
+        <p class='mb-1'><img src="{{ image.image.url }}" alt=""></p>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 {% endblock %}

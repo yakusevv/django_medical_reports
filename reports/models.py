@@ -6,7 +6,7 @@ from django.shortcuts import reverse
 
 
 def get_image_path(instance, filename):
-    return os.path.join(instance.company, instance.doctor, filename)
+    return os.path.join('FILES', str(instance.report.company), str(instance.report.doctor), str(instance.report), filename)
 
 
 class Profile(models.Model):
@@ -73,11 +73,12 @@ class Report(models.Model):
         return [(field.name, field.value_to_string(self)) for field in Report._meta.fields]
 
 
-'''
-class PatientAdditionalImages(models.Model):
+class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField(upload_to=get_image_path)
-'''
+    position = models.IntegerField(blank=False)
+
+
 class Disease(models.Model):
     name = models.CharField(max_length=50)
 

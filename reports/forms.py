@@ -1,9 +1,10 @@
+from django.core.files import File
 from django import forms
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
-from .models import Report, ServiceItem
+from .models import Report, ServiceItem, AdditionalImage
 
 
 class ReportCreateForm(forms.ModelForm):
@@ -35,9 +36,6 @@ class ReportCreateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data=super(ReportCreateForm, self).clean()
-#        for form in self.formset:
-#            if not form.is_valid():
-#                raise forms.ValidationError('some error')
         return cleaned_data
 
 class ServiceItemForm(forms.ModelForm):
@@ -76,3 +74,24 @@ ServiceItemsFormSet = inlineformset_factory(
                     Report, ServiceItem, formset=ServiceItemsFormset,
                     form=ServiceItemForm, extra=1
                     )
+
+
+class AdditionalImageForm(forms.ModelForm):
+    image = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=True)
+
+    class Meta:
+        model = AdditionalImage
+        fields = ['image']
+
+
+    def save(self, *args, **kwargs):
+        file_list = self.files.getlist('image')
+        position = 1
+        for file in file_list:
+            inst = AdditionalImage(
+                report=self.instance.report,
+                image=file,
+                position=position
+            )
+            inst.save()
+            position += 1

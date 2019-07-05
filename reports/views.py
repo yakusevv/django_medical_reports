@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 
 from .models import Report
-from .forms import ReportCreateForm, ServiceItemsFormSet
+from .forms import ReportCreateForm, ServiceItemsFormSet, AdditionalImageForm
 
 class ReportsListView(LoginRequiredMixin, ListView):
     model = Report
@@ -31,12 +31,11 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         service_items = self.get_context_data()['service_items']
-        if form.is_valid() and service_items.is_valid():
-            return self.form_valid(form, service_items)
+        images = self.get_context_data()['images']
+        if form.is_valid() and service_items.is_valid() and images.is_valid():
+            return self.form_valid(form, service_items, images)
         else:
             return self.form_invalid(form)
-
-
 
     def get_initial(self, *args, **kwargs):
         initial = super(ReportCreateView, self).get_initial(**kwargs)
@@ -51,11 +50,13 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         data = super(ReportCreateView, self).get_context_data(**kwargs)
         if self.request.POST:
             data['service_items'] = ServiceItemsFormSet(self.request.POST)
+            data['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
         else:
             data['service_items'] = ServiceItemsFormSet()
+            data['images'] = AdditionalImageForm()
         return data
 
-    def form_valid(self, form, service_items):
+    def form_valid(self, form, service_items, images):
         context = self.get_context_data()
         with transaction.atomic():
             form.instance.doctor = self.get_form_kwargs()['doctor']
@@ -63,4 +64,8 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             if service_items.is_valid():
                 service_items.instance = self.object
                 service_items.save()
+            if images.is_valid():
+                images.instance.report = self.object
+                images.save()
+
         return super(ReportCreateView, self).form_valid(form)

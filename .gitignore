@@ -113,3 +113,6 @@ venv.bak/
 
 #private information
 secret_data.py
+
+#pycharm
+.idea
