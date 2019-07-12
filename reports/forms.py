@@ -36,6 +36,14 @@ class ReportCreateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data=super(ReportCreateForm, self).clean()
+        ref_number = cleaned_data.get("ref_number")
+        first_name = cleaned_data.get("patients_first_name")
+        last_name = cleaned_data.get("patients_last_name")
+        if Report.objects.filter(ref_number=ref_number).filter(patients_last_name=last_name).filter(patients_first_name=first_name).exists():
+            msg = "Report with this name is already exist"
+            self.add_error('ref_number', msg)
+            self.add_error('patients_first_name', msg)
+            self.add_error('patients_last_name', msg)
         return cleaned_data
 
 class ServiceItemForm(forms.ModelForm):
