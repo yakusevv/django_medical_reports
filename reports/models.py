@@ -50,8 +50,6 @@ class Report(models.Model):
     patients_date_of_birth = models.DateField()
     patients_policy_number = models.CharField(max_length=100)
     patients_passport_number = models.CharField(max_length=100)
-    #policy_image = models.ImageField(upload_to=get_image_path)
-    #passport_image = models.ImageField(upload_to=get_image_path)
     date_of_visit = models.DateTimeField()
     location = models.CharField(max_length=100)
     cause = models.TextField(max_length=700)
@@ -72,6 +70,13 @@ class Report(models.Model):
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in Report._meta.fields]
 
+    @property
+    def get_total_price(self):
+        total = 0
+        services = self.service_items.get_queryset()
+        for service in services:
+            total += service.cost
+        return total
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')

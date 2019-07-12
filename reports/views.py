@@ -5,6 +5,8 @@ from django.db import transaction
 
 from .models import Report
 from .forms import ReportCreateForm, ServiceItemsFormSet, AdditionalImageForm
+from .utils import DocReportGenerator
+
 
 class ReportsListView(LoginRequiredMixin, ListView):
     model = Report
@@ -67,5 +69,6 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             if images.is_valid():
                 images.instance.report = self.object
                 images.save()
+            DocReportGenerator(self.object)
 
         return super(ReportCreateView, self).form_valid(form)

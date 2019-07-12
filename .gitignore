@@ -116,3 +116,7 @@ secret_data.py
 
 #pycharm
 .idea
+
+#other
+FILES/
+DOC_TEMPLATES/
