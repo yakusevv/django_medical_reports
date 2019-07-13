@@ -33,11 +33,20 @@ def DocReportGenerator(report):
     'images': images
     }
     doc.render(context)
-    doc.save(os.path.join(
+    file_path = os.path.join(
                     settings.MEDIA_ROOT,
                     'FILES',
                     str(report.company),
                     str(report.doctor),
                     str(report),
                     "_".join((report.ref_number, report.patients_last_name, report.patients_first_name)) + '.docx'
-                ))
+                )
+    doc.save(file_path)
+    report.docx_download_link = os.path.join('/media',
+                    'FILES',
+                    str(report.company),
+                    str(report.doctor),
+                    str(report),
+                    "_".join((report.ref_number, report.patients_last_name, report.patients_first_name)) + '.docx'
+                ).replace(' ', '%20')
+    report.save()

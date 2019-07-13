@@ -60,6 +60,7 @@ class Report(models.Model):
     prescription = models.TextField(max_length=500)
     checked = models.BooleanField(default=False)
     doctor = models.ForeignKey(Profile, on_delete=models.PROTECT)
+    docx_download_link = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
         return self.ref_number + ' ' + self.patients_last_name + ' ' + self.patients_first_name
