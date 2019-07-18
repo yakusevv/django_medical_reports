@@ -20,42 +20,98 @@ class Profile(models.Model):
     def get_absolute_url(self):
         return reverse('user_profile_url', kwargs={'pk': self.user.pk})
 
+
+class Disease(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Region(models.Model):
+    name = models.CharField(max_length=100)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
+
+
+class District(models.Model):
+    name = models.CharField(max_length=50)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return ' - '.join((str(self.region), self.name))
+
+
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    district = models.ForeignKey(District, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
+
+
+class PriceGroup(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Tariff(models.Model):
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
+    day_visit = models.DecimalField(max_digits=8, decimal_places=2)
+    night_visit = models.DecimalField(max_digits=8, decimal_places=2)
+    holiday_visit = models.DecimalField(max_digits=8, decimal_places=2)
+    family_visit = models.DecimalField(max_digits=8, decimal_places=2)
+    second_visit = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return str(self.district) + ' ' + str(self.price_group)
+
 class Company(models.Model):
     name = models.CharField(max_length=20, unique=True)
+    price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
     #template = models.FileField()
 
     def __str__(self):
         return self.name
-'''
-class Patient(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    date_of_birth = models.DateField()
-    policy_number = models.CharField(max_length=100)
-    passport_number = models.CharField(max_length=100, unique=True)
-    last_update = models.DateField(auto_now=True)
-    #policy_image = models.ImageField()
-    #passport_image = models.ImageField()
 
-    def __str__(self):
-        return self.last_name + ' ' + self.first_name + ' ' + self.date_of_birth
-'''
 
 class Report(models.Model):
+
+    KINDS_OF_VISITS = [
+            ('D', 'Standard day visit'),
+            ('N', 'Night visit'),
+            ('f', 'Holiday visit'),
+            ('F', 'Family visit'),
+            ('S', 'Second visit'),
+        ]
+
     ref_number = models.CharField(max_length=50)
     company_ref_number = models.CharField(max_length=50)
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
     patients_first_name = models.CharField(max_length=50)
     patients_last_name = models.CharField(max_length=50)
     patients_date_of_birth = models.DateField()
-    patients_policy_number = models.CharField(max_length=100)
-    patients_passport_number = models.CharField(max_length=100)
+    patients_policy_number = models.CharField(max_length=100, blank=True)
+    #patients_passport_number = models.CharField(max_length=100)
+    kind_of_visit = models.CharField(max_length=1, choices=KINDS_OF_VISITS, default='D')
     date_of_visit = models.DateTimeField()
-    location = models.CharField(max_length=100)
-    cause = models.TextField(max_length=700)
+    city = models.ForeignKey(City, on_delete=models.PROTECT)
+    detailed_location = models.CharField(max_length=100, blank=True)
+    cause_of_visit = models.TextField(max_length=700)
     checkup = models.TextField(max_length=1200)
     additional_checkup = models.TextField(max_length=500, blank=True)
-    second_visit = models.BooleanField(default=False)
     diagnosis = models.ManyToManyField('Disease', related_name='reports')
     prescription = models.TextField(max_length=500)
     checked = models.BooleanField(default=False)
@@ -79,17 +135,11 @@ class Report(models.Model):
             total += service.cost
         return total
 
+
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField(upload_to=get_image_path)
     position = models.IntegerField(blank=False)
-
-
-class Disease(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
 
 
 class Service(models.Model):

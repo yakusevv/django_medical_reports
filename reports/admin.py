@@ -9,7 +9,13 @@ from .models import (
                 Disease,
                 ServiceItem,
                 Report,
-                AdditionalImage
+                AdditionalImage,
+                Country,
+                Region,
+                District,
+                City,
+                PriceGroup,
+                Tariff
                 )
 
 admin.site.unregister(User)
@@ -58,4 +64,28 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(AdditionalImage)
 class AdditionalImageAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Region)
+class RegionAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(District)
+class DistrictAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(PriceGroup)
+class PriceGroupAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Tariff)
+class TariffAdmin(admin.ModelAdmin):
     pass
