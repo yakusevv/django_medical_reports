@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, DeleteView, View, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 
-from .models import Report
+from .models import Report, Country, PriceGroup
 from .forms import ReportCreateForm, ServiceItemsFormSet, AdditionalImageForm
 from .utils import DocReportGenerator
 
@@ -72,3 +72,14 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             DocReportGenerator(self.object)
 
         return super(ReportCreateView, self).form_valid(form)
+
+
+class PriceTableView(PermissionRequiredMixin, ListView):
+    permission_required = 'is_staff'
+    template_name = 'reports/price_table_view.html'
+    model = Country
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['price_groups'] = PriceGroup.objects.all()
+        return context

@@ -25,6 +25,11 @@
       <li class="nav-item">
         <a class="nav-link" href="#">Profile</a>
       </li>
+      {% if request.user.is_staff %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'price_table_url' %}">Price table</a>
+      </li>
+      {% endif %}
     </ul>
     {% endblock %}
     <div class="container mt-3">

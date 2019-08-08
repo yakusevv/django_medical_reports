@@ -1,0 +1,93 @@
+{% extends 'reports/base_reports.html' %}
+
+
+{% block content %}
+{% for country in object_list %}
+<table class="table table-bordered mt-5" frame="vsides">
+  <tr>
+      <th class="table-active" colspan="{{ price_groups.count|add:'2'}}">
+        {{ country }}
+      </th>
+  </tr>
+    {% for region in country.region_set.all %}
+      <tr>
+          <th class="table-primary"> {{ region }} </th>
+          <td class="table-primary"> Tariffs </td>
+          {% for price_group in price_groups %}
+          <td class="table-primary"> {{ price_group }} </td>
+          {% endfor %}
+          {% for district in region.district_set.all %}
+            <tr>
+              <th rowspan="5"> {{ district }} </th>
+                <td> Day visit </td>
+                {% for price_group in price_groups %}
+                <td>
+                  {% for tariff in district.tariff_set.all %}
+                      {% if tariff.price_group == price_group %}
+                       {{ tariff.day_visit }}
+                      {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td> Night visit </td>
+                {% for price_group in price_groups %}
+                <td>
+                  {% for tariff in district.tariff_set.all %}
+                      {% if tariff.price_group == price_group %}
+                       {{ tariff.night_visit }}
+                      {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td> Holiday visit </td>
+                {% for price_group in price_groups %}
+                <td>
+                  {% for tariff in district.tariff_set.all %}
+                      {% if tariff.price_group == price_group %}
+                       {{ tariff.holiday_visit }}
+                      {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </td>
+            </tr>
+              <tr>
+                <td> Second visit </td>
+                {% for price_group in price_groups %}
+                <td>
+                  {% for tariff in district.tariff_set.all %}
+                      {% if tariff.price_group == price_group %}
+                       {{ tariff.second_visit }}
+                      {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </td>
+              <tr>
+                <td> Family visit </td>
+                {% for price_group in price_groups %}
+                <td>
+                  {% for tariff in district.tariff_set.all %}
+                      {% if tariff.price_group == price_group %}
+                       {{ tariff.family_visit }}
+                      {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                </td>
+            </tr>
+            <tr>
+            </tr>
+          </tr>
+          {% endfor %}
+
+
+    {% endfor %}
+
+</table>
+
+{% endfor %}
+
+
+{% endblock %}
