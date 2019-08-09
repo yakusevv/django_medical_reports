@@ -74,7 +74,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         return super(ReportCreateView, self).form_valid(form)
 
 
-class PriceTableView(PermissionRequiredMixin, ListView):
+class PriceTableView(PermissionRequiredMixin, DetailView):
     permission_required = 'is_staff'
     template_name = 'reports/price_table_view.html'
     model = Country
