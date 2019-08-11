@@ -85,6 +85,20 @@
     {% endfor %}
 
 </table>
+<table class='table-sm'>
+  <tr class='table-primary'>
+    <th> Service </th>
+    <th> Price </th>
+  </tr>
+  {% for service in object.services.all %}
+    {% if not service.kind_of_visit %}
+    <tr>
+      <td>{{service.name }}</td>
+      <td>{{ service.price }}</td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+</table>
 
 
 

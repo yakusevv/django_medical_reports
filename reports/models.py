@@ -92,7 +92,7 @@ class Report(models.Model):
     KINDS_OF_VISITS = [
             ('D', 'Standard day visit'),
             ('N', 'Night visit'),
-            ('f', 'Holiday visit'),
+            ('H', 'Holiday visit'),
             ('F', 'Family visit'),
             ('S', 'Second visit'),
         ]
@@ -141,25 +141,33 @@ class AdditionalImage(models.Model):
     image = models.ImageField(upload_to=get_image_path)
     position = models.IntegerField(blank=False)
 
+'''
 
+    Every country has a list of services with prices for each.
+    Some of services has a kind_of_visit property - it's a "visit" services.
+
+'''
 class Service(models.Model):
     name = models.CharField(max_length=50)
+    kind_of_visit = models.CharField(max_length=1, choices=Report.KINDS_OF_VISITS, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='services', default=1)
     price = models.DecimalField(max_digits=8, decimal_places=2 )
 
     def __str__(self):
-        return self.name
+        return self.country.name + ' - ' + self.name
 
 
 class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE)
     service = models.ForeignKey(Service, related_name='items', on_delete=models.CASCADE)
+    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         if self.quantity > 1:
-            return str(self.service) + ' [{}]'.format(self.quantity)
+            return str(self.service.name) + ' [{}]'.format(self.quantity)
         return self.service.name
 
     @property
     def cost(self):
-        return self.service.price * self.quantity
+        return self.service_price * self.quantity
