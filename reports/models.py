@@ -6,7 +6,13 @@ from django.shortcuts import reverse
 
 
 def get_image_path(instance, filename):
-    return os.path.join('FILES', str(instance.report.company), str(instance.report.doctor), str(instance.report), filename)
+    return os.path.join(
+                    'FILES',
+                    str(instance.report.company),
+                    str(instance.report.doctor),
+                    str(instance.report),
+                    filename
+                    )
 
 
 class Profile(models.Model):
@@ -15,17 +21,10 @@ class Profile(models.Model):
     num_col = models.CharField(max_length=9, unique=True)
 
     def __str__(self):
-        return self.user.last_name + ' ' + self.user.first_name + ' ' + self.num_col
+        return ' '.join((self.user.last_name, self.user.first_name, self.num_col))
 
     def get_absolute_url(self):
         return reverse('user_profile_url', kwargs={'pk': self.user.pk})
-
-
-class Disease(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Country(models.Model):
@@ -59,8 +58,27 @@ class City(models.Model):
         return self.name
 
 
+# Every disease in reports must have a name in language of country where was visit
+# so property "country" has been added
+class Disease(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, default=1)
+
+    def __str__(self):
+        return self.name
+
+
 class PriceGroup(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+# Every country must have a list of visit types with appropriative names
+class Visit(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, default=1)
 
     def __str__(self):
         return self.name
@@ -69,14 +87,17 @@ class PriceGroup(models.Model):
 class Tariff(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
-    day_visit = models.DecimalField(max_digits=8, decimal_places=2)
-    night_visit = models.DecimalField(max_digits=8, decimal_places=2)
-    holiday_visit = models.DecimalField(max_digits=8, decimal_places=2)
-    family_visit = models.DecimalField(max_digits=8, decimal_places=2)
-    second_visit = models.DecimalField(max_digits=8, decimal_places=2)
+    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
+
+#    day_visit = models.DecimalField(max_digits=8, decimal_places=2)
+#    night_visit = models.DecimalField(max_digits=8, decimal_places=2)
+#    holiday_visit = models.DecimalField(max_digits=8, decimal_places=2)
+#    family_visit = models.DecimalField(max_digits=8, decimal_places=2)
+#    second_visit = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
-        return str(self.district) + ' ' + str(self.price_group)
+        return ' '.join((str(self.district), str(self.price_group)))
+
 
 class Company(models.Model):
     name = models.CharField(max_length=20, unique=True)
@@ -87,15 +108,23 @@ class Company(models.Model):
         return self.name
 
 
+# Every company need to have templates for each country in appropriative language
+# Not checked yet
+#class ReportTemplate(models.Model):
+#    template = models.FileField()
+#    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+#    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+
 class Report(models.Model):
 
-    KINDS_OF_VISITS = [
-            ('D', 'Standard day visit'),
-            ('N', 'Night visit'),
-            ('H', 'Holiday visit'),
-            ('F', 'Family visit'),
-            ('S', 'Second visit'),
-        ]
+#    KINDS_OF_VISITS = [
+#            ('D', 'Standard day visit'),
+#            ('N', 'Night visit'),
+#            ('H', 'Holiday visit'),
+#            ('F', 'Family visit'),
+#            ('S', 'Second visit'),
+#        ]
 
     ref_number = models.CharField(max_length=50)
     company_ref_number = models.CharField(max_length=50)
@@ -105,7 +134,7 @@ class Report(models.Model):
     patients_date_of_birth = models.DateField()
     patients_policy_number = models.CharField(max_length=100, blank=True)
     #patients_passport_number = models.CharField(max_length=100)
-    kind_of_visit = models.CharField(max_length=1, choices=KINDS_OF_VISITS, default='D')
+    kind_of_visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     date_of_visit = models.DateTimeField()
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     detailed_location = models.CharField(max_length=100, blank=True)
@@ -119,7 +148,7 @@ class Report(models.Model):
     docx_download_link = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
-        return self.ref_number + ' ' + self.patients_last_name + ' ' + self.patients_first_name
+        return ' '.join((self.ref_number, self.patients_last_name, self.patients_first_name))
 
     def get_absolute_url(self):
         return reverse('report_detail_url', kwargs={'pk': self.pk})
@@ -141,15 +170,11 @@ class AdditionalImage(models.Model):
     image = models.ImageField(upload_to=get_image_path)
     position = models.IntegerField(blank=False)
 
-'''
 
-    Every country has a list of services with prices for each.
-    Some of services has a kind_of_visit property - it's a "visit" services.
-
-'''
+#    Every country has a list of services with prices for each.
 class Service(models.Model):
     name = models.CharField(max_length=50)
-    kind_of_visit = models.CharField(max_length=1, choices=Report.KINDS_OF_VISITS, blank=True)
+#    kind_of_visit = models.CharField(max_length=1, choices=Report.KINDS_OF_VISITS, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='services', default=1)
     price = models.DecimalField(max_digits=8, decimal_places=2 )
 
