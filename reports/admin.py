@@ -3,19 +3,20 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
 from .models import (
-                Company,
                 Profile,
-                Service,
-                Disease,
-                ServiceItem,
-                Report,
-                AdditionalImage,
                 Country,
                 Region,
                 District,
                 City,
+                Disease,
                 PriceGroup,
-                Tariff
+                Visit,
+                Tariff,
+                Company,
+                Report,
+                AdditionalImage,
+                Service,
+                ServiceItem,
                 )
 
 admin.site.unregister(User)
@@ -57,14 +58,28 @@ class ServiceAdmin(admin.ModelAdmin):
     pass
 
 
+class AdditionalImageInline(admin.StackedInline):
+    model = AdditionalImage
+    can_delete = True
+    verbose_name_plural = 'ImageField'
+    fk_name = 'report'
+
+
 @admin.register(Report)
-class ServiceAdmin(admin.ModelAdmin):
-    pass
+class ReportAdmin(admin.ModelAdmin):
+    inlines = (AdditionalImageInline, )
+    list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
+                   'city__district__region',
+                   'company',
+                   'doctor',
+                   'checked')
+
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return list()
+        return super(ReportAdmin, self).get_inline_instances(request, obj)
 
 
-@admin.register(AdditionalImage)
-class AdditionalImageAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
