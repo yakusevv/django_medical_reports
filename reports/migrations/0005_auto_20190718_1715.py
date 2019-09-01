@@ -101,13 +101,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='company',
             name='price_group',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.PROTECT, to='reports.PriceGroup'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='reports.PriceGroup'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='report',
             name='city',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.PROTECT, to='reports.City'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='reports.City'),
             preserve_default=False,
         ),
     ]

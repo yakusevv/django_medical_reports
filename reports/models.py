@@ -76,7 +76,7 @@ class PriceGroup(models.Model):
 
 
 # Every country must have a list of visit types with appropriative names
-class Visit(models.Model):
+class TypeOfVisit(models.Model):
     name = models.CharField(max_length=50, unique=True)
     country = models.ForeignKey(Country, on_delete=models.PROTECT, default=1)
 
@@ -87,8 +87,8 @@ class Visit(models.Model):
 class Tariff(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
-    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
-
+#    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
+#    price = models.DecimalField(max_digits=8, decimal_places=2)
 #    day_visit = models.DecimalField(max_digits=8, decimal_places=2)
 #    night_visit = models.DecimalField(max_digits=8, decimal_places=2)
 #    holiday_visit = models.DecimalField(max_digits=8, decimal_places=2)
@@ -96,7 +96,16 @@ class Tariff(models.Model):
 #    second_visit = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
-        return ' '.join((str(self.district), str(self.price_group)))
+        return ' - '.join((str(self.district), str(self.price_group)))
+
+
+class VisitTariff(models.Model):
+    tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
+    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return ' - '.join((str(self.tariff), str(self.type_of_visit)))
 
 
 class Company(models.Model):
@@ -134,7 +143,7 @@ class Report(models.Model):
     patients_date_of_birth = models.DateField()
     patients_policy_number = models.CharField(max_length=100, blank=True)
     #patients_passport_number = models.CharField(max_length=100)
-    kind_of_visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
+    kind_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
     date_of_visit = models.DateTimeField()
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     detailed_location = models.CharField(max_length=100, blank=True)

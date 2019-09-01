@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.forms.models import BaseInlineFormSet
+from django import forms
+from django.urls import resolve
 
 from .models import (
                 Profile,
@@ -10,14 +13,16 @@ from .models import (
                 City,
                 Disease,
                 PriceGroup,
-                Visit,
+                TypeOfVisit,
                 Tariff,
                 Company,
                 Report,
                 AdditionalImage,
                 Service,
                 ServiceItem,
+                VisitTariff,
                 )
+
 
 admin.site.unregister(User)
 
@@ -27,6 +32,7 @@ class ProfileInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Profile'
     fk_name = 'user'
+
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -80,27 +86,76 @@ class ReportAdmin(admin.ModelAdmin):
         return super(ReportAdmin, self).get_inline_instances(request, obj)
 
 
-
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(PriceGroup)
 class PriceGroupAdmin(admin.ModelAdmin):
     pass
 
+
+class VisitTariffInlineFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        kwargs['initial'] = [
+            {'type_of_visit': type, 'price': 0} for type in TypeOfVisit.objects.all()
+        ]
+
+        super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.fields['type_of_visit'].disabled = True
+
+
+class VisitTariffInline(admin.TabularInline):
+    model = VisitTariff
+    formset = VisitTariffInlineFormSet
+    can_delete = False
+    verbose_name_plural = 'Visit Price List'
+
+    def get_parent_object_from_request(self, request):
+        resolved = resolve(request.path_info)
+        if resolved.kwargs:
+            return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
+        return None
+
+    def get_queryset(self, request):
+        qs = super(VisitTariffInline, self).get_queryset(request)
+        parent = self.get_parent_object_from_request(request)
+        qs = qs.filter(tariff__district=parent.district)
+        qs = qs.filter(tariff__price_group=parent.price_group)
+        print(qs)
+        return qs
+
+    def get_extra(self, request, obj=None, **kwargs):
+        parent = self.get_parent_object_from_request(request)
+        return len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        parent = self.get_parent_object_from_request(request)
+        return len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+
+
 @admin.register(Tariff)
 class TariffAdmin(admin.ModelAdmin):
+    inlines = (VisitTariffInline, )
+
+
+@admin.register(TypeOfVisit)
+class VisitAdmin(admin.ModelAdmin):
     pass
