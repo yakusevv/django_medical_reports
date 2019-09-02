@@ -23,7 +23,6 @@ from .models import (
                 VisitTariff,
                 )
 
-
 admin.site.unregister(User)
 
 
@@ -113,13 +112,18 @@ class PriceGroupAdmin(admin.ModelAdmin):
 
 class VisitTariffInlineFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
-        kwargs['initial'] = [
-            {'type_of_visit': type, 'price': 0} for type in TypeOfVisit.objects.all()
+        if kwargs['instance'].pk:
+            kwargs['initial'] = [
+            {'type_of_visit': type.id, 'price': '-'} for type in TypeOfVisit.objects.filter(
+                                        country=kwargs['instance'].district.region.country
+                                        )
         ]
-
         super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
         for form in self.forms:
-            form.fields['type_of_visit'].disabled = True
+            form.fields['type_of_visit'].widget.attrs = {'readonly':'readonly'}
+            form.fields['type_of_visit'].disabled =  True
+
+
 
 
 class VisitTariffInline(admin.TabularInline):
@@ -137,18 +141,25 @@ class VisitTariffInline(admin.TabularInline):
     def get_queryset(self, request):
         qs = super(VisitTariffInline, self).get_queryset(request)
         parent = self.get_parent_object_from_request(request)
-        qs = qs.filter(tariff__district=parent.district)
-        qs = qs.filter(tariff__price_group=parent.price_group)
-        print(qs)
+        if parent:
+            qs = qs.filter(tariff__district=parent.district)
+            qs = qs.filter(tariff__price_group=parent.price_group)
+            return qs
         return qs
 
     def get_extra(self, request, obj=None, **kwargs):
         parent = self.get_parent_object_from_request(request)
-        return len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+        if parent:
+            extra = len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+            return extra
+        return 0
 
     def get_max_num(self, request, obj=None, **kwargs):
         parent = self.get_parent_object_from_request(request)
-        return len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+        if parent:
+            max_num = len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+            return max_num
+        return 0
 
 
 @admin.register(Tariff)
