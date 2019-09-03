@@ -119,8 +119,11 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
         ]
         super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
         for form in self.forms:
-            form.fields['type_of_visit'].widget.attrs = {'readonly':'readonly'}
-            form.fields['type_of_visit'].disabled =  True
+            type_of_visit_field = form.fields['type_of_visit']
+            type_of_visit_field.widget.attrs = {'readonly':'readonly'}
+            type_of_visit_field.widget.can_add_related = False
+            type_of_visit_field.widget.can_change_related = False
+            type_of_visit_field.disabled =  True
 
     def clean(self):
         for form in self.forms:
