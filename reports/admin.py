@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.forms.models import BaseInlineFormSet
-from django import forms
 from django.urls import resolve
+from django.shortcuts import redirect
 
 from .models import (
                 Profile,
@@ -22,6 +21,7 @@ from .models import (
                 ServiceItem,
                 VisitTariff,
                 )
+from .forms import VisitTariffInlineFormSet
 
 admin.site.unregister(User)
 
@@ -110,22 +110,6 @@ class PriceGroupAdmin(admin.ModelAdmin):
     pass
 
 
-class VisitTariffInlineFormSet(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs):
-        if kwargs['instance'].pk:
-            kwargs['initial'] = [
-            {'type_of_visit': type.id, 'price': '-'} for type in TypeOfVisit.objects.filter(
-                                        country=kwargs['instance'].district.region.country
-                                        )
-        ]
-        super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
-        for form in self.forms:
-            form.fields['type_of_visit'].widget.attrs = {'readonly':'readonly'}
-            form.fields['type_of_visit'].disabled =  True
-
-
-
-
 class VisitTariffInline(admin.TabularInline):
     model = VisitTariff
     formset = VisitTariffInlineFormSet
@@ -165,6 +149,9 @@ class VisitTariffInline(admin.TabularInline):
 @admin.register(Tariff)
 class TariffAdmin(admin.ModelAdmin):
     inlines = (VisitTariffInline, )
+
+    def response_add(self, request, obj, post_url_continue=None):
+        return redirect('/admin/reports/tariff/{}/change'.format(obj.id))
 
 
 @admin.register(TypeOfVisit)

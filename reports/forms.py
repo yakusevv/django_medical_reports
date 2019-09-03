@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
-from .models import Report, ServiceItem, AdditionalImage
+from .models import Report, ServiceItem, AdditionalImage, TypeOfVisit
 
 
 class ReportCreateForm(forms.ModelForm):
@@ -103,3 +103,33 @@ class AdditionalImageForm(forms.ModelForm):
             )
             inst.save()
             position += 1
+
+
+class VisitTariffInlineFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        if kwargs['instance'].pk:
+            current_instances = [inst.type_of_visit.pk for inst in kwargs['instance'].visittariff_set.all()]
+            type_of_visit_filtered = TypeOfVisit.objects.filter(
+                        country=kwargs['instance'].district.region.country
+        ).exclude(
+                        pk__in=current_instances
+                 )
+            kwargs['initial'] = [
+            {'type_of_visit': type.id, 'price': '-'} for type in type_of_visit_filtered
+        ]
+        super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.fields['type_of_visit'].widget.attrs = {'readonly':'readonly'}
+            form.fields['type_of_visit'].disabled =  True
+
+    def clean(self):
+        for form in self.forms:
+            try:
+                if form.cleaned_data.get('price'):
+                    price = form.cleaned_data.get('price')
+                    if int(price) < 0:
+                        form.add_error('price', 'The Price can\'t be less than 0')
+                elif form.cleaned_data.get('price') == 0:
+                    form.add_error('price', 'The Price can\'t be 0')
+            except ValueError:
+                form.add_error('price', 'The Price should be numeric type')
