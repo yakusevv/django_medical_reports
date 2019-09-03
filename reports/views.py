@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, DeleteView, View, CreateV
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 
-from .models import Report, Country, PriceGroup
+from .models import Report, Country, PriceGroup, TypeOfVisit
 from .forms import ReportCreateForm, ServiceItemsFormSet, AdditionalImageForm
 from .utils import DocReportGenerator
 
@@ -81,5 +81,7 @@ class PriceTableView(PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        country = kwargs['object']
         context['price_groups'] = PriceGroup.objects.all()
+        context['types_of_visit'] = TypeOfVisit.objects.filter(country=country)
         return context
