@@ -17,9 +17,23 @@
     {% endfor %}
     {% for district in region.district_set.all %}
     <tr>
-      <th rowspan="5"> {{ district }} </th>
+      <th rowspan="5" style="width: 30%">
+        {{ district }}
+        <p style="font-weight: lighter; font-size: 15px;">
+          {% for city in district.city_set.all %}
+            {% if not forloop.last %}
+              {{ city }},
+            {% else %}
+              {{ city }}
+            {% endif %}
+            {% if forloop.counter|divisibleby:4 %}
+            <br>
+            {% endif %}
+          {% endfor %}
+        </p>
+      </th>
         {% for type_of_visit in types_of_visit %}
-          <td>
+          <td style="width: 20%">
             {{ type_of_visit.name }}
           </td>
           {% for price_group in price_groups %}
