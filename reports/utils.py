@@ -3,6 +3,7 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
 from django.conf import settings
+#from django.forms.models import model_to_dict
 
 def DocReportGenerator(report):
     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT, 'DOC_TEMPLATES', 'LDM_template.docx'))
@@ -18,20 +19,20 @@ def DocReportGenerator(report):
     'patients_last_name': report.patients_last_name,
     'patients_date_of_birth': report.patients_date_of_birth,
     'patients_policy_number': report.patients_policy_number,
-    'patients_passport_number': report.patients_passport_number,
     'date_of_visit': report.date_of_visit,
-    'location': report.location,
-    'cause': report.cause,
+    'city': report.city,
+    'cause': report.cause_of_visit,
     'checkup': report.checkup,
     'additional_checkup': report.additional_checkup,
     'diagnosis': report.diagnosis.get_queryset(),
     'prescription': report.prescription,
     'doctor': report.doctor,
-    'second_visit': report.second_visit,
     'services': report.service_items.get_queryset(),
     'total_price': report.get_total_price,
     'images': images
     }
+
+
     doc.render(context)
     file_path = os.path.join(
                     settings.MEDIA_ROOT,

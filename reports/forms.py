@@ -4,7 +4,15 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
-from .models import Report, ServiceItem, AdditionalImage, TypeOfVisit
+from .models import (
+                    Report,
+                    Service,
+                    ServiceItem,
+                    AdditionalImage,
+                    TypeOfVisit,
+                    VisitTariff,
+                    Tariff
+                    )
 
 
 class ReportCreateForm(forms.ModelForm):
@@ -28,23 +36,49 @@ class ReportCreateForm(forms.ModelForm):
             'additional_checkup',
             'diagnosis',
             'prescription',
+            'visit_price'
         ]
+        widgets = {'visit_price': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('doctor')
+        kwargs['initial'] = {
+                'visit_price': '0'
+            }
+        print(kwargs)
         super(ReportCreateForm, self).__init__(*args, **kwargs)
+
+
 
     def clean(self):
         cleaned_data=super(ReportCreateForm, self).clean()
         ref_number = cleaned_data.get("ref_number")
         first_name = cleaned_data.get("patients_first_name")
         last_name = cleaned_data.get("patients_last_name")
-        if Report.objects.filter(ref_number=ref_number).filter(patients_last_name=last_name).filter(patients_first_name=first_name).exists():
+        if Report.objects.filter(
+                            ref_number=ref_number
+                        ).filter(
+                            patients_last_name=last_name
+                        ).filter(
+                            patients_first_name=first_name
+                        ).exists():
             msg = "Report with this name is already exist"
             self.add_error('ref_number', msg)
             self.add_error('patients_first_name', msg)
             self.add_error('patients_last_name', msg)
+
+        company = cleaned_data['company']
+        city = cleaned_data['city']
+        kind_of_visit = cleaned_data['kind_of_visit']
+
+        district = city.district
+        price_group = company.price_group
+
+        tariff = Tariff.objects.get(district=district, price_group=price_group)
+        visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=kind_of_visit)
+        cleaned_data['visit_price'] = visit_tariff.price
         return cleaned_data
+
 
 class ServiceItemForm(forms.ModelForm):
 
@@ -52,8 +86,17 @@ class ServiceItemForm(forms.ModelForm):
         model = ServiceItem
         fields = [
             'service',
-            'quantity'
+            'quantity',
+            'service_price'
             ]
+        widgets = {'service_price': forms.HiddenInput()}
+
+    def clean(self):
+        cleaned_data = super(ServiceItemForm, self).clean()
+        service = cleaned_data['service']
+        cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
+        return cleaned_data
+
 
 class ServiceItemsFormset(BaseInlineFormSet):
 
@@ -74,8 +117,8 @@ class ServiceItemsFormset(BaseInlineFormSet):
                         services.add(service)
                     if quantity < 1:
                         form.add_error('quantity', "Quantity must be equal to or greater than 1")
-        if number_of_forms == 0:
-            raise forms.ValidationError('At least one service must be chosen')
+#        if number_of_forms == 0:
+#            raise forms.ValidationError('At least one service must be chosen')
 
 
 ServiceItemsFormSet = inlineformset_factory(
@@ -90,7 +133,6 @@ class AdditionalImageForm(forms.ModelForm):
     class Meta:
         model = AdditionalImage
         fields = ['image']
-
 
     def save(self, *args, **kwargs):
         file_list = self.files.getlist('image')

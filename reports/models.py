@@ -144,6 +144,7 @@ class Report(models.Model):
     patients_policy_number = models.CharField(max_length=100, blank=True)
     #patients_passport_number = models.CharField(max_length=100)
     kind_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
+    visit_price = models.DecimalField(max_digits=8, decimal_places=2)
     date_of_visit = models.DateTimeField()
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     detailed_location = models.CharField(max_length=100, blank=True)
