@@ -20,6 +20,7 @@ from .models import (
                 Service,
                 ServiceItem,
                 VisitTariff,
+                ReportTemplate
                 )
 from .forms import VisitTariffInlineFormSet
 
@@ -43,9 +44,15 @@ class CustomUserAdmin(UserAdmin):
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
 
+class ReportTemplateInline(admin.StackedInline):
+    model = ReportTemplate
+    can_delete = True
+    verbose_name_plural = 'Report Template'
+
+
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    pass
+    inlines = (ReportTemplateInline, )
 
 
 @admin.register(Service)

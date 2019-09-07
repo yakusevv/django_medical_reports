@@ -3,10 +3,14 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
 from django.conf import settings
+from .models import ReportTemplate
 #from django.forms.models import model_to_dict
 
 def DocReportGenerator(report):
-    doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT, 'DOC_TEMPLATES', 'LDM_template.docx'))
+    doc_path = ReportTemplate.objects.get(
+            country=report.city.district.region.country, company=report.company
+            ).template
+    doc = DocxTemplate(doc_path)
     images = []
     for image in report.additional_images.get_queryset():
         images.append(InlineImage(doc, image.image, width=Mm(130)))

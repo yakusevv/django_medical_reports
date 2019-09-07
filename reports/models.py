@@ -14,6 +14,10 @@ def get_image_path(instance, filename):
                     filename
                     )
 
+def get_docxtemplate_path(instance, filename):
+    filename = str(instance.company.name) + '_template.docx'
+    return os.path.join('DOC_TEMPLATES', str(instance.country), filename)
+
 
 class Country(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -119,15 +123,13 @@ class Company(models.Model):
 
 
 # Every company need to have templates for each country in appropriative language
-# Not checked yet
-#class ReportTemplate(models.Model):
-#    template = models.FileField()
-#    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-#    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+class ReportTemplate(models.Model):
+    template = models.FileField(upload_to=get_docxtemplate_path)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
 
 class Report(models.Model):
-
     ref_number = models.CharField(max_length=50)
     company_ref_number = models.CharField(max_length=50)
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
