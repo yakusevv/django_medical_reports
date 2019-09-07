@@ -4,9 +4,33 @@
 {% block content %}
 
     {% if report_list %}
+      <div class="container">
+        <div class="row mb-2">
+          <div class="col">
+            <p>Report</p>
+          </div>
+          <div class="col">
+          <p>City</p>
+          </div>
+          <div class="col">
+            <p>Date of visit</p>
+          </div>
+        </div>
       {% for report in report_list %}
-      <p><a href="{{ report.get_absolute_url }}">{{ report }}</a></p>
+
+        <div class="row mb-2" style='{% if report.checked %} color: gray {% endif %}'>
+          <div class="col">
+            <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
+          </div>
+          <div class="col">
+            {{ report.city }}</p>
+          </div>
+          <div class="col">
+            {{ report.date_of_visit }}
+          </div>
+        </div>
       {% endfor %}
+      </div>
     {% else %}
       <p>There are no reports</p>
     {% endif %}

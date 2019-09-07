@@ -11,6 +11,7 @@ from .utils import DocReportGenerator
 class ReportsListView(LoginRequiredMixin, ListView):
     model = Report
     template_name = 'reports/reports_list.html'
+    ordering = ('checked',)
 
 
 class ReportDetailView(LoginRequiredMixin, DetailView):
