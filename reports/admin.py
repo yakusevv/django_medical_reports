@@ -58,10 +58,15 @@ class DiseaseAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ServiceItem)
-class ServiceAdmin(admin.ModelAdmin):
-    pass
+#@admin.register(ServiceItem)
+#class ServiceItemAdmin(admin.ModelAdmin):
+#    pass
 
+class ServiceItemInline(admin.StackedInline):
+    model = ServiceItem
+    can_delete = True
+    verbose_name_plural = 'Service Item'
+    fk_name = 'report'
 
 class AdditionalImageInline(admin.StackedInline):
     model = AdditionalImage
@@ -72,7 +77,7 @@ class AdditionalImageInline(admin.StackedInline):
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
-    inlines = (AdditionalImageInline, )
+    inlines = (AdditionalImageInline, ServiceItemInline)
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
                    'city__district__region',
                    'company',
