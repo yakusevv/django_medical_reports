@@ -58,10 +58,6 @@ class DiseaseAdmin(admin.ModelAdmin):
     pass
 
 
-#@admin.register(ServiceItem)
-#class ServiceItemAdmin(admin.ModelAdmin):
-#    pass
-
 class ServiceItemInline(admin.StackedInline):
     model = ServiceItem
     can_delete = True
@@ -78,12 +74,14 @@ class AdditionalImageInline(admin.StackedInline):
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     inlines = (AdditionalImageInline, ServiceItemInline)
+    readonly_fields = ('get_total_price',)
+    list_display = ('__str__', 'date_of_visit', 'get_total_price', 'checked')
+    ordering = ('-date_of_visit',)
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
                    'city__district__region',
                    'company',
                    'doctor',
                    'checked')
-
     def get_inline_instances(self, request, obj=None):
         if not obj:
             return list()

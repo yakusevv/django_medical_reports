@@ -164,8 +164,10 @@ class Report(models.Model):
         services = self.service_items.get_queryset()
         for service in services:
             total += service.cost
+        total += self.visit_price
         return total
 
+    get_total_price.fget.short_description = 'Total price'
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
