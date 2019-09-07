@@ -85,10 +85,10 @@
      {% endif %}
      {% if request.user.is_authenticated and request.user.is_staff %}
      <a href="/admin" class="btn btn-outline-info mb-4">Admin page</a>
-     {% block admin-panel-content %}
-     {% endblock %}
      {% endif %}
      {% if user.is_authenticated %}
+     {% block admin-panel-content %}
+     {% endblock %}
      <a href="{% url 'logout' %}" class="btn btn-link">Logout</a>
      {% endif %}
    </div>

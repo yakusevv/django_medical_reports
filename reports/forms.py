@@ -41,11 +41,10 @@ class ReportCreateForm(forms.ModelForm):
         widgets = {'visit_price': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('doctor')
+        kwargs.pop('doctor')
         kwargs['initial'] = {
-                'visit_price': '0'
+                'visit_price': '0',
             }
-        print(kwargs)
         super(ReportCreateForm, self).__init__(*args, **kwargs)
 
 
@@ -89,12 +88,14 @@ class ServiceItemForm(forms.ModelForm):
             'quantity',
             'service_price'
             ]
-        widgets = {'service_price': forms.HiddenInput()}
+        widgets = {'service_price': forms.HiddenInput(attrs={'value': 0})}
+
 
     def clean(self):
         cleaned_data = super(ServiceItemForm, self).clean()
-        service = cleaned_data['service']
-        cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
+        if cleaned_data.get('service'):
+            service = cleaned_data['service']
+            cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
         return cleaned_data
 
 
