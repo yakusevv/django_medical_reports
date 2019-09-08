@@ -30,6 +30,9 @@ class Region(models.Model):
     name = models.CharField(max_length=100)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('name', 'country',),)
+
     def __str__(self):
         return self.name
 
@@ -38,6 +41,9 @@ class District(models.Model):
     name = models.CharField(max_length=50)
     region = models.ForeignKey(Region, on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('name', 'region',),)
+
     def __str__(self):
         return ' - '.join((str(self.region), self.name))
 
@@ -45,6 +51,9 @@ class District(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=100)
     district = models.ForeignKey(District, on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('name', 'district',),)
 
     def __str__(self):
         return self.name
@@ -82,8 +91,11 @@ class PriceGroup(models.Model):
 
 # Every country must have a list of visit types with appropriative names
 class TypeOfVisit(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT, default=1)
+    name = models.CharField(max_length=50)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('name', 'country',),)
 
     def __str__(self):
         return self.name
@@ -100,6 +112,9 @@ class Tariff(models.Model):
 #    family_visit = models.DecimalField(max_digits=8, decimal_places=2)
 #    second_visit = models.DecimalField(max_digits=8, decimal_places=2)
 
+    class Meta:
+        unique_together = (('district', 'price_group',),)
+
     def __str__(self):
         return ' - '.join((str(self.district), str(self.price_group)))
 
@@ -108,6 +123,9 @@ class VisitTariff(models.Model):
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=8, decimal_places=2)
+
+    class Meta:
+        unique_together = (('tariff', 'type_of_visit',),)
 
     def __str__(self):
         return ' - '.join((str(self.tariff), str(self.type_of_visit)))
@@ -127,6 +145,9 @@ class ReportTemplate(models.Model):
     template = models.FileField(upload_to=get_docxtemplate_path)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (('company', 'country',),)
 
 
 class Report(models.Model):
@@ -150,6 +171,9 @@ class Report(models.Model):
     checked = models.BooleanField(default=False)
     doctor = models.ForeignKey(Profile, on_delete=models.PROTECT)
     docx_download_link = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        unique_together = (('patients_first_name', 'patients_last_name', 'ref_number'),)
 
     def __str__(self):
         return ' '.join((self.ref_number, self.patients_last_name, self.patients_first_name))
@@ -183,6 +207,9 @@ class Service(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='services', default=1)
     price = models.DecimalField(max_digits=8, decimal_places=2 )
 
+    class Meta:
+        unique_together = (('name', 'country',),)
+
     def __str__(self):
         return self.country.name + ' - ' + self.name
 
@@ -192,6 +219,9 @@ class ServiceItem(models.Model):
     service = models.ForeignKey(Service, related_name='items', on_delete=models.CASCADE)
     service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = (('report', 'service',),)
 
     def __str__(self):
         if self.quantity > 1:
