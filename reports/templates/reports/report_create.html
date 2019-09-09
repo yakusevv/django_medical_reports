@@ -20,7 +20,7 @@
       </tr>
     </thead>
     {% endif %}
-    <tr class="{% cycle row1 row2 %} formset_row">
+    <tr class="formset_row">
       {% for field in form.visible_fields %}
       <td>
         {% if forloop.first %}
@@ -45,7 +45,15 @@
   $('.formset_row').formset({
     addText: 'add service item',
     deleteText: 'remove',
-    prefix: 'service_items',
+    prefix: '{{ service_items.prefix }}',
+    formTemplate: null,
+    addCssClass: 'add-row',
+    deleteCssClass: 'delete-row',
+    formCssClass: 'dynamic-form',
+    extraClasses: [],
+    keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
+    added: null,
+    removed: null
   });
 </script>
 {% endblock %}

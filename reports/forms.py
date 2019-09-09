@@ -88,7 +88,7 @@ class ServiceItemForm(forms.ModelForm):
             'quantity',
             'service_price'
             ]
-        widgets = {'service_price': forms.HiddenInput(attrs={'value': 0})}
+        widgets = {'service_price': forms.HiddenInput(attrs={})}
 
 
     def clean(self):
