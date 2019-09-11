@@ -23,6 +23,7 @@ from .models import (
                 ReportTemplate
                 )
 from .forms import VisitTariffInlineFormSet
+from .utils import DocReportGenerator
 
 admin.site.unregister(User)
 
@@ -89,11 +90,15 @@ class ReportAdmin(admin.ModelAdmin):
                    'company',
                    'doctor',
                    'checked')
+
     def get_inline_instances(self, request, obj=None):
         if not obj:
             return list()
         return super(ReportAdmin, self).get_inline_instances(request, obj)
 
+    def save_model(self, request, obj, form, change):
+        super(ReportAdmin, self).save_model(request, obj, form, change)
+        DocReportGenerator(obj)
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):

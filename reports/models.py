@@ -8,9 +8,7 @@ from django.shortcuts import reverse
 def get_image_path(instance, filename):
     return os.path.join(
                     'FILES',
-                    str(instance.report.company),
-                    str(instance.report.doctor),
-                    str(instance.report),
+                    str(instance.report.pk),
                     filename
                     )
 
@@ -104,13 +102,6 @@ class TypeOfVisit(models.Model):
 class Tariff(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
-#    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
-#    price = models.DecimalField(max_digits=8, decimal_places=2)
-#    day_visit = models.DecimalField(max_digits=8, decimal_places=2)
-#    night_visit = models.DecimalField(max_digits=8, decimal_places=2)
-#    holiday_visit = models.DecimalField(max_digits=8, decimal_places=2)
-#    family_visit = models.DecimalField(max_digits=8, decimal_places=2)
-#    second_visit = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
         unique_together = (('district', 'price_group',),)
