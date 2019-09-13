@@ -149,7 +149,7 @@ class Report(models.Model):
     patients_last_name = models.CharField(max_length=50)
     patients_date_of_birth = models.DateField()
     patients_policy_number = models.CharField(max_length=100, blank=True)
-    kind_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
+    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
     visit_price = models.DecimalField(max_digits=8, decimal_places=2)
     date_of_visit = models.DateTimeField()
     city = models.ForeignKey(City, on_delete=models.PROTECT)
@@ -178,10 +178,12 @@ class Report(models.Model):
     @property
     def get_total_price(self):
         total = 0
-        services = self.service_items.get_queryset()
-        for service in services:
-            total += service.cost
-        total += self.visit_price
+        if self.pk:
+            services = self.service_items.get_queryset()
+            for service in services:
+                total += service.cost
+            total += self.visit_price
+            return total
         return total
 
     get_total_price.fget.short_description = 'Total price'

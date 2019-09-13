@@ -61,7 +61,7 @@
     <th> Price </th>
   </tr>
   {% for service in object.services.all %}
-    {% if not service.kind_of_visit %}
+    {% if not service.type_of_visit %}
     <tr>
       <td>{{service.name }}</td>
       <td>{{ service.price }}</td>

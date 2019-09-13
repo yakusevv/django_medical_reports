@@ -92,8 +92,8 @@ class ReportAdmin(admin.ModelAdmin):
                    'checked')
 
     def get_inline_instances(self, request, obj=None):
-        if not obj:
-            return list()
+    #    if not obj:
+    #        return list()
         return super(ReportAdmin, self).get_inline_instances(request, obj)
 
     def save_model(self, request, obj, form, change):

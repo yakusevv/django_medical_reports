@@ -28,7 +28,7 @@ class ReportCreateForm(forms.ModelForm):
             'patients_date_of_birth',
             'patients_policy_number',
             'date_of_visit',
-            'kind_of_visit',
+            'type_of_visit',
             'city',
             'detailed_location',
             'cause_of_visit',
@@ -68,13 +68,13 @@ class ReportCreateForm(forms.ModelForm):
 
         company = cleaned_data['company']
         city = cleaned_data['city']
-        kind_of_visit = cleaned_data['kind_of_visit']
+        type_of_visit = cleaned_data['type_of_visit']
 
         district = city.district
         price_group = company.price_group
 
         tariff = Tariff.objects.get(district=district, price_group=price_group)
-        visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=kind_of_visit)
+        visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
         cleaned_data['visit_price'] = visit_tariff.price
         return cleaned_data
 
