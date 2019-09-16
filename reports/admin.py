@@ -92,9 +92,18 @@ class ReportAdmin(admin.ModelAdmin):
                    'checked')
 
     def get_inline_instances(self, request, obj=None):
-    #    if not obj:
-    #        return list()
         return super(ReportAdmin, self).get_inline_instances(request, obj)
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for instance in instances:
+            if isinstance(instance, ServiceItem):
+                if not instance.pk and instance.service_price == 0:
+                    service = instance.service
+                    instance.service_price = Service.objects.get(pk=service.pk).price
+                    instance.save()
+        formset.save_m2m()
+        super(ReportAdmin, self).save_formset(request, form, formset, change)
 
     def save_model(self, request, obj, form, change):
         super(ReportAdmin, self).save_model(request, obj, form, change)
