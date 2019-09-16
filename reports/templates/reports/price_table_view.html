@@ -39,7 +39,7 @@
           {% for price_group in price_groups %}
             <td>
             {% for tariff in district.tariff_set.all %}
-              {% if tariff.price_group == price_group%}
+              {% if tariff.price_group == price_group %}
                 {% for visit_price in tariff.visittariff_set.all %}
                   {% if visit_price.type_of_visit == type_of_visit %}
                     {{ visit_price.price }}

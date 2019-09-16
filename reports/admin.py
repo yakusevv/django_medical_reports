@@ -123,6 +123,10 @@ class ReportAdmin(admin.ModelAdmin):
         super(ReportAdmin, self).save_model(request, obj, form, change)
         DocReportGenerator(obj)
 
+    def response_add(self, request, obj, post_url_continue=None):
+        return redirect('/admin/reports/report/{}/change'.format(obj.id))
+
+
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     pass

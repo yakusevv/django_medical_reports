@@ -72,10 +72,12 @@ class ReportCreateForm(forms.ModelForm):
 
         district = city.district
         price_group = company.price_group
-
-        tariff = Tariff.objects.get(district=district, price_group=price_group)
-        visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-        cleaned_data['visit_price'] = visit_tariff.price
+        try:
+            tariff = Tariff.objects.get(district=district, price_group=price_group)
+            visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+            cleaned_data['visit_price'] = visit_tariff.price
+        except Tariff.DoesNotExist:
+            pass
         return cleaned_data
 
 
