@@ -11,7 +11,8 @@ from .models import (
                     AdditionalImage,
                     TypeOfVisit,
                     VisitTariff,
-                    Tariff
+                    Tariff,
+                    Country
                     )
 
 
@@ -181,3 +182,18 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
                     form.add_error('price', 'The Price can\'t be 0')
             except ValueError:
                 form.add_error('price', 'The Price should be numeric type')
+
+
+class ReportTemplateInlineFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        if kwargs['instance'].pk:
+            kwargs['initial'] = [
+            {'country': country.id } for country in Country.objects.all()
+        ]
+        super(ReportTemplateInlineFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            country_field = form.fields['country']
+            country_field.widget.attrs = {'readonly':'readonly'}
+            country_field.widget.can_add_related = False
+            country_field.widget.can_change_related = False
+            country_field.disabled =  True

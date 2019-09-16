@@ -23,7 +23,7 @@ from .models import (
                 VisitTariff,
                 ReportTemplate
                 )
-from .forms import VisitTariffInlineFormSet
+from .forms import VisitTariffInlineFormSet, ReportTemplateInlineFormSet
 from .utils import DocReportGenerator
 
 admin.site.unregister(User)
@@ -48,13 +48,35 @@ class CustomUserAdmin(UserAdmin):
 
 class ReportTemplateInline(admin.StackedInline):
     model = ReportTemplate
+    formset = ReportTemplateInlineFormSet
     can_delete = True
     verbose_name_plural = 'Report Template'
+
+    def get_parent_object_from_request(self, request):
+        resolved = resolve(request.path_info)
+        if resolved.kwargs:
+            return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
+        return None
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if self.get_parent_object_from_request(request):
+            extra = len(Country.objects.all())
+            return extra
+        return 0
+
+    def get_max_num(self, request, obj=None, **kwargs):
+        if self.get_parent_object_from_request(request):
+            max_num = len(Country.objects.all())
+            return max_num
+        return 0
 
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     inlines = (ReportTemplateInline, )
+
+    def response_add(self, request, obj, post_url_continue=None):
+        return redirect('/admin/reports/company/{}/change'.format(obj.id))
 
 
 @admin.register(Service)
