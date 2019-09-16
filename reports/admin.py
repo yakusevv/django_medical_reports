@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.urls import resolve
 from django.shortcuts import redirect
+from django.core.exceptions import ValidationError
 
 from .models import (
                 Profile,
@@ -106,6 +107,19 @@ class ReportAdmin(admin.ModelAdmin):
         super(ReportAdmin, self).save_formset(request, form, formset, change)
 
     def save_model(self, request, obj, form, change):
+        if not change and obj.visit_price == 0 or obj.visit_price == 0:
+            company = obj.company
+            city = obj.city
+            type_of_visit = obj.type_of_visit
+
+            district = city.district
+            price_group = company.price_group
+            try:
+                tariff = Tariff.objects.get(district=district, price_group=price_group)
+                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+                obj.visit_price = visit_tariff.price
+            except Tariff.DoesNotExist:
+                obj.visit_price = 0
         super(ReportAdmin, self).save_model(request, obj, form, change)
         DocReportGenerator(obj)
 
