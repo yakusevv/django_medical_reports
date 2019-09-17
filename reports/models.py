@@ -3,6 +3,8 @@ import os
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 
 def get_image_path(instance, filename):
@@ -15,6 +17,14 @@ def get_image_path(instance, filename):
 def get_docxtemplate_path(instance, filename):
     filename = str(instance.company.name) + '_template.docx'
     return os.path.join('DOC_TEMPLATES', str(instance.country), filename)
+
+
+class OverwriteStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        if self.exists(name):
+            self.delete(name)
+        return name
 
 
 class Country(models.Model):
@@ -133,7 +143,7 @@ class Company(models.Model):
 
 # Every company need to have templates for each country in appropriative language
 class ReportTemplate(models.Model):
-    template = models.FileField(upload_to=get_docxtemplate_path)
+    template = models.FileField(upload_to=get_docxtemplate_path, storage=OverwriteStorage())
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
 

@@ -3,8 +3,9 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
 from django.conf import settings
+
 from .models import ReportTemplate
-#from django.forms.models import model_to_dict
+
 
 def DocReportGenerator(report):
     try:
