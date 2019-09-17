@@ -1,10 +1,13 @@
 import os
+import shutil
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 
 def get_image_path(instance, filename):
@@ -234,3 +237,14 @@ class ServiceItem(models.Model):
     @property
     def cost(self):
         return self.service_price * self.quantity
+
+
+@receiver(post_delete, sender=Report)
+def submission_delete(sender, instance, **kwargs):
+    shutil.rmtree(str(os.path.join(
+                        settings.MEDIA_ROOT,
+                        'FILES',
+                        str(instance.pk)
+                        )),
+                        ignore_errors=True
+                    )
