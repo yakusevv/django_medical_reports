@@ -4,14 +4,8 @@ from docx.shared import Mm
 
 from django.conf import settings
 
-from .models import ReportTemplate
 
-
-def DocReportGenerator(report):
-    try:
-        doc_path = ReportTemplate.objects.get(
-            country=report.city.district.region.country, company=report.company
-            ).template
+def DocReportGenerator(doc_path, report):
         doc = DocxTemplate(doc_path)
         images = []
         for image in report.additional_images.get_queryset():
@@ -37,23 +31,33 @@ def DocReportGenerator(report):
                             str(report.pk)
                             )
 
+        file_system_dir = os.path.join(
+                            settings.MEDIA_ROOT,
+                            file_local_dir
+                            )
+
         file_full_path = os.path.join(
                             settings.MEDIA_ROOT,
                             str(file_local_dir),
                             str(file_name)
                             )
 
-        if not os.path.exists(file_full_path):
-            os.makedirs(os.path.join(settings.MEDIA_ROOT,str(file_local_dir)))
-        doc.save(file_full_path)
-
-        report.docx_download_link = os.path.join(
+        file_url_path = os.path.join(
                             settings.MEDIA_URL,
                             file_local_dir,
-                            file_name,
-                            ).replace(' ', '%20')
+                            file_name
+                            )
 
-        report.save()
+        if not os.path.exists(file_system_dir):
+            os.makedirs(os.path.join(settings.MEDIA_ROOT, str(file_local_dir)))
 
-    except ReportTemplate.DoesNotExist:
-            pass
+        #past report deleting
+        #in case when file name has changed
+        current_files = os.listdir(file_system_dir)
+        filelist = [f for f in current_files if f.endswith(".docx")]
+        for file in filelist:
+            os.remove(os.path.join(file_system_dir, file))
+
+        doc.save(file_full_path)
+
+        return file_url_path.replace(' ', '%20')

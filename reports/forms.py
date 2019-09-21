@@ -42,7 +42,6 @@ class ReportCreateForm(forms.ModelForm):
         widgets = {'visit_price': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
-        kwargs.pop('doctor')
         kwargs['initial'] = {
                 'visit_price': '0',
             }
@@ -80,6 +79,10 @@ class ReportCreateForm(forms.ModelForm):
         except Tariff.DoesNotExist:
             pass
         return cleaned_data
+
+
+class ReportUpdateForm(ReportCreateForm):
+    pass
 
 
 class ServiceItemForm(forms.ModelForm):

@@ -24,7 +24,6 @@ from .models import (
                 ReportTemplate
                 )
 from .forms import VisitTariffInlineFormSet, ReportTemplateInlineFormSet
-from .utils import DocReportGenerator
 
 admin.site.unregister(User)
 
@@ -143,7 +142,6 @@ class ReportAdmin(admin.ModelAdmin):
             except Tariff.DoesNotExist:
                 obj.visit_price = 0
         super(ReportAdmin, self).save_model(request, obj, form, change)
-        DocReportGenerator(obj)
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/reports/report/{}/change'.format(obj.id))

@@ -1,11 +1,21 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, DeleteView, View, CreateView
+from django.views.generic import (
+                                View,
+                                ListView,
+                                DetailView,
+                                CreateView,
+                                UpdateView,
+                                DeleteView
+                                )
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 
 from .models import Report, Country, PriceGroup, TypeOfVisit
-from .forms import ReportCreateForm, ServiceItemsFormSet, AdditionalImageForm
-from .utils import DocReportGenerator
+from .forms import (
+                ReportCreateForm,
+                ServiceItemsFormSet,
+                AdditionalImageForm
+                )
 
 
 class ReportsListView(LoginRequiredMixin, ListView):
@@ -46,7 +56,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super(ReportCreateView, self).get_form_kwargs(*args, **kwargs)
-        kwargs['doctor'] = self.request.user.profile
+#        kwargs['doctor'] = self.request.user.profile
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -62,7 +72,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form, service_items, images):
         context = self.get_context_data()
         with transaction.atomic():
-            form.instance.doctor = self.get_form_kwargs()['doctor']
+            form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -70,10 +80,24 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             if images.is_valid():
                 images.instance.report = self.object
                 images.save()
-            DocReportGenerator(self.object)
-
         return super(ReportCreateView, self).form_valid(form)
 
+'''
+class ReportUpdateView(LoginRequiredMixin, UpdateView):
+    model = Report
+    template_name = 'reports/report_update.html'
+    form_class = ReportUpdateForm
+
+    def get_context_data(self, **kwargs):
+        data = super(ReportUpdateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['service_items'] = ServiceItemsFormSet(self.request.POST)
+            data['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
+        else:
+            data['service_items'] = ServiceItemsFormSet()
+            data['images'] = AdditionalImageForm()
+        return data
+'''
 
 class PriceTableView(PermissionRequiredMixin, DetailView):
     permission_required = 'is_staff'

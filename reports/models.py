@@ -6,9 +6,10 @@ from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
+from .utils import DocReportGenerator
 
 def get_image_path(instance, filename):
     return os.path.join(
@@ -201,6 +202,7 @@ class Report(models.Model):
 
     get_total_price.fget.short_description = 'Total price'
 
+
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField(upload_to=get_image_path)
@@ -248,3 +250,17 @@ def submission_delete(sender, instance, **kwargs):
                         )),
                         ignore_errors=True
                     )
+
+@receiver(post_save, sender=Report)
+def report_generating(sender, instance, **kwargs):
+    try:
+        doc_path = ReportTemplate.objects.get(
+                country=instance.city.district.region.country,
+                company=instance.company
+                ).template
+        instance.docx_download_link = DocReportGenerator(doc_path, instance)
+        post_save.disconnect(report_generating, sender=sender)
+        instance.save()
+        post_save.connect(report_generating, sender=sender)
+    except ReportTemplate.DoesNotExist:
+            pass
