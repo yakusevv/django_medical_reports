@@ -186,6 +186,12 @@ class Report(models.Model):
     def get_absolute_url(self):
         return reverse('report_detail_url', kwargs={'pk': self.pk})
 
+    def get_update_url(self):
+        return reverse('report_update_url', kwargs={'pk': self.pk})
+
+    def get_delete_url(self):
+        return reverse('report_delete_url', kwargs={'pk': self.pk})
+
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in Report._meta.fields]
 

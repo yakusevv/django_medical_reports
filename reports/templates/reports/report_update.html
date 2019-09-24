@@ -1,11 +1,8 @@
 {% extends 'reports/base_reports.html' %}
 {% load static %}
 
-{% block admin-panel-content %}
-{% endblock %}
-
 {% block content %}
-<form action="{% url 'report_create_url' %}" method="post" enctype="multipart/form-data">
+<form action="{{ report.get_update_url }}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <table>
     {{ form.as_table }}
@@ -38,8 +35,11 @@
     </tr>
     {% endfor %}
   </table>
+  {% for image in report.additional_images.get_queryset %}
+    <p class='mb-1'><img src="{{ image.image.url }}" alt=""></p>
+  {% endfor %}
   <p>{{ images }}</p>
-  <button type="submit" name="Create" class="btn btn-primary">Create report</button>
+  <button type="submit" name="Update" class="btn btn-primary">Update report</button>
 
 </form>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

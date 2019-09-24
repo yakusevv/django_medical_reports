@@ -1,5 +1,11 @@
 {% extends 'reports/base_reports.html' %}
 
+
+{% block admin-panel-content %}
+<a class="btn btn-secondary" href="{{ report.get_update_url }}">Update report</a>
+{% endblock %}
+
+
 {% block content %}
 <div class="container">
   <div class="row mb-2">

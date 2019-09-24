@@ -47,20 +47,19 @@ class ReportCreateForm(forms.ModelForm):
             }
         super(ReportCreateForm, self).__init__(*args, **kwargs)
 
-
-
     def clean(self):
         cleaned_data=super(ReportCreateForm, self).clean()
         ref_number = cleaned_data.get("ref_number")
         first_name = cleaned_data.get("patients_first_name")
         last_name = cleaned_data.get("patients_last_name")
-        if Report.objects.filter(
+        same_report = Report.objects.filter(
                             ref_number=ref_number
                         ).filter(
                             patients_last_name=last_name
                         ).filter(
                             patients_first_name=first_name
-                        ).exists():
+                        )
+        if same_report.exists():
             msg = "Report with this name is already exist"
             self.add_error('ref_number', msg)
             self.add_error('patients_first_name', msg)
@@ -77,12 +76,69 @@ class ReportCreateForm(forms.ModelForm):
             visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
             cleaned_data['visit_price'] = visit_tariff.price
         except Tariff.DoesNotExist:
-            pass
+            cleaned_data['visit_price'] = 0
         return cleaned_data
 
 
-class ReportUpdateForm(ReportCreateForm):
-    pass
+class ReportUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Report
+        fields = [
+            'ref_number',
+            'company_ref_number',
+            'company',
+            'patients_first_name',
+            'patients_last_name',
+            'patients_date_of_birth',
+            'patients_policy_number',
+            'date_of_visit',
+            'type_of_visit',
+            'city',
+            'detailed_location',
+            'cause_of_visit',
+            'checkup',
+            'additional_checkup',
+            'diagnosis',
+            'prescription',
+            'visit_price'
+        ]
+        widgets = {'visit_price': forms.HiddenInput()}
+
+
+    def clean(self):
+        cleaned_data=super(ReportUpdateForm, self).clean()
+        ref_number = cleaned_data.get("ref_number")
+        first_name = cleaned_data.get("patients_first_name")
+        last_name = cleaned_data.get("patients_last_name")
+        same_report = Report.objects.filter(
+                            ref_number=ref_number
+                        ).filter(
+                            patients_last_name=last_name
+                        ).filter(
+                            patients_first_name=first_name
+                        ).exclude(
+                            pk=self.instance.pk
+                                            )
+        if len(same_report) > 0:
+            msg = "Other report with this name is already exist"
+            self.add_error('ref_number', msg)
+            self.add_error('patients_first_name', msg)
+            self.add_error('patients_last_name', msg)
+
+        company = cleaned_data['company']
+        city = cleaned_data['city']
+        type_of_visit = cleaned_data['type_of_visit']
+
+        district = city.district
+        price_group = company.price_group
+        try:
+            tariff = Tariff.objects.get(district=district, price_group=price_group)
+            visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+            cleaned_data['visit_price'] = visit_tariff.price
+        except Tariff.DoesNotExist:
+            cleaned_data['visit_price'] = 0
+        return cleaned_data
 
 
 class ServiceItemForm(forms.ModelForm):
@@ -92,14 +148,22 @@ class ServiceItemForm(forms.ModelForm):
         fields = [
             'service',
             'quantity',
-            'service_price'
+            'service_price',
             ]
         widgets = {'service_price': forms.HiddenInput(attrs={})}
 
+    def __init__(self, *args, **kwargs):
+        super(ServiceItemForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['service'].disabled = True
 
     def clean(self):
         cleaned_data = super(ServiceItemForm, self).clean()
-        if cleaned_data.get('service'):
+        if self.instance.id and cleaned_data.get('service', False):
+            if cleaned_data['DELETE']:
+                self.instance.delete()
+        if cleaned_data.get('service', False):
             service = cleaned_data['service']
             cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
         return cleaned_data
@@ -109,6 +173,7 @@ class ServiceItemsFormset(BaseInlineFormSet):
 
     def clean(self):
         if any(self.errors):
+            print(self.errors)
             return
         services = set()
         number_of_forms = 0
@@ -124,8 +189,6 @@ class ServiceItemsFormset(BaseInlineFormSet):
                         services.add(service)
                     if quantity < 1:
                         form.add_error('quantity', "Quantity must be equal to or greater than 1")
-#        if number_of_forms == 0:
-#            raise forms.ValidationError('At least one service must be chosen')
 
 
 ServiceItemsFormSet = inlineformset_factory(
@@ -135,7 +198,7 @@ ServiceItemsFormSet = inlineformset_factory(
 
 
 class AdditionalImageForm(forms.ModelForm):
-    image = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=True)
+    image = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
 
     class Meta:
         model = AdditionalImage
@@ -144,14 +207,15 @@ class AdditionalImageForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         file_list = self.files.getlist('image')
         position = 1
-        for file in file_list:
-            inst = AdditionalImage(
-                report=self.instance.report,
-                image=file,
-                position=position
-            )
-            inst.save()
-            position += 1
+        if len(file_list)>0:
+            for file in file_list:
+                inst = AdditionalImage(
+                    report=self.instance.report,
+                    image=file,
+                    position=position
+                    )
+                inst.save()
+                position += 1
 
 
 class VisitTariffInlineFormSet(BaseInlineFormSet):
