@@ -73,7 +73,7 @@ class City(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    location = models.CharField(max_length=40, blank=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     num_col = models.CharField(max_length=9, unique=True)
     districts = models.ManyToManyField(District)
 
@@ -88,7 +88,7 @@ class Profile(models.Model):
 # so property "country" has been added
 class Disease(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT, default=1)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
@@ -115,7 +115,7 @@ class TypeOfVisit(models.Model):
 
 class Tariff(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
+    price_group = models.ForeignKey(PriceGroup, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (('district', 'price_group',),)
@@ -139,7 +139,6 @@ class VisitTariff(models.Model):
 class Company(models.Model):
     name = models.CharField(max_length=20, unique=True)
     price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
-    #template = models.FileField()
 
     def __str__(self):
         return self.name
@@ -218,7 +217,7 @@ class AdditionalImage(models.Model):
 #    Every country has a list of services with prices for each.
 class Service(models.Model):
     name = models.CharField(max_length=100)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='services', default=1)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='services', default=1)
     price = models.DecimalField(max_digits=8, decimal_places=2 )
 
     class Meta:
@@ -230,7 +229,7 @@ class Service(models.Model):
 
 class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, related_name='items', on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT)
     service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     quantity = models.PositiveIntegerField(default=1)
 

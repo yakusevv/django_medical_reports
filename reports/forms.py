@@ -87,7 +87,6 @@ class ServiceItemsFormset(BaseInlineFormSet):
 
     def clean(self):
         if any(self.errors):
-            print(self.errors)
             return
         services = set()
         number_of_forms = 0

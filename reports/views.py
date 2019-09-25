@@ -17,7 +17,10 @@ from .models import (
                 TypeOfVisit,
                 AdditionalImage,
                 Tariff,
-                VisitTariff
+                VisitTariff,
+                City,
+                Disease,
+                Service
                     )
 from .forms import (
                 ReportForm,
@@ -66,6 +69,17 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         else:
             data['service_items'] = ServiceItemsFormSet()
             data['images'] = AdditionalImageForm()
+        if self.request.user.profile.city:
+            current_country   = self.request.user.profile.city.district.region.country.pk
+            type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)
+            city_set          = City.objects.filter(district__region__country=current_country)
+            disease_set       = Disease.objects.filter(country=current_country)
+            service_set       = Service.objects.filter(country=current_country)
+            data['form'].fields['type_of_visit'].queryset = type_of_visit_set
+            data['form'].fields['city'].queryset = city_set
+            data['form'].fields['diagnosis'].queryset = disease_set
+            for form in data['service_items'].forms:
+                form.fields['service'].queryset = service_set
         return data
 
     def form_valid(self, form, service_items, images):
@@ -123,6 +137,17 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         else:
             data['service_items'] = ServiceItemsFormSet(instance=self.object)
             data['images'] = AdditionalImageForm()
+        if self.request.user.profile.city:
+            current_country   = self.request.user.profile.city.district.region.country.pk
+            type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)
+            city_set          = City.objects.filter(district__region__country=current_country)
+            disease_set       = Disease.objects.filter(country=current_country)
+            service_set       = Service.objects.filter(country=current_country)
+            data['form'].fields['type_of_visit'].queryset = type_of_visit_set
+            data['form'].fields['city'].queryset = city_set
+            data['form'].fields['diagnosis'].queryset = disease_set
+            for form in data['service_items'].forms:
+                form.fields['service'].queryset = service_set
         return data
 
     def form_valid(self, form, service_items, images):
