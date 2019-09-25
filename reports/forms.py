@@ -16,128 +16,42 @@ from .models import (
                     )
 
 
-class ReportCreateForm(forms.ModelForm):
+class ReportForm(forms.ModelForm):
 
     class Meta:
         model = Report
-        fields = [
-            'ref_number',
-            'company_ref_number',
-            'company',
-            'patients_first_name',
-            'patients_last_name',
-            'patients_date_of_birth',
-            'patients_policy_number',
-            'date_of_visit',
-            'type_of_visit',
-            'city',
-            'detailed_location',
-            'cause_of_visit',
-            'checkup',
-            'additional_checkup',
-            'diagnosis',
-            'prescription',
-            'visit_price'
-        ]
-        widgets = {'visit_price': forms.HiddenInput()}
-
-    def __init__(self, *args, **kwargs):
-        kwargs['initial'] = {
-                'visit_price': '0',
-            }
-        super(ReportCreateForm, self).__init__(*args, **kwargs)
+        exclude = [
+            'visit_price',
+            'checked',
+            'doctor',
+            'docx_download_link'
+                  ]
 
     def clean(self):
-        cleaned_data=super(ReportCreateForm, self).clean()
+        cleaned_data=super(ReportForm, self).clean()
         ref_number = cleaned_data.get("ref_number")
         first_name = cleaned_data.get("patients_first_name")
         last_name = cleaned_data.get("patients_last_name")
-        same_report = Report.objects.filter(
+        same_reports = Report.objects.filter(
                             ref_number=ref_number
                         ).filter(
                             patients_last_name=last_name
                         ).filter(
                             patients_first_name=first_name
                         )
-        if same_report.exists():
-            msg = "Report with this name is already exist"
-            self.add_error('ref_number', msg)
-            self.add_error('patients_first_name', msg)
-            self.add_error('patients_last_name', msg)
-
-        company = cleaned_data['company']
-        city = cleaned_data['city']
-        type_of_visit = cleaned_data['type_of_visit']
-
-        district = city.district
-        price_group = company.price_group
-        try:
-            tariff = Tariff.objects.get(district=district, price_group=price_group)
-            visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-            cleaned_data['visit_price'] = visit_tariff.price
-        except Tariff.DoesNotExist:
-            cleaned_data['visit_price'] = 0
-        return cleaned_data
-
-
-class ReportUpdateForm(forms.ModelForm):
-
-    class Meta:
-        model = Report
-        fields = [
-            'ref_number',
-            'company_ref_number',
-            'company',
-            'patients_first_name',
-            'patients_last_name',
-            'patients_date_of_birth',
-            'patients_policy_number',
-            'date_of_visit',
-            'type_of_visit',
-            'city',
-            'detailed_location',
-            'cause_of_visit',
-            'checkup',
-            'additional_checkup',
-            'diagnosis',
-            'prescription',
-            'visit_price'
-        ]
-        widgets = {'visit_price': forms.HiddenInput()}
-
-
-    def clean(self):
-        cleaned_data=super(ReportUpdateForm, self).clean()
-        ref_number = cleaned_data.get("ref_number")
-        first_name = cleaned_data.get("patients_first_name")
-        last_name = cleaned_data.get("patients_last_name")
-        same_report = Report.objects.filter(
-                            ref_number=ref_number
-                        ).filter(
-                            patients_last_name=last_name
-                        ).filter(
-                            patients_first_name=first_name
-                        ).exclude(
-                            pk=self.instance.pk
-                                            )
-        if len(same_report) > 0:
-            msg = "Other report with this name is already exist"
-            self.add_error('ref_number', msg)
-            self.add_error('patients_first_name', msg)
-            self.add_error('patients_last_name', msg)
-
-        company = cleaned_data['company']
-        city = cleaned_data['city']
-        type_of_visit = cleaned_data['type_of_visit']
-
-        district = city.district
-        price_group = company.price_group
-        try:
-            tariff = Tariff.objects.get(district=district, price_group=price_group)
-            visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-            cleaned_data['visit_price'] = visit_tariff.price
-        except Tariff.DoesNotExist:
-            cleaned_data['visit_price'] = 0
+        if not self.instance.pk:
+            if same_reports.exists():
+                msg = "Report with this name is already exist"
+                self.add_error('ref_number', msg)
+                self.add_error('patients_first_name', msg)
+                self.add_error('patients_last_name', msg)
+        else:
+            same_reports = same_reports.exclude(pk=self.instance.pk)
+            if len(same_reports) > 0:
+                msg = "Other report with this name is already exist"
+                self.add_error('ref_number', msg)
+                self.add_error('patients_first_name', msg)
+                self.add_error('patients_last_name', msg)
         return cleaned_data
 
 

@@ -10,10 +10,17 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 
-from .models import Report, Country, PriceGroup, TypeOfVisit, AdditionalImage
+from .models import (
+                Report,
+                Country,
+                PriceGroup,
+                TypeOfVisit,
+                AdditionalImage,
+                Tariff,
+                VisitTariff
+                    )
 from .forms import (
-                ReportCreateForm,
-                ReportUpdateForm,
+                ReportForm,
                 ServiceItemsFormSet,
                 AdditionalImageForm
                 )
@@ -32,7 +39,7 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
 
 class ReportCreateView(LoginRequiredMixin, CreateView):
     template_name = 'reports/report_create.html'
-    form_class = ReportCreateForm
+    form_class = ReportForm
 
     def get(self, request, *args, **kwargs):
         self.object = None
@@ -51,15 +58,6 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         else:
             return self.form_invalid(form)
 
-    def get_initial(self, *args, **kwargs):
-        initial = super(ReportCreateView, self).get_initial(**kwargs)
-        return initial
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(ReportCreateView, self).get_form_kwargs(*args, **kwargs)
-#        kwargs['doctor'] = self.request.user.profile
-        return kwargs
-
     def get_context_data(self, **kwargs):
         data = super(ReportCreateView, self).get_context_data(**kwargs)
         if self.request.POST:
@@ -74,6 +72,17 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         with transaction.atomic():
             form.instance.doctor = self.request.user.profile
+            company = form.cleaned_data['company']
+            city = form.cleaned_data['city']
+            type_of_visit = form.cleaned_data['type_of_visit']
+            district = city.district
+            price_group = company.price_group
+            try:
+                tariff = Tariff.objects.get(district=district, price_group=price_group)
+                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+                form.instance.visit_price = visit_tariff.price
+            except Tariff.DoesNotExist:
+                form.instance.visit_price = 0
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -87,7 +96,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
 class ReportUpdateView(LoginRequiredMixin, UpdateView):
     model = Report
     template_name = 'reports/report_update.html'
-    form_class = ReportUpdateForm
+    form_class = ReportForm
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -118,6 +127,17 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form, service_items, images):
         with transaction.atomic():
+            company = form.cleaned_data['company']
+            city = form.cleaned_data['city']
+            type_of_visit = form.cleaned_data['type_of_visit']
+            district = city.district
+            price_group = company.price_group
+            try:
+                tariff = Tariff.objects.get(district=district, price_group=price_group)
+                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+                form.instance.visit_price = visit_tariff.price
+            except Tariff.DoesNotExist:
+                form.instance.visit_price = 0
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
