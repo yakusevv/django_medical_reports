@@ -1,5 +1,8 @@
 {% extends 'reports/base_reports.html' %}
 
+{% block title %}
+  {{ block.super }} - {{ report.ref_number }} - View
+{% endblock %}
 
 {% block admin-panel-content %}
 <a class="btn btn-secondary" href="{{ report.get_update_url }}">Update report</a>

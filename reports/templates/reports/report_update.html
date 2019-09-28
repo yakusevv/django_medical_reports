@@ -1,6 +1,10 @@
 {% extends 'reports/base_reports.html' %}
 {% load static %}
 
+{% block title %}
+  {{ block.super }} - {{ report.ref_number }} - Update
+{% endblock %}
+
 {% block admin-panel-content %}
 {% if not report.checked %}
 <a class="btn btn-danger" href="{{ report.get_delete_url }}">Delete report</a>
