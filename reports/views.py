@@ -201,7 +201,6 @@ class ReportDeleteView(PermissionRequiredMixin, DeleteView):
             raise Http404("Checked report cannot be deleted")
 
 
-
 class PriceTableView(PermissionRequiredMixin, DetailView):
     permission_required = 'is_staff'
     template_name = 'reports/price_table_view.html'

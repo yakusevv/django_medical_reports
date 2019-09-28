@@ -142,8 +142,9 @@
     <div class="col-sm-3">
       <b> Visit price: </b>
     </div>
-    <div class="col">
+    <div class="col" {% if not report.city.district in report.doctor.districts.all or report.visit_price == 0 %} style="color: red; font-weight: bold;" {% endif %}>
       {{ report.visit_price }}
+    </font>
     </div>
   </div>
   {% endif %}
