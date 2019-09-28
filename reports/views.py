@@ -36,6 +36,7 @@ class ReportsListView(LoginRequiredMixin, ListView):
     model = Report
     template_name = 'reports/reports_list.html'
     ordering = ('checked', '-date_of_visit')
+    paginate_by = 20
 
 
 class ReportDetailView(LoginRequiredMixin, DetailView):
