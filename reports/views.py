@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import (
                                 View,
                                 ListView,
@@ -9,6 +11,7 @@ from django.views.generic import (
                                 )
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
+from django.http import Http404
 
 from .models import (
                 Report,
@@ -171,6 +174,31 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
                 images.instance.report = self.object
                 images.save()
         return super(ReportUpdateView, self).form_valid(form)
+
+
+class ReportDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'is_staff'
+    template_name = 'reports/report_delete.html'
+    redirect_url = 'reports_list_url'
+    model = Report
+
+    def get(self, request, pk):
+        obj = self.model.objects.get(pk=pk)
+        if not obj.checked:
+            return render(request, self.template_name, context={
+                                                'report': obj
+                                                })
+        else:
+            raise Http404("Checked report cannot be deleted")
+
+    def post(self, request, pk):
+        obj = self.model.objects.get(pk=pk)
+        if not obj.checked:
+            obj.delete()
+            return redirect(reverse(self.redirect_url))
+        else:
+            raise Http404("Checked report cannot be deleted")
+
 
 
 class PriceTableView(PermissionRequiredMixin, DetailView):

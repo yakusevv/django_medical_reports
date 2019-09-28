@@ -1,6 +1,12 @@
 {% extends 'reports/base_reports.html' %}
 {% load static %}
 
+{% block admin-panel-content %}
+{% if not report.checked %}
+<a class="btn btn-danger" href="{{ report.get_delete_url }}">Delete report</a>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <form action="{{ report.get_update_url }}" method="post" enctype="multipart/form-data">
   {% csrf_token %}

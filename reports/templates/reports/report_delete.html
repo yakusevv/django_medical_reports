@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block admin-panel-content %}
+{% endblock %}
+
+{% block title %}
+{{ block.super }} - {{ report }} - Delete report
+{% endblock %}
+
+
+{% block content %}
+<form action="{{ report.get_delete_url }}" method="post">
+  {% csrf_token %}
+  <div class="text-center mt-5">
+   <h3>Are you sure you want to delete <b>"{{ report }}"</b> report?</h3>
+   <a href="{{ report.get_absolute_url }}">Cancel</a>
+   <button type="submit" class="btn btn-danger ml-3">Delete</button>
+  </div>
+</form>
+{% endblock %}
