@@ -30,9 +30,10 @@
   </div>
   <div class="row mb-2">
     <div class="col-sm-3">
-      <b> Company ref. number: </b>
+      <b> Company, ref. number: </b>
     </div>
     <div class="col">
+      {{ report.company }}
       {{ report.company_ref_number }}
     </div>
   </div>
@@ -56,14 +57,6 @@
   {% endif %}
   <div class="row mb-2">
     <div class="col-sm-3">
-      <b> Company </b>
-    </div>
-    <div class="col">
-      {{ report.company }}
-    </div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-sm-3">
       <b> Date of visit </b>
     </div>
     <div class="col">
@@ -79,6 +72,14 @@
       {% if report.detailed_location %}
       <p> {{ report.detailed_location }} </p>
       {% endif %}
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm-3">
+      <b> Type of visit </b>
+    </div>
+    <div class="col">
+      {{ report.type_of_visit }}
     </div>
   </div>
   <div class="row mb-2">

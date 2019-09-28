@@ -103,7 +103,8 @@ class PriceGroup(models.Model):
 
 # Every country must have a list of visit types with appropriative names
 class TypeOfVisit(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    is_second_visit = models.BooleanField(default=False)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
 
     class Meta:
