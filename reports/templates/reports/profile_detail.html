@@ -1,0 +1,65 @@
+{% extends 'reports/base_reports.html' %}
+
+{% block title %}
+  {{ block.super }} - Profile
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row mb-2">
+      <div class="col-sm-2">
+        <b>Last name:</b>
+      </div>
+      <div class="col">
+        {{ profile.user.last_name }}
+      </div>
+  </div>
+  <div class="row mb-2">
+      <div class="col-sm-2">
+        <b>First name:</b>
+      </div>
+      <div class="col">
+        {{ profile.user.first_name }}
+      </div>
+  </div>
+  <div class="row mb-2">
+      <div class="col-sm-2">
+        <b>Num. col.:</b>
+      </div>
+      <div class="col">
+        {{ profile.num_col }}
+      </div>
+  </div>
+  <div class="row mb-2">
+      <div class="col-sm-2">
+        <b>Location:</b>
+      </div>
+      <div class="col">
+        {{ profile.city.district.region.country }}, {{ profile.city.district.region }}, {{ profile.city }}
+      </div>
+  </div>
+  <div class="row mb-2">
+      <div class="col-3">
+        <b>Territory coverage:</b>
+      </div>
+  </div>
+  {% for district in profile.districts.all %}
+  <div class="row mb-2">
+      <div class="col">
+        {{ district }}
+      </div>
+  </div>
+  <div class="row mb-2">
+      <div class="col">
+        {% for city in district.city_set.all %}
+        {{ city }}
+        {% if not forloop.last %}
+        ,
+        {% endif %}
+        {% endfor %}
+      </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import (
@@ -23,7 +24,8 @@ from .models import (
                 VisitTariff,
                 City,
                 Disease,
-                Service
+                Service,
+                Profile
                     )
 from .forms import (
                 ReportForm,
@@ -212,3 +214,15 @@ class PriceTableView(PermissionRequiredMixin, DetailView):
         context['price_groups'] = PriceGroup.objects.all()
         context['types_of_visit'] = TypeOfVisit.objects.filter(country=country)
         return context
+
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'reports/profile_detail.html'
+    model = Profile
+
+    def get(self, request, pk):
+        if request.user.profile.pk == pk or request.user.is_staff:
+            profile = get_object_or_404(self.model, pk=pk)
+            return render(request, self.template_name, context={'profile': profile})
+        else:
+            raise Http404

@@ -81,7 +81,7 @@ class Profile(models.Model):
         return ' '.join((self.user.last_name, self.user.first_name, self.num_col))
 
     def get_absolute_url(self):
-        return reverse('user_profile_url', kwargs={'pk': self.user.pk})
+        return reverse('profile_detail_url', kwargs={'pk': self.user.profile.pk})
 
 
 # Every disease in reports must have a name in language of country where was visit

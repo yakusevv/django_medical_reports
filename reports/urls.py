@@ -8,7 +8,8 @@ from .views import (
                 ReportCreateView,
                 ReportUpdateView,
                 ReportDeleteView,
-                PriceTableView
+                PriceTableView,
+                ProfileDetailView
                 )
 
 
@@ -19,4 +20,5 @@ urlpatterns = [
         path('<int:pk>/view/', ReportDetailView.as_view(), name='report_detail_url'),
         path('price_table/<int:pk>/', PriceTableView.as_view(), name='price_table_url'),
         path('<int:pk>/delete/', ReportDeleteView.as_view(), name='report_delete_url'),
+        path('profile/<int:pk>/detail/', ProfileDetailView.as_view(), name='profile_detail_url')
          ]
