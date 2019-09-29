@@ -130,8 +130,9 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         form = self.get_form(form_class)
         service_items = self.get_context_data()['service_items']
         images = self.get_context_data()['images']
+        del_images = [i for i in request.POST.keys() if 'del_image' in i]
         if form.is_valid() and service_items.is_valid() and images.is_valid():
-            return self.form_valid(form, service_items, images)
+            return self.form_valid(form, service_items, images, del_images)
         else:
             return self.form_invalid(form)
 
@@ -156,8 +157,11 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
                 form.fields['service'].queryset = service_set
         return data
 
-    def form_valid(self, form, service_items, images):
+    def form_valid(self, form, service_items, images, del_images):
         with transaction.atomic():
+            for image in del_images:
+                image_pk = image.split('id')[-1:][0]
+                AdditionalImage.objects.get(pk=image_pk).delete()
             company = form.cleaned_data['company']
             city = form.cleaned_data['city']
             type_of_visit = form.cleaned_data['type_of_visit']

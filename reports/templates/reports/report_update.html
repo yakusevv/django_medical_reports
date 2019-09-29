@@ -46,9 +46,19 @@
     {% endfor %}
   </table>
   {% for image in report.additional_images.get_queryset %}
-    <p class='mb-1'><img src="{{ image.image.url }}" alt=""></p>
+  <div class="row mb-2">
+      <div class="col">
+        <p class='mb-1'>
+          <img src="{{ image.image.url }}" alt="" width='100%'>
+        </p>
+      </div>
+      <div class="col mt-2">
+        <input type="checkbox" name="del_image_id{{ image.pk }}" value="">
+        <label for="del_image_id{{ image.pk }}">Delete</label>
+      </div>
+  </div>
   {% endfor %}
-  <p>{{ images }}</p>
+  <p>{{ images.as_p }}</p>
   <button type="submit" name="Update" class="btn btn-primary">Update report</button>
 
 </form>

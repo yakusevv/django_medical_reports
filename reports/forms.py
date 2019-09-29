@@ -117,6 +117,10 @@ class AdditionalImageForm(forms.ModelForm):
         model = AdditionalImage
         fields = ['image']
 
+    def __init__(self, *args, **kwargs):
+        super(AdditionalImageForm, self).__init__(*args, **kwargs)
+        self.fields['image'].label = "Images"
+
     def save(self, *args, **kwargs):
         file_list = self.files.getlist('image')
         position = 1
