@@ -122,19 +122,25 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        return self.render_to_response(self.get_context_data(form=form))
+        if not self.object.checked:
+            return self.render_to_response(self.get_context_data(form=form))
+        else:
+            raise Http404("Checked report cannot be edited")
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        service_items = self.get_context_data()['service_items']
-        images = self.get_context_data()['images']
-        del_images = [i for i in request.POST.keys() if 'del_image' in i]
-        if form.is_valid() and service_items.is_valid() and images.is_valid():
-            return self.form_valid(form, service_items, images, del_images)
+        if not self.object.checked:
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+            service_items = self.get_context_data()['service_items']
+            images = self.get_context_data()['images']
+            del_images = [i for i in request.POST.keys() if 'del_image' in i]
+            if form.is_valid() and service_items.is_valid() and images.is_valid():
+                return self.form_valid(form, service_items, images, del_images)
+            else:
+                return self.form_invalid(form)
         else:
-            return self.form_invalid(form)
+            raise Http404("Checked report cannot be edited")
 
     def get_context_data(self, **kwargs):
         data = super(ReportUpdateView, self).get_context_data(**kwargs)
