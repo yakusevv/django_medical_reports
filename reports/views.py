@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import (
                                 View,
@@ -40,6 +41,29 @@ class ReportsListView(LoginRequiredMixin, ListView):
     ordering = ('checked', '-date_of_visit')
     paginate_by = 20
 
+    def get_queryset(self):
+        queryset = super(ReportsListView, self).get_queryset()
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(ref_number__icontains=search_query)|
+                Q(company_ref_number__icontains=search_query)|
+                Q(company__name__icontains=search_query)|
+                Q(patients_first_name__icontains=search_query)|
+                Q(patients_last_name__icontains=search_query)|
+                Q(patients_date_of_birth__icontains=search_query)|
+                Q(patients_policy_number__icontains=search_query)|
+                Q(city__name__icontains=search_query)|
+                Q(detailed_location__icontains=search_query)|
+                Q(cause_of_visit__icontains=search_query)|
+                Q(checkup__icontains=search_query)|
+                Q(additional_checkup__icontains=search_query)|
+                Q(prescription__icontains=search_query)
+                )
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(doctor=self.request.user.profile.pk)
+        return queryset
+
 
 class ReportDetailView(LoginRequiredMixin, DetailView):
     model = Report
@@ -51,7 +75,7 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
             report.checked = not report.checked
             report.save()
             return redirect(report.get_absolute_url())
-            
+
 
 class ReportCreateView(LoginRequiredMixin, CreateView):
     template_name = 'reports/report_create.html'
