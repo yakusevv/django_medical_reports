@@ -184,4 +184,10 @@
     </div>
   </div>
 </div>
+{% if request.user.is_staff %}
+<form action="{{ report.get_absolute_url }}" method="post">
+  {% csrf_token %}
+  <input class="btn {% if report.checked%}btn-secondary{% else %}btn-primary{% endif %}" type="submit" name="is_checked" value="">
+</form>
+{% endif %}
 {% endblock %}

@@ -45,6 +45,13 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
     model = Report
     template_name = 'reports/report_detail.html'
 
+    def post(self, request, *args, **kwargs):
+        if request.user.is_staff and request.POST.get('is_checked'):
+            report = self.get_object()
+            report.checked = not report.checked
+            report.save()
+            return redirect(report.get_absolute_url())
+            
 
 class ReportCreateView(LoginRequiredMixin, CreateView):
     template_name = 'reports/report_create.html'
