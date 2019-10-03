@@ -270,3 +270,8 @@ def report_generating(sender, instance, **kwargs):
         post_save.connect(report_generating, sender=sender)
     except ReportTemplate.DoesNotExist:
             pass
+
+
+@receiver(post_delete, sender=AdditionalImage)
+def image_delete(sender, instance, **kwargs):
+    os.remove(instance.image.path)
