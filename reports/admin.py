@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.urls import resolve
 from django.shortcuts import redirect
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 from .models import (
                 Profile,
@@ -31,8 +33,8 @@ admin.site.unregister(User)
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
-    verbose_name_plural = 'Profile'
     fk_name = 'user'
+    verbose_name_plural = 'Profile'
 
 
 @admin.register(User)
@@ -45,11 +47,21 @@ class CustomUserAdmin(UserAdmin):
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
 
+class EditLinkToInlineObject(object):
+    def edit_link(self, instance):
+        url = reverse('admin:{}_{}_change'.format(
+            instance._meta.app_label,  instance._meta.model_name),  args=[instance.pk] )
+        if instance.pk:
+            return mark_safe(u'<a href="{u}">edit</a>'.format(u=url))
+        else:
+            return ''
+
+
 class ReportTemplateInline(admin.StackedInline):
     model = ReportTemplate
     formset = ReportTemplateInlineFormSet
     can_delete = True
-    verbose_name_plural = 'Report Template'
+    verbose_name_plural = 'Report Templates'
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
@@ -74,13 +86,26 @@ class ReportTemplateInline(admin.StackedInline):
 class CompanyAdmin(admin.ModelAdmin):
     inlines = (ReportTemplateInline, )
 
+    class Meta:
+        verbose_name = 'Company'
+        verbose_name_plural = 'Companies'
+
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/reports/company/{}/change'.format(obj.id))
 
 
-@admin.register(Service)
-class ServiceAdmin(admin.ModelAdmin):
-    pass
+class ServiceInline(admin.StackedInline):
+    model = Service
+    can_delete = True
+    verbose_name_plural = 'Services'
+    extra = 1
+
+
+class TypeOfVisitInline(admin.TabularInline):
+    model = TypeOfVisit
+    can_delete = True
+    verbose_name_plural = 'Types of visits'
+    extra = 1
 
 
 @admin.register(Disease)
@@ -91,20 +116,23 @@ class DiseaseAdmin(admin.ModelAdmin):
 class ServiceItemInline(admin.StackedInline):
     model = ServiceItem
     can_delete = True
-    verbose_name_plural = 'Service Item'
+    verbose_name_plural = 'Service Items'
     fk_name = 'report'
+    extra = 1
+
 
 class AdditionalImageInline(admin.StackedInline):
     model = AdditionalImage
     can_delete = True
-    verbose_name_plural = 'ImageField'
+    verbose_name_plural = 'Images'
     fk_name = 'report'
+    extra = 1
 
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     inlines = (AdditionalImageInline, ServiceItemInline)
-    readonly_fields = ('get_total_price',)
+    readonly_fields = ('get_total_price', 'docx_download_link')
     list_display = ('__str__', 'date_of_visit', 'get_total_price', 'checked')
     ordering = ('-date_of_visit',)
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
@@ -147,24 +175,41 @@ class ReportAdmin(admin.ModelAdmin):
         return redirect('/admin/reports/report/{}/change'.format(obj.id))
 
 
+class CityInline(admin.StackedInline):
+    model = City
+    can_delete = True
+    verbose_name_plural = 'Cities'
+
+
+class DistrictInline(EditLinkToInlineObject, admin.StackedInline):
+    model = District
+    readonly_fields = ('edit_link', )
+    can_delete = True
+    verbose_name_plural = 'Districts'
+    extra = 1
+
+
+class RegionInline(EditLinkToInlineObject, admin.StackedInline):
+    model = Region
+    readonly_fields = ('edit_link', )
+    can_delete = True
+    verbose_name_plural = 'Regions'
+    extra = 1
+
+
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    pass
+    inlines = (RegionInline, TypeOfVisitInline, ServiceInline, )
 
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
-    pass
+    inlines = (DistrictInline, )
 
 
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(City)
-class CityAdmin(admin.ModelAdmin):
-    pass
+    inlines = (CityInline, )
 
 
 @admin.register(PriceGroup)
@@ -214,8 +259,3 @@ class TariffAdmin(admin.ModelAdmin):
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/reports/tariff/{}/change'.format(obj.id))
-
-
-@admin.register(TypeOfVisit)
-class VisitAdmin(admin.ModelAdmin):
-    pass

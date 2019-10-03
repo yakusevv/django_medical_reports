@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 from .utils import DocReportGenerator
 
@@ -34,6 +35,10 @@ class OverwriteStorage(FileSystemStorage):
 class Country(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
+    class Meta:
+        verbose_name = 'Country'
+        verbose_name_plural = 'Countries'
+
     def __str__(self):
         return self.name
 
@@ -44,6 +49,8 @@ class Region(models.Model):
 
     class Meta:
         unique_together = (('name', 'country',),)
+        verbose_name = 'Region'
+        verbose_name_plural = 'Regions'
 
     def __str__(self):
         return self.name
@@ -55,6 +62,8 @@ class District(models.Model):
 
     class Meta:
         unique_together = (('name', 'region',),)
+        verbose_name = 'District'
+        verbose_name_plural = 'Districts'
 
     def __str__(self):
         return ' - '.join((str(self.region), self.name))
@@ -66,9 +75,17 @@ class City(models.Model):
 
     class Meta:
         unique_together = (('name', 'district',),)
+        verbose_name = 'City'
+        verbose_name_plural = 'Cities'
 
     def __str__(self):
         return self.name
+
+    def validate_unique(self, exclude=None):
+        qs = City.objects.filter(district__region__country=self.district.region.country)
+        if self.pk is None:
+            if qs.filter(name=self.name).exists():
+                raise ValidationError("City with this name in the current country is already exists")
 
 
 class Profile(models.Model):
@@ -76,6 +93,10 @@ class Profile(models.Model):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     num_col = models.CharField(max_length=9, unique=True)
     districts = models.ManyToManyField(District)
+
+    class Meta:
+        verbose_name = 'Profile'
+        verbose_name_plural = 'Profiles'
 
     def __str__(self):
         return ' '.join((self.user.last_name, self.user.first_name, self.num_col))
@@ -90,12 +111,19 @@ class Disease(models.Model):
     name = models.CharField(max_length=50, unique=True)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
 
+    class Meta:
+        verbose_name = 'Disease'
+        verbose_name_plural = 'Diseases'
+
     def __str__(self):
         return self.name
 
 
 class PriceGroup(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    verbose_name = 'Price group'
+    verbose_name_plural = 'Price groups'
 
     def __str__(self):
         return self.name
@@ -109,6 +137,8 @@ class TypeOfVisit(models.Model):
 
     class Meta:
         unique_together = (('name', 'country',),)
+        verbose_name = 'Type of visit'
+        verbose_name_plural = 'Types of visits'
 
     def __str__(self):
         return self.name
@@ -120,6 +150,8 @@ class Tariff(models.Model):
 
     class Meta:
         unique_together = (('district', 'price_group',),)
+        verbose_name = 'Tariff'
+        verbose_name_plural = 'Tariffs'
 
     def __str__(self):
         return ' - '.join((str(self.district), str(self.price_group)))
@@ -132,6 +164,8 @@ class VisitTariff(models.Model):
 
     class Meta:
         unique_together = (('tariff', 'type_of_visit',),)
+        verbose_name = 'Visit tariff'
+        verbose_name_plural = 'Visit tariffs'
 
     def __str__(self):
         return ' - '.join((str(self.tariff), str(self.type_of_visit)))
@@ -140,6 +174,10 @@ class VisitTariff(models.Model):
 class Company(models.Model):
     name = models.CharField(max_length=20, unique=True)
     price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = 'Company'
+        verbose_name_plural = 'Companies'
 
     def __str__(self):
         return self.name
@@ -153,7 +191,8 @@ class ReportTemplate(models.Model):
 
     class Meta:
         unique_together = (('company', 'country',),)
-
+        verbose_name = 'Report template'
+        verbose_name_plural = 'Report templates'
 
 class Report(models.Model):
     ref_number = models.CharField(max_length=50)
@@ -179,6 +218,8 @@ class Report(models.Model):
 
     class Meta:
         unique_together = (('patients_first_name', 'patients_last_name', 'ref_number'),)
+        verbose_name = 'Report'
+        verbose_name_plural = 'Reports'
 
     def __str__(self):
         return ' '.join((self.ref_number, self.patients_last_name, self.patients_first_name))
@@ -214,6 +255,9 @@ class AdditionalImage(models.Model):
     image = models.ImageField(upload_to=get_image_path)
     position = models.IntegerField(blank=False)
 
+    class Meta:
+        verbose_name = 'Additional Image'
+        verbose_name_plural = 'Additional Images'
 
 #    Every country has a list of services with prices for each.
 class Service(models.Model):
@@ -223,6 +267,8 @@ class Service(models.Model):
 
     class Meta:
         unique_together = (('name', 'country',),)
+        verbose_name = 'Service'
+        verbose_name_plural = 'Services'
 
     def __str__(self):
         return self.country.name + ' - ' + self.name
@@ -236,6 +282,8 @@ class ServiceItem(models.Model):
 
     class Meta:
         unique_together = (('report', 'service',),)
+        verbose_name = 'Service item'
+        verbose_name_plural = 'Service items'
 
     def __str__(self):
         if self.quantity > 1:
@@ -257,17 +305,27 @@ def submission_delete(sender, instance, **kwargs):
                         ignore_errors=True
                     )
 
+@receiver(post_save, sender=AdditionalImage)
+@receiver(post_delete, sender=ServiceItem)
+@receiver(post_save, sender=ServiceItem)
+@receiver(post_delete, sender=ServiceItem)
 @receiver(post_save, sender=Report)
 def report_generating(sender, instance, **kwargs):
+    if isinstance(instance, AdditionalImage):
+        report = instance.report
+    elif isinstance(instance, ServiceItem):
+        report = instance.report
+    elif isinstance(instance, Report):
+        report = instance
     try:
         doc_path = ReportTemplate.objects.get(
-                country=instance.city.district.region.country,
-                company=instance.company
+                country=report.city.district.region.country,
+                company=report.company
                 ).template
-        instance.docx_download_link = DocReportGenerator(doc_path, instance)
-        post_save.disconnect(report_generating, sender=sender)
-        instance.save()
-        post_save.connect(report_generating, sender=sender)
+        report.docx_download_link = DocReportGenerator(doc_path, report)
+        post_save.disconnect(report_generating, sender=Report)
+        report.save()
+        post_save.connect(report_generating, sender=Report)
     except ReportTemplate.DoesNotExist:
             pass
 
@@ -275,3 +333,8 @@ def report_generating(sender, instance, **kwargs):
 @receiver(post_delete, sender=AdditionalImage)
 def image_delete(sender, instance, **kwargs):
     os.remove(instance.image.path)
+
+
+@receiver(post_delete, sender=ReportTemplate)
+def template_delete(sender, instance, **kwargs):
+    os.remove(instance.template.path)
