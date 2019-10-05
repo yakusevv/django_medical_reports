@@ -53,10 +53,10 @@ def DocReportGenerator(doc_path, report):
 
         #past report deleting
         #in case when file name has changed
-        current_files = os.listdir(file_system_dir)
-        filelist = [f for f in current_files if f.endswith(".docx")]
-        for file in filelist:
-            os.remove(os.path.join(file_system_dir, file))
+        try:
+            os.remove(os.path.join(file_system_dir, report.docx_download_link.split('/')[-1]))
+        except:
+            pass
 
         doc.save(file_full_path)
 
