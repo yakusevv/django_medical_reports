@@ -8,7 +8,6 @@ from django.utils.safestring import mark_safe
 from django.urls import reverse
 
 from .models import (
-                Profile,
                 Country,
                 Region,
                 District,
@@ -26,25 +25,6 @@ from .models import (
                 ReportTemplate
                 )
 from .forms import VisitTariffInlineFormSet, ReportTemplateInlineFormSet
-
-admin.site.unregister(User)
-
-
-class ProfileInline(admin.StackedInline):
-    model = Profile
-    can_delete = False
-    fk_name = 'user'
-    verbose_name_plural = 'Profile'
-
-
-@admin.register(User)
-class CustomUserAdmin(UserAdmin):
-    inlines = (ProfileInline, )
-
-    def get_inline_instances(self, request, obj=None):
-        if not obj:
-            return list()
-        return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
 
 class EditLinkToInlineObject(object):

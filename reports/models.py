@@ -12,6 +12,8 @@ from django.core.exceptions import ValidationError
 
 from .utils import DocReportGenerator
 
+
+
 def get_image_path(instance, filename):
     return os.path.join(
                     'FILES',
@@ -86,23 +88,6 @@ class City(models.Model):
         if self.pk is None:
             if qs.filter(name=self.name).exists():
                 raise ValidationError("City with this name in the current country is already exists")
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
-    num_col = models.CharField(max_length=9, unique=True)
-    districts = models.ManyToManyField(District)
-
-    class Meta:
-        verbose_name = 'Profile'
-        verbose_name_plural = 'Profiles'
-
-    def __str__(self):
-        return ' '.join((self.user.last_name, self.user.first_name, self.num_col))
-
-    def get_absolute_url(self):
-        return reverse('profile_detail_url', kwargs={'pk': self.user.profile.pk})
 
 
 # Every disease in reports must have a name in language of country where was visit
@@ -213,7 +198,7 @@ class Report(models.Model):
     diagnosis = models.ManyToManyField('Disease', related_name='reports')
     prescription = models.TextField(max_length=500)
     checked = models.BooleanField(default=False)
-    doctor = models.ForeignKey(Profile, on_delete=models.PROTECT)
+    doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT)
     docx_download_link = models.CharField(max_length=500, blank=True)
 
     class Meta:

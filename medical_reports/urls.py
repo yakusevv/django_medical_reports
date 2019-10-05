@@ -13,6 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('reports/', include('reports.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('profiles/', include('profiles.urls'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

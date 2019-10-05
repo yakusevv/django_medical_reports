@@ -160,7 +160,7 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
             try:
                 if form.cleaned_data.get('price'):
                     price = form.cleaned_data.get('price')
-                    if int(price) < 0:
+                    if float(price) < 0:
                         form.add_error('price', 'The Price can\'t be less than 0')
                 elif form.cleaned_data.get('price') == 0:
                     form.add_error('price', 'The Price can\'t be 0')
