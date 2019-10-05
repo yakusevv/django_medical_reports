@@ -5,6 +5,19 @@
 {% endblock %}
 
 {% block content %}
+
+      {% if request.GET.search %}
+      <h5 class='ml-3'> Search results for "{{ request.GET.search }}": </h5>
+      <h5 class='ml-3'>
+        {{ report_list.count }}
+        {% if report_list.count == 1%}
+        item
+        {% else %}
+        items
+        {% endif %}
+      </h5>
+      {% endif %}
+
       <div class="container">
         <div class="row mb-2">
           <div class="col">
