@@ -16,7 +16,7 @@
 <div class="container mt-4">
   <div class="row mb-2">
     <div class="col offset-md-4">
-      <div class="col">
+      <div class="col mb-4">
       {% if request.user.is_staff %}
         <b>
         <a href="{{ report.docx_download_link }}" style='{% if report.checked %} color: gray {% endif %}' download>
@@ -90,7 +90,7 @@
       <b> Cause of visit: </b>
     </div>
     <div class="col">
-      {{ report.cause_of_visit }}
+      {{ report.cause_of_visit|linebreaks }}
     </div>
   </div>
   <div class="row mb-2">
@@ -98,7 +98,7 @@
       <b> Checkup </b>
     </div>
     <div class="col">
-      {{ report.checkup }}
+      {{ report.checkup|linebreaks }}
     </div>
   </div>
   {% if report.additional_checkup %}
@@ -107,7 +107,7 @@
       <b> Additional checkup: </b>
     </div>
     <div class="col">
-      {{ report.additional_checkup }}
+      {{ report.additional_checkup|linebreaks }}
     </div>
   </div>
   {% endif %}
