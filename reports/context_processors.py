@@ -10,7 +10,6 @@ def storage_information(request):
     if request.user.is_staff:
         total, used, free = shutil.disk_usage("/")
         percent = used / total * 100
-        print(shutil.disk_usage("/"))
         return {
             "storage_percent": "{:.2f} %".format(percent)
             }

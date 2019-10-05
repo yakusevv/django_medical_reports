@@ -11,7 +11,7 @@
 {% block content %}
 <form action="{% url 'report_create_url' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  <table>
+  <table class='table mt-5'>
     {{ form.as_table }}
   </table>
   <table class="table">
