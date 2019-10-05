@@ -16,6 +16,10 @@ class PostList(LoginRequiredMixin, ListView):
     template_name = 'blog/index.html'
     paginate_by = 10
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostList, self).get_context_data()
+        context['news_link_active'] = "active"
+        return context
 
 class PostDetail(LoginRequiredMixin, View):
     model = Post
@@ -27,6 +31,7 @@ class PostDetail(LoginRequiredMixin, View):
                                                 'post': post,
                                                 'admin_obj': post,
                                                 'detail': True,
+                                                'news_link_active': "active"
                                                 })
 
 
@@ -37,7 +42,8 @@ class PostCreate(PermissionRequiredMixin, View):
 
     def get(self, request):
         form = self.model_form()
-        return render(request, self.template, context={'form': form})
+        return render(request, self.template, context={'form': form,
+                                                       'news_link_active': "active"})
 
     def post(self, request):
         bound_form = self.model_form(request.POST)
@@ -58,7 +64,8 @@ class PostUpdate(PermissionRequiredMixin, View):
         bound_form = self.model_form(instance=obj)
         return render(request, self.template,
                       context={'form': bound_form,
-                               self.model.__name__.lower(): obj
+                               self.model.__name__.lower(): obj,
+                               'news_link_active': "active"
                                })
 
     def post(self, request, pk):
@@ -83,7 +90,8 @@ class PostDelete(PermissionRequiredMixin, View):
     def get(self, request, pk):
         obj = self.model.objects.get(pk=pk)
         return render(request, self.template, context={
-                                                self.model.__name__.lower(): obj
+                                                self.model.__name__.lower(): obj,
+                                                'news_link_active': "active"
                                                 })
     def post(self, request, pk):
         obj = self.model.objects.get(pk=pk)

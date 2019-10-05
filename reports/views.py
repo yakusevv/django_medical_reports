@@ -41,6 +41,11 @@ class ReportsListView(LoginRequiredMixin, ListView):
     ordering = ('checked', '-date_of_visit')
     paginate_by = 20
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReportsListView, self).get_context_data()
+        context['report_link_active'] = "active"
+        return context
+
     def get_queryset(self):
         queryset = super(ReportsListView, self).get_queryset()
         search_query = self.request.GET.get('search', '')
@@ -68,6 +73,11 @@ class ReportsListView(LoginRequiredMixin, ListView):
 class ReportDetailView(LoginRequiredMixin, DetailView):
     model = Report
     template_name = 'reports/report_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportDetailView, self).get_context_data(**kwargs)
+        context['report_link_active'] = "active"
+        return context
 
     def post(self, request, *args, **kwargs):
         if request.user.is_staff and request.POST.get('is_checked'):
@@ -99,25 +109,26 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        data = super(ReportCreateView, self).get_context_data(**kwargs)
+        context = super(ReportCreateView, self).get_context_data(**kwargs)
+        context['report_link_active'] = "active"
         if self.request.POST:
-            data['service_items'] = ServiceItemsFormSet(self.request.POST)
-            data['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
+            context['service_items'] = ServiceItemsFormSet(self.request.POST)
+            context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
         else:
-            data['service_items'] = ServiceItemsFormSet()
-            data['images'] = AdditionalImageForm()
+            context['service_items'] = ServiceItemsFormSet()
+            context['images'] = AdditionalImageForm()
         if self.request.user.profile.city:
             current_country   = self.request.user.profile.city.district.region.country.pk
             type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
-            data['form'].fields['type_of_visit'].queryset = type_of_visit_set
-            data['form'].fields['city'].queryset = city_set
-            data['form'].fields['diagnosis'].queryset = disease_set
-            for form in data['service_items'].forms:
+            context['form'].fields['type_of_visit'].queryset = type_of_visit_set
+            context['form'].fields['city'].queryset = city_set
+            context['form'].fields['diagnosis'].queryset = disease_set
+            for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
-        return data
+        return context
 
     def form_valid(self, form, service_items, images):
         context = self.get_context_data()
@@ -174,25 +185,26 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             raise Http404("Checked report cannot be edited")
 
     def get_context_data(self, **kwargs):
-        data = super(ReportUpdateView, self).get_context_data(**kwargs)
+        context = super(ReportUpdateView, self).get_context_data(**kwargs)
+        context['report_link_active'] = "active"
         if self.request.POST:
-            data['service_items'] = ServiceItemsFormSet(self.request.POST, instance=self.object)
-            data['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
+            context['service_items'] = ServiceItemsFormSet(self.request.POST, instance=self.object)
+            context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
         else:
-            data['service_items'] = ServiceItemsFormSet(instance=self.object)
-            data['images'] = AdditionalImageForm()
+            context['service_items'] = ServiceItemsFormSet(instance=self.object)
+            context['images'] = AdditionalImageForm()
         if self.request.user.profile.city:
             current_country   = self.request.user.profile.city.district.region.country.pk
             type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
-            data['form'].fields['type_of_visit'].queryset = type_of_visit_set
-            data['form'].fields['city'].queryset = city_set
-            data['form'].fields['diagnosis'].queryset = disease_set
-            for form in data['service_items'].forms:
+            context['form'].fields['type_of_visit'].queryset = type_of_visit_set
+            context['form'].fields['city'].queryset = city_set
+            context['form'].fields['diagnosis'].queryset = disease_set
+            for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
-        return data
+        return context
 
     def form_valid(self, form, service_items, images, del_images):
         with transaction.atomic():
@@ -230,7 +242,8 @@ class ReportDeleteView(PermissionRequiredMixin, DeleteView):
         obj = self.model.objects.get(pk=pk)
         if not obj.checked:
             return render(request, self.template_name, context={
-                                                'report': obj
+                                                'report': obj,
+                                                'report_link_active': "active"
                                                 })
         else:
             raise Http404("Checked report cannot be deleted")
@@ -254,6 +267,7 @@ class PriceTableView(PermissionRequiredMixin, DetailView):
         country = kwargs['object']
         context['price_groups'] = PriceGroup.objects.all()
         context['types_of_visit'] = TypeOfVisit.objects.filter(country=country)
+        context['price_table_link_active'] = "active"
         return context
 
 
@@ -264,6 +278,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, pk):
         if request.user.profile.pk == pk or request.user.is_staff:
             profile = get_object_or_404(self.model, pk=pk)
-            return render(request, self.template_name, context={'profile': profile})
+            return render(request, self.template_name, context={ 'profile': profile,
+                                                                 'profile_link_active': "active"})
         else:
             raise Http404
