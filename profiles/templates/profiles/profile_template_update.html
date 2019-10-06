@@ -1,0 +1,18 @@
+{% extends 'reports/base_reports.html' %}
+{% load static %}
+
+{% block title %}
+  {{ block.super }} - Profile
+{% endblock %}
+
+
+{% block content %}
+<form action="{{ object.get_update_url }}" method="post">
+  {% csrf_token %}
+<table class="table mt-5">
+  {{ form.as_table }}
+</table>
+<button type="submit" name="Create" class="btn btn-primary">Update template</button>
+<button type="submit" name="Delete" class="btn btn-danger" value='Delete'>Delete template</button>
+</form>
+{% endblock %}

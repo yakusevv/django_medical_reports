@@ -39,19 +39,19 @@
         {{ profile.city.district.region.country }}, {{ profile.city.district.region }}, {{ profile.city }}
       </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 mt-4">
       <div class="col-3">
         <b>Territory coverage:</b>
       </div>
   </div>
   {% for district in profile.districts.all %}
-  <div class="row mb-2">
+  <div class="row {% if forloop.first %}border-top{% endif %}">
       <div class="col">
         {{ district }}
       </div>
   </div>
-  <div class="row mb-2">
-      <div class="col">
+  <div class="row border-bottom">
+      <div class="col font-italic">
         {% for city in district.city_set.all %}
         {{ city }}
         {% if not forloop.last %}
@@ -61,9 +61,23 @@
       </div>
   </div>
   {% endfor %}
+  <div class="row mb-2 mt-4">
+      <div class="col-3">
+        <b>Autofill templates:</b>
+      </div>
+  </div>
+  {% for template in profile.report_templates.all %}
+  <div class="row">
+      <div class="col">
+        <a href="{{ template.get_update_url }}">{{ template.name }}</a>
+      </div>
+  </div>
+  {% endfor %}
+  <div class="row mt-4">
+      <div class="col">
+        <a class='btn btn-primary' href="{% url 'profile_template_create_url' %}">Create template</a>
+      </div>
+  </div>
 </div>
-<p></p>
-{% for template in profile.report_templates.all %}
-  <p> {{ template.name }}</p>
-{% endfor %}
+
 {% endblock %}

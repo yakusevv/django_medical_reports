@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, UpdateView, CreateView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.shortcuts import redirect
 
 from .forms import ProfileForm, ProfileReportAutofillTemplateForm
 from .models import Profile, ProfileReportAutofillTemplate
@@ -26,22 +27,8 @@ class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
     template_name = 'profiles/profile_template_create.html'
     form_class = ProfileReportAutofillTemplateForm
 
-    def get(self, request, *args, **kwargs):
-        self.object = None
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        form.doctor = request.user.profile
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
+    def get_success_url(self, **kwargs):
+        return self.request.user.profile.get_absolute_url()
 
     def get_context_data(self, **kwargs):
         context = super(ProfileReportAutofillTemplateCreateView, self).get_context_data(**kwargs)
@@ -49,6 +36,23 @@ class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
         context['form'].fields['doctor'].initial = self.request.user.profile
         return context
 
+
+class ProfileReportAutofillTemplateUpdateView(LoginRequiredMixin, UpdateView):
+    model = ProfileReportAutofillTemplate
+    template_name = 'profiles/profile_template_update.html'
+    form_class = ProfileReportAutofillTemplateForm
+
+    def get_success_url(self, **kwargs):
+        return self.request.user.profile.get_absolute_url()
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileReportAutofillTemplateUpdateView, self).get_context_data(**kwargs)
+        context['profile_link_active'] = "active"
+        return context
+
     def form_valid(self, form):
         context = self.get_context_data()
-        return super(ProfileReportAutofillTemplateCreateView, self).form_valid(form)
+        if self.request.POST.get('Delete'):
+            form.instance.delete()
+            return redirect(self.get_success_url())
+        return super(ProfileReportAutofillTemplateUpdateView, self).form_valid(form)

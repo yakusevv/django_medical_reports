@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
+from django.shortcuts import redirect
 
 from reports.models import District, City
 
@@ -21,9 +22,6 @@ class Profile(models.Model):
     def get_absolute_url(self):
         return reverse('profile_detail_url', kwargs={'pk': self.pk})
 
-    def get_update_url(self):
-        return reverse('profile_update_url', kwargs={'pk': self.pk})
-
 
 class ProfileReportAutofillTemplate(models.Model):
     doctor = models.ForeignKey(Profile, related_name='report_templates', on_delete=models.CASCADE)
@@ -37,3 +35,6 @@ class ProfileReportAutofillTemplate(models.Model):
         unique_together = (('doctor','name',),)
         verbose_name = 'Report autofill template'
         verbose_name_plural = 'Report autofill templates'
+
+    def get_update_url(self):
+        return reverse('profile_template_update_url', kwargs={'pk': self.pk})
