@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
+from django_select2.forms import Select2MultipleWidget, Select2Widget
+
 from .models import (
                     Report,
                     Service,
@@ -26,6 +28,12 @@ class ReportForm(forms.ModelForm):
             'doctor',
             'docx_download_link'
                   ]
+        widgets = {
+                   'diagnosis'    : Select2MultipleWidget,
+                   'city'         : Select2Widget,
+                   'company'      : Select2Widget,
+                   'type_of_visit': Select2Widget,
+                   }
 
     def clean(self):
         cleaned_data=super(ReportForm, self).clean()
@@ -64,7 +72,10 @@ class ServiceItemForm(forms.ModelForm):
             'quantity',
             'service_price',
             ]
-        widgets = {'service_price': forms.HiddenInput(attrs={})}
+        widgets = {
+                   'service_price': forms.HiddenInput(attrs={}),
+                   'service'      : Select2Widget
+                   }
 
     def __init__(self, *args, **kwargs):
         super(ServiceItemForm, self).__init__(*args, **kwargs)

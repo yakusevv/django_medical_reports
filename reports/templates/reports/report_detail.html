@@ -16,7 +16,7 @@
 <div class="container mt-4">
   <div class="row mb-2">
     <div class="col offset-md-4">
-      <div class="col mb-4">
+      <div class="col mb-3">
       {% if request.user.is_staff %}
         <b>
         <a href="{{ report.docx_download_link }}" style='{% if report.checked %} color: gray {% endif %}' download>
@@ -31,7 +31,7 @@
       </div>
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Company, ref. number: </b>
     </div>
@@ -40,7 +40,7 @@
       {{ report.company_ref_number }}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Date of birth </b>
     </div>
@@ -49,7 +49,7 @@
     </div>
   </div>
   {% if report.patients_policy_number %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Policy: </b>
     </div>
@@ -58,7 +58,7 @@
     </div>
   </div>
   {% endif %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Date of visit </b>
     </div>
@@ -66,7 +66,7 @@
       {{ report.date_of_visit }}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Location: </b>
     </div>
@@ -77,7 +77,7 @@
       {% endif %}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Type of visit </b>
     </div>
@@ -85,7 +85,7 @@
       {{ report.type_of_visit }}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Cause of visit: </b>
     </div>
@@ -93,7 +93,7 @@
       {{ report.cause_of_visit|linebreaks }}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Checkup </b>
     </div>
@@ -102,7 +102,7 @@
     </div>
   </div>
   {% if report.additional_checkup %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Additional checkup: </b>
     </div>
@@ -111,7 +111,7 @@
     </div>
   </div>
   {% endif %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Diagnosis: </b>
     </div>
@@ -121,7 +121,7 @@
       {% endfor %}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Prescription: </b>
     </div>
@@ -129,7 +129,7 @@
       {{ report.prescription }}
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Doctor: </b>
     </div>
@@ -138,7 +138,7 @@
     </div>
   </div>
   {% if request.user.is_staff %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Visit price: </b>
     </div>
@@ -148,7 +148,7 @@
     </div>
   </div>
   {% endif %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Service items: </b>
     </div>
@@ -156,13 +156,13 @@
       {% for service in report.service_items.get_queryset %}
         <p class='mb-1'>
           {% if request.user.is_staff %} {{ service.cost }} {% endif %}
-          {{ service.service.name }}
+          {{ service }}
         </p>
       {% endfor %}
     </div>
   </div>
   {% if request.user.is_staff %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3">
       <b> Total price: </b>
     </div>
@@ -171,12 +171,12 @@
     </div>
   </div>
   {% endif %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col-sm-3 mb-2">
       <b> Images: </b>
     </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
     <div class="col">
       {% for image in report.additional_images.get_queryset %}
         <p class='mb-2'><img src="{{ image.image.url }}" alt="" width='80%'></p>

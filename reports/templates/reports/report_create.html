@@ -59,8 +59,9 @@
     formCssClass: 'dynamic-form',
     extraClasses: [],
     keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
-    added: null,
+    added: (row)=>{ row.find('select[name*="service_items"]').djangoSelect2() },
     removed: null
   });
 </script>
+{{ form.media.js }}
 {% endblock %}

@@ -33,7 +33,7 @@
       {% for report in report_list %}
         {% if request.user.profile == report.doctor or request.user.is_staff %}
 
-        <div class="row mb-1" style='{% if report.checked %} color: gray {% endif %}'>
+        <div class="row mb-1 border-top" style='{% if report.checked %} color: gray {% endif %}'>
           <div class="col">
             <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
           </div>

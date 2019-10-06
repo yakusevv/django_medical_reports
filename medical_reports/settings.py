@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reports.apps.ReportsConfig',
     'blog.apps.BlogConfig',
-    'profiles.apps.ProfilesConfig'
+    'profiles.apps.ProfilesConfig',
+    'django_select2',
 ]
 
 MIDDLEWARE = [
