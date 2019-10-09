@@ -5,6 +5,13 @@
   {{ block.super }} - {{ report.ref_number }} - Update
 {% endblock %}
 
+{% block extrahead %}
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    {{ form.media }}
+{% endblock %}
+
 {% block admin-panel-content %}
 {% if not report.checked %}
 <a class="btn btn-danger" href="{{ report.get_delete_url }}">Delete report</a>
@@ -62,7 +69,6 @@
   <button type="submit" name="Update" class="btn btn-primary">Update report</button>
 
 </form>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
   <script type="text/javascript">
   $('.formset_row').formset({
@@ -79,5 +85,4 @@
     removed: null
   });
 </script>
-{{ form.media.js }}
 {% endblock %}

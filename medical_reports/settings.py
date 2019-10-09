@@ -26,7 +26,13 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'profiles.apps.ProfilesConfig',
     'django_select2',
+    'tempus_dominus'
 ]
+
+#apps settings
+TEMPUS_DOMINUS_LOCALIZE = True
+#TEMPUS_DOMINUS_INCLUDE_ASSETS = False
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

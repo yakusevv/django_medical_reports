@@ -11,7 +11,9 @@
         Medical reports
       {% endblock %}
     </title>
-    {{ form.media.css }}
+    {% block extrahead %}
+    {% endblock %}
+
   </head>
   <body>
 

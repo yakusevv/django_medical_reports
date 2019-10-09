@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
+from tempus_dominus.widgets import DateTimePicker, DatePicker
 from django_select2.forms import Select2MultipleWidget, Select2Widget
 
 from .models import (
@@ -33,6 +34,29 @@ class ReportForm(forms.ModelForm):
                    'city'         : Select2Widget,
                    'company'      : Select2Widget,
                    'type_of_visit': Select2Widget,
+                   'date_of_visit': DateTimePicker(
+                                        options={
+                                            'useCurrent': True,
+                                            'format': 'DD/MM/YYYY HH:mm',
+                                            },
+                                        attrs={
+                                            'append': 'fa fa-calendar',
+                                            'icon_toggle': True,
+                                            'size': 'small'
+                                            }
+                                    ),
+                   'patients_date_of_birth': DatePicker(
+                                        options={
+                                            'useCurrent': True,
+                                            'format': 'DD/MM/YYYY',
+                                            'viewMode': 'years'
+                                            },
+                                        attrs={
+                                            'append': 'fa fa-calendar',
+                                            'icon_toggle': True,
+                                            'size': 'small',
+                                            }
+                                    ),
                    }
 
     def clean(self):
