@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
   {{ block.super }} - login
@@ -7,12 +8,18 @@
 {% block toolbar %}
 {% endblock %}
 
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="text-center mt-5">
+  <img class='mb-2' src={% static "images/logo.jpg" %} width=200 alt="">
 <h4> Login </h4>
 <form method="post">
   {% csrf_token %}
-    {{ form.as_p }}
+  <div class="row justify-content-md-center">
+    <div class="col-lg-4">
+      {{ form|crispy }}
+    </div>
+  </div>
     <button class='btn btn-primary' type="submit">Login</button>
 </form>
 </div>

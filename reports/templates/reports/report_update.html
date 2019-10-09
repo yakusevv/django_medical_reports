@@ -6,11 +6,13 @@
 {% endblock %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     {{ form.media }}
 {% endblock %}
+
+{% load crispy_forms_tags %}
 
 {% block admin-panel-content %}
 {% if not report.checked %}
@@ -21,9 +23,13 @@
 {% block content %}
 <form action="{{ report.get_update_url }}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  <table class='table mt-5'>
-    {{ form.as_table }}
-  </table>
+  {% for field in form %}
+  <div class="form-group col-md-12 mb-2 border-top">
+      <div class="form-group col-md-6 mb-0">
+        {{ field|as_crispy_field }}
+      </div>
+    </div>
+  {% endfor %}
   <table class="table">
     {{ service_items.management_form }}
     {{ service_items.non_form_errors }}
@@ -65,7 +71,11 @@
       </div>
   </div>
   {% endfor %}
-  <p>{{ images.as_p }}</p>
+  <div class="form-group col-md-12 mb-2 border-top">
+      <div class="form-group col-md-6 mb-0">
+        {{ images|crispy }}
+      </div>
+    </div>
   <button type="submit" name="Update" class="btn btn-primary">Update report</button>
 
 </form>

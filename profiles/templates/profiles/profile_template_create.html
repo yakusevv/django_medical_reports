@@ -5,13 +5,18 @@
   {{ block.super }} - Profile
 {% endblock %}
 
+{% load crispy_forms_tags %}
 
 {% block content %}
 <form action="{% url 'profile_template_create_url' %}" method="post">
   {% csrf_token %}
-<table class="table mt-5">
-  {{ form.as_table }}
-</table>
+  {% for field in form.visible_fields %}
+  <div class="form-group col-md-12 mb-2 border-top">
+      <div class="form-group col-md-6 mb-0">
+        {{ field|as_crispy_field }}
+      </div>
+    </div>
+  {% endfor %}
 <button type="submit" name="Create" class="btn btn-primary">Create template</button>
 
 </form>

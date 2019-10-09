@@ -4,22 +4,18 @@
   {{ block.super }} - {{ post.title|title }} - Update post
 {% endblock %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 <form action="{{ post.get_update_url }}" method="post">
   {% csrf_token %}
 
   {% for field in form %}
-  <div class="form-group">
-    {% if field.errors %}
-    <div class="alert alert-danger">
-      {{ field.errors }}
-    </div>
-    {% endif %}
-
-    {{ field.label }}
-    {{ field }}
-  </div>
+      <div class="form-group col-md-6 mb-0">
+        {{ field|as_crispy_field }}
+      </div>
   {% endfor %}
+
   <button type="submit" class="btn btn-primary">Update Post</button>
 
   {% endblock %}
