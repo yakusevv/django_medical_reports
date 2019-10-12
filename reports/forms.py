@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from tempus_dominus.widgets import DateTimePicker, DatePicker
 from django_select2.forms import Select2MultipleWidget, Select2Widget
@@ -38,7 +38,6 @@ class ReportForm(forms.ModelForm):
                    'date_of_visit': DateTimePicker(
                                         options={
                                             'useCurrent': True,
-                                            'format': 'DD/MM/YYYY HH:mm',
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -49,7 +48,6 @@ class ReportForm(forms.ModelForm):
                    'patients_date_of_birth': DatePicker(
                                         options={
                                             'useCurrent': True,
-                                            'format': 'DD/MM/YYYY',
                                             'viewMode': 'years'
                                             },
                                         attrs={

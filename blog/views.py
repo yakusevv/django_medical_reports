@@ -93,6 +93,7 @@ class PostDelete(PermissionRequiredMixin, View):
                                                 self.model.__name__.lower(): obj,
                                                 'news_link_active': "active"
                                                 })
+                                                
     def post(self, request, pk):
         obj = self.model.objects.get(pk=pk)
         obj.delete()

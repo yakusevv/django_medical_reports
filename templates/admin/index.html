@@ -50,7 +50,7 @@
 {% else %}
     <p>{% trans "You don't have permission to view or edit anything." %}</p>
 {% endif %}
-  <p>Used storage space: {{ storage_percent }}</p>
+  <p>{% trans "Used storage space:" %} {{ storage_percent }}</p>
 </div>
 {% endblock %}
 

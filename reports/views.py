@@ -14,7 +14,7 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 from django.http import Http404
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext as _
 
 from .models import (
                 Report,

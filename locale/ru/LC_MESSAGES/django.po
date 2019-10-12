@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-12 21:24+0200\n"
+"POT-Creation-Date: 2019-10-13 00:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: blog/apps.py:7 blog/templates/blog/index.html:5 templates/base.html:32
+msgid "News"
+msgstr "Новости"
 
 #: blog/models.py:9
 msgid "Title"
@@ -56,10 +60,6 @@ msgstr "Редактировать пост"
 msgid "Delete post"
 msgstr "Удалить пост"
 
-#: blog/templates/blog/index.html:5 templates/base.html:32
-msgid "News"
-msgstr "Новости"
-
 #: blog/templates/blog/index.html:17
 msgid "Read"
 msgstr "Читать"
@@ -89,6 +89,10 @@ msgstr "Удалить"
 msgid "Update Post"
 msgstr "Обновить пост"
 
+#: profiles/apps.py:6 profiles/models.py:18
+msgid "Profiles"
+msgstr "Профили"
+
 #: profiles/models.py:11
 msgid "User"
 msgstr "Пользователь"
@@ -111,10 +115,6 @@ msgstr "Район"
 #: templates/base.html:38
 msgid "Profile"
 msgstr "Профиль"
-
-#: profiles/models.py:18
-msgid "Profiles"
-msgstr "Профили"
 
 #: profiles/models.py:28 reports/models.py:202
 msgid "Doctor"
@@ -154,11 +154,11 @@ msgstr "Шаблоны автозаполнения"
 
 #: profiles/templates/profiles/profile_detail.html:13
 msgid "Last name:"
-msgstr "Фамилия"
+msgstr "Фамилия:"
 
 #: profiles/templates/profiles/profile_detail.html:21
 msgid "First name:"
-msgstr "Имя"
+msgstr "Имя:"
 
 #: profiles/templates/profiles/profile_detail.html:29
 msgid "Num. col.:"
@@ -167,15 +167,15 @@ msgstr "Кол. №:"
 #: profiles/templates/profiles/profile_detail.html:37
 #: reports/templates/reports/report_detail.html:72
 msgid "Location:"
-msgstr "Местонахождение"
+msgstr "Местонахождение:"
 
 #: profiles/templates/profiles/profile_detail.html:45
 msgid "Territory coverage:"
-msgstr "Покрытие"
+msgstr "Покрытие:"
 
 #: profiles/templates/profiles/profile_detail.html:67
 msgid "Autofill templates:"
-msgstr "Шаблоны автозаполнения"
+msgstr "Шаблоны автозаполнения:"
 
 #: profiles/templates/profiles/profile_detail.html:79
 #: profiles/templates/profiles/profile_template_create.html:5
@@ -191,6 +191,11 @@ msgstr "Обновить шаблон"
 #: profiles/templates/profiles/profile_template_update.html:21
 msgid "Delete template"
 msgstr "Удалить шаблон"
+
+#: reports/apps.py:7 reports/models.py:208
+#: reports/templates/reports/reports_list.html:5 templates/base.html:35
+msgid "Reports"
+msgstr "Отчеты"
 
 #: reports/forms.py:77
 msgid "Report with this name is already exist"
@@ -377,11 +382,6 @@ msgstr "Ссылка скачивания"
 msgid "Report"
 msgstr "Отчет"
 
-#: reports/models.py:208 reports/templates/reports/reports_list.html:5
-#: templates/base.html:35
-msgid "Reports"
-msgstr "Отчеты"
-
 #: reports/models.py:236
 msgid "Total price"
 msgstr "Суммарная цена"
@@ -441,12 +441,12 @@ msgstr "Ценовая таблица"
 #: reports/templates/reports/report_create.html:69
 #: reports/templates/reports/report_update.html:85
 msgid "add service item"
-msgstr "Добавить сервис"
+msgstr "добавить сервис"
 
 #: reports/templates/reports/report_create.html:70
 #: reports/templates/reports/report_update.html:86
 msgid "remove"
-msgstr "Удалить"
+msgstr "удалить"
 
 #: reports/templates/reports/report_delete.html:8
 #: reports/templates/reports/report_detail.html:11
@@ -560,6 +560,10 @@ msgstr "Изменить"
 msgid "You don't have permission to view or edit anything."
 msgstr "У вас нет прав для просмотра или редактирования чего-либо"
 
+#: templates/admin/index.html:53
+msgid "Used storage space:"
+msgstr "Использованное пространство диска"
+
 #: templates/admin/index.html:60
 msgid "Recent actions"
 msgstr "Недавние действия"
@@ -592,6 +596,12 @@ msgstr "Предыдущая"
 msgid "Next"
 msgstr "Следующая"
 
+#: templates/base.html:95
+#, fuzzy
+#| msgid "User"
+msgid "User:"
+msgstr "Пользователь:"
+
 #: templates/base.html:98
 msgid "Admin page"
 msgstr "Администрирование"
@@ -602,7 +612,7 @@ msgstr "Выйти"
 
 #: templates/registration/login.html:6
 msgid "login"
-msgstr ""
+msgstr "Вход"
 
 #: templates/registration/login.html:16 templates/registration/login.html:24
 msgid "Login"
@@ -666,7 +676,7 @@ msgstr ""
 
 #: venv/lib/python3.7/site-packages/django/core/validators.py:165
 msgid "Enter a valid email address."
-msgstr ""
+msgstr "Введите допустимый email адрес"
 
 #. Translators: "letters" means latin letters: a-z and A-Z.
 #: venv/lib/python3.7/site-packages/django/core/validators.py:239
@@ -1276,275 +1286,275 @@ msgstr ""
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:6
 msgid "Monday"
-msgstr ""
+msgstr "Понедельник"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:6
 msgid "Tuesday"
-msgstr ""
+msgstr "Вторник"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:6
 msgid "Wednesday"
-msgstr ""
+msgstr "Среда"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:6
 msgid "Thursday"
-msgstr ""
+msgstr "Четверг"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:6
 msgid "Friday"
-msgstr ""
+msgstr "Пятница"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:7
 msgid "Saturday"
-msgstr ""
+msgstr "Суббота"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:7
 msgid "Sunday"
-msgstr ""
+msgstr "Воскресенье"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:10
 msgid "Mon"
-msgstr ""
+msgstr "Пон"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:10
 msgid "Tue"
-msgstr ""
+msgstr "Втр"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:10
 msgid "Wed"
-msgstr ""
+msgstr "Срд"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:10
 msgid "Thu"
-msgstr ""
+msgstr "Чтв"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:10
 msgid "Fri"
-msgstr ""
+msgstr "Птн"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:11
 msgid "Sat"
-msgstr ""
+msgstr "Суб"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:11
 msgid "Sun"
-msgstr ""
+msgstr "Вск"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:14
 msgid "January"
-msgstr ""
+msgstr "Январь"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:14
 msgid "February"
-msgstr ""
+msgstr "Февраль"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:14
 msgid "March"
-msgstr ""
+msgstr "Март"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:14
 msgid "April"
-msgstr ""
+msgstr "Апрель"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:14
 msgid "May"
-msgstr ""
+msgstr "Май"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:14
 msgid "June"
-msgstr ""
+msgstr "Июнь"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:15
 msgid "July"
-msgstr ""
+msgstr "Июль"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:15
 msgid "August"
-msgstr ""
+msgstr "Август"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:15
 msgid "September"
-msgstr ""
+msgstr "Сентябрь"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:15
 msgid "October"
-msgstr ""
+msgstr "Октябрь"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:15
 msgid "November"
-msgstr ""
+msgstr "Ноябрь"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:16
 msgid "December"
-msgstr ""
+msgstr "Декабрь"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:19
 msgid "jan"
-msgstr ""
+msgstr "янв"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:19
 msgid "feb"
-msgstr ""
+msgstr "фев"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:19
 msgid "mar"
-msgstr ""
+msgstr "мар"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:19
 msgid "apr"
-msgstr ""
+msgstr "апр"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:19
 msgid "may"
-msgstr ""
+msgstr "мая"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:19
 msgid "jun"
-msgstr ""
+msgstr "июн"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:20
 msgid "jul"
-msgstr ""
+msgstr "июл"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:20
 msgid "aug"
-msgstr ""
+msgstr "авг"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:20
 msgid "sep"
-msgstr ""
+msgstr "сен"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:20
 msgid "oct"
-msgstr ""
+msgstr "окт"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:20
 msgid "nov"
-msgstr ""
+msgstr "ноя"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:20
 msgid "dec"
-msgstr ""
+msgstr "дек"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:23
 msgctxt "abbrev. month"
 msgid "Jan."
-msgstr ""
+msgstr "Янв."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:24
 msgctxt "abbrev. month"
 msgid "Feb."
-msgstr ""
+msgstr "Фев."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:25
 msgctxt "abbrev. month"
 msgid "March"
-msgstr ""
+msgstr "Мар."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:26
 msgctxt "abbrev. month"
 msgid "April"
-msgstr ""
+msgstr "Апр."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:27
 msgctxt "abbrev. month"
 msgid "May"
-msgstr ""
+msgstr "Мая"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:28
 msgctxt "abbrev. month"
 msgid "June"
-msgstr ""
+msgstr "Июн."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:29
 msgctxt "abbrev. month"
 msgid "July"
-msgstr ""
+msgstr "Июл."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:30
 msgctxt "abbrev. month"
 msgid "Aug."
-msgstr ""
+msgstr "Авг."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:31
 msgctxt "abbrev. month"
 msgid "Sept."
-msgstr ""
+msgstr "Сент."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:32
 msgctxt "abbrev. month"
 msgid "Oct."
-msgstr ""
+msgstr "Окт."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:33
 msgctxt "abbrev. month"
 msgid "Nov."
-msgstr ""
+msgstr "Ноя."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:34
 msgctxt "abbrev. month"
 msgid "Dec."
-msgstr ""
+msgstr "Дек."
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:37
 msgctxt "alt. month"
 msgid "January"
-msgstr ""
+msgstr "января"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:38
 msgctxt "alt. month"
 msgid "February"
-msgstr ""
+msgstr "февраля"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:39
 msgctxt "alt. month"
 msgid "March"
-msgstr ""
+msgstr "марта"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:40
 msgctxt "alt. month"
 msgid "April"
-msgstr ""
+msgstr "апреля"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:41
 msgctxt "alt. month"
 msgid "May"
-msgstr ""
+msgstr "мая"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:42
 msgctxt "alt. month"
 msgid "June"
-msgstr ""
+msgstr "июня"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:43
 msgctxt "alt. month"
 msgid "July"
-msgstr ""
+msgstr "июля"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:44
 msgctxt "alt. month"
 msgid "August"
-msgstr ""
+msgstr "августа"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:45
 msgctxt "alt. month"
 msgid "September"
-msgstr ""
+msgstr "сентября"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:46
 msgctxt "alt. month"
 msgid "October"
-msgstr ""
+msgstr "октября"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:47
 msgctxt "alt. month"
 msgid "November"
-msgstr ""
+msgstr "ноября"
 
 #: venv/lib/python3.7/site-packages/django/utils/dates.py:48
 msgctxt "alt. month"
 msgid "December"
-msgstr ""
+msgstr "декабря"
 
 #: venv/lib/python3.7/site-packages/django/utils/ipv6.py:8
 msgid "This is not a valid IPv6 address."
