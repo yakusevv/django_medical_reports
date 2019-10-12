@@ -3,6 +3,7 @@ from django.urls import path
 from django.urls import include
 from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.i18n import i18n_patterns
 
 from .views import redirect_news
 from . import settings

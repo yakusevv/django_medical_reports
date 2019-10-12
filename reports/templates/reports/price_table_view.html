@@ -1,7 +1,8 @@
 {% extends 'reports/base_reports.html' %}
+{% load i18n %}
 
 {% block title %}
-  {{ block.super }} - Price table
+  {{ block.super }} - {% trans "Price table" %}
 {% endblock %}
 
 {% block content %}
@@ -14,7 +15,7 @@
   {% for region in object.region_set.all %}
   <tr>
     <th class="table-primary"> {{ region }} </th>
-    <td class="table-primary"> Tariffs </td>
+    <td class="table-primary"> {% trans "Tariffs" %} </td>
     {% for price_group in price_groups %}
       <td class="table-primary"> {{ price_group }} </td>
     {% endfor %}
@@ -60,13 +61,13 @@
 </table>
 <table class='table-sm'>
   <tr class='table-primary'>
-    <th> Service </th>
-    <th> Price </th>
+    <th> {% trans "Service" %} </th>
+    <th> {% trans "Price" %} </th>
   </tr>
   {% for service in object.services.all %}
     {% if not service.type_of_visit %}
     <tr>
-      <td>{{service.name }}</td>
+      <td>{{ service.name }}</td>
       <td>{{ service.price }}</td>
     </tr>
     {% endif %}

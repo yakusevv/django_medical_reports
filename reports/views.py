@@ -14,6 +14,7 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 from django.http import Http404
+from django.utils.translation import gettext as _
 
 from .models import (
                 Report,
@@ -166,7 +167,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         if not self.object.checked:
             return self.render_to_response(self.get_context_data(form=form))
         else:
-            raise Http404("Checked report cannot be edited")
+            raise Http404(_("Checked report cannot be edited"))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -181,7 +182,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             else:
                 return self.form_invalid(form)
         else:
-            raise Http404("Checked report cannot be edited")
+            raise Http404(_("Checked report cannot be edited"))
 
     def get_context_data(self, **kwargs):
         context = super(ReportUpdateView, self).get_context_data(**kwargs)
@@ -245,7 +246,7 @@ class ReportDeleteView(PermissionRequiredMixin, DeleteView):
                                                 'report_link_active': "active"
                                                 })
         else:
-            raise Http404("Checked report cannot be deleted")
+            raise Http404(_("Checked report cannot be deleted"))
 
     def post(self, request, pk):
         obj = self.model.objects.get(pk=pk)
@@ -253,7 +254,7 @@ class ReportDeleteView(PermissionRequiredMixin, DeleteView):
             obj.delete()
             return redirect(reverse(self.redirect_url))
         else:
-            raise Http404("Checked report cannot be deleted")
+            raise Http404(_("Checked report cannot be deleted"))
 
 
 class PriceTableView(PermissionRequiredMixin, DetailView):

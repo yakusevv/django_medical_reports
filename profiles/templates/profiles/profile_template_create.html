@@ -1,8 +1,8 @@
 {% extends 'reports/base_reports.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title %}
-  {{ block.super }} - Profile
+  {{ block.super }} - {% trans "Create template" %}
 {% endblock %}
 
 {% load crispy_forms_tags %}
@@ -17,7 +17,7 @@
       </div>
     </div>
   {% endfor %}
-<button type="submit" name="Create" class="btn btn-primary">Create template</button>
+<button type="submit" name="Create" class="btn btn-primary">{% trans "Create template" %}</button>
 
 </form>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'blog/base_blog.html' %}
+{% load i18n %}
 
 {% block title %}
-  {{ block.super }} - News
+  {{ block.super }} - {% trans "News" %}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +14,7 @@
       <div class="card-body">
         <h5 class="card-title mb-4" align=center>{{ post.title }}</h5>
         <p class="card-text">{{ post.body|truncatewords:20}}</p>
-        <a href="{{ post.get_absolute_url }}" class="btn btn-light">Read</a>
+        <a href="{{ post.get_absolute_url }}" class="btn btn-light">{% trans "Read" %}</a>
       </div>
     </div>
     {% endfor %}

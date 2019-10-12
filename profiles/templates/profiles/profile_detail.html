@@ -1,7 +1,8 @@
 {% extends 'reports/base_reports.html' %}
+{% load i18n %}
 
 {% block title %}
-  {{ block.super }} - Profile
+  {{ block.super }} - {% trans "Profile" %}
 {% endblock %}
 
 
@@ -9,7 +10,7 @@
 <div class="container mt-4">
   <div class="row mb-2">
       <div class="col-sm-2">
-        <b>Last name:</b>
+        <b>{% trans "Last name:" %}</b>
       </div>
       <div class="col">
         {{ profile.user.last_name }}
@@ -17,7 +18,7 @@
   </div>
   <div class="row mb-2">
       <div class="col-sm-2">
-        <b>First name:</b>
+        <b>{% trans "First name:" %}</b>
       </div>
       <div class="col">
         {{ profile.user.first_name }}
@@ -25,7 +26,7 @@
   </div>
   <div class="row mb-2">
       <div class="col-sm-2">
-        <b>Num. col.:</b>
+        <b>{% trans "Num. col.:" %}</b>
       </div>
       <div class="col">
         {{ profile.num_col }}
@@ -33,7 +34,7 @@
   </div>
   <div class="row mb-2">
       <div class="col-sm-2">
-        <b>Location:</b>
+        <b>{% trans "Location:" %}</b>
       </div>
       <div class="col">
         {{ profile.city.district.region.country }}, {{ profile.city.district.region }}, {{ profile.city }}
@@ -41,7 +42,7 @@
   </div>
   <div class="row mb-2 mt-4">
       <div class="col-3">
-        <b>Territory coverage:</b>
+        <b>{% trans "Territory coverage:" %}</b>
       </div>
   </div>
   {% for district in profile.districts.all %}
@@ -63,7 +64,7 @@
   {% endfor %}
   <div class="row mb-2 mt-4">
       <div class="col-3">
-        <b>Autofill templates:</b>
+        <b>{% trans "Autofill templates:" %}</b>
       </div>
   </div>
   {% for template in profile.report_templates.all %}
@@ -75,7 +76,7 @@
   {% endfor %}
   <div class="row mt-4">
       <div class="col">
-        <a class='btn btn-primary' href="{% url 'profile_template_create_url' %}">Create template</a>
+        <a class='btn btn-primary' href="{% url 'profile_template_create_url' %}">{% trans "Create template" %}</a>
       </div>
   </div>
 </div>

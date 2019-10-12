@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block admin-panel-content %}
 {% endblock %}
 
 {% block title %}
-{{ block.super }} - {{ report.ref_number }} - Delete report
+{{ block.super }} - {{ report.ref_number }} - {% trans "Delete report" %}
 {% endblock %}
 
 
@@ -12,9 +13,9 @@
 <form action="{{ report.get_delete_url }}" method="post">
   {% csrf_token %}
   <div class="text-center mt-5">
-   <h3>Are you sure you want to delete <b>"{{ report }}"</b> report?</h3>
-   <a href="{{ report.get_absolute_url }}">Cancel</a>
-   <button type="submit" class="btn btn-danger ml-3">Delete</button>
+   <h3>{% trans "Are you sure you want to delete" %} <b>"{{ report }}"</b> {% trans "report?" %}"</h3>
+   <a href="{{ report.get_absolute_url }}">{% trans "Cancel" %}</a>
+   <button type="submit" class="btn btn-danger ml-3">{% trans "Delete" %}</button>
   </div>
 </form>
 {% endblock %}

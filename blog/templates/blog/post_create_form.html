@@ -1,7 +1,8 @@
 {% extends 'blog/base_blog.html'%}
+{% load i18n %}
 
 {% block title %}
-{{ block.super }} - Create post
+{{ block.super }} - {% trans "Create post" %}
 {% endblock %}
 
 {% load crispy_forms_tags %}
@@ -17,6 +18,6 @@
       </div>
   {% endfor %}
 
-  <button type="submit" name="Create" class="btn btn-primary">Create post</button>
+  <button type="submit" name="Create" class="btn btn-primary">{% trans "Create post" %}</button>
 </form>
 {% endblock %}

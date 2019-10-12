@@ -1,8 +1,8 @@
 {% extends 'reports/base_reports.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title %}
-  {{ block.super }} - {{ report.ref_number }} - Update
+  {{ block.super }} - {{ report.ref_number }} - {% trans "Edit" %}
 {% endblock %}
 
 {% block extrahead %}
@@ -16,7 +16,7 @@
 
 {% block admin-panel-content %}
 {% if not report.checked %}
-<a class="btn btn-danger" href="{{ report.get_delete_url }}">Delete report</a>
+<a class="btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
 {% endif %}
 {% endblock %}
 
@@ -67,7 +67,7 @@
       </div>
       <div class="col mt-2">
         <input type="checkbox" name="del_image_id{{ image.pk }}" value="">
-        <label for="del_image_id{{ image.pk }}">Delete</label>
+        <label for="del_image_id{{ image.pk }}">{% trans "Delete" %}</label>
       </div>
   </div>
   {% endfor %}
@@ -76,14 +76,14 @@
         {{ images|crispy }}
       </div>
     </div>
-  <button type="submit" name="Update" class="btn btn-primary">Update report</button>
+  <button type="submit" name="Update" class="btn btn-primary">{% trans "Update report" %}</button>
 
 </form>
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
   <script type="text/javascript">
   $('.formset_row').formset({
-    addText: 'add service item',
-    deleteText: 'remove',
+    addText: '{% trans "add service item" %}',
+    deleteText: '{% trans "remove" %}',
     prefix: '{{ service_items.prefix }}',
     formTemplate: null,
     addCssClass: 'add-row',

@@ -41,7 +41,7 @@ class ReportTemplateInline(admin.StackedInline):
     model = ReportTemplate
     formset = ReportTemplateInlineFormSet
     can_delete = True
-    verbose_name_plural = 'Report Templates'
+#    verbose_name_plural = 'Report Templates'
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
@@ -66,9 +66,9 @@ class ReportTemplateInline(admin.StackedInline):
 class CompanyAdmin(admin.ModelAdmin):
     inlines = (ReportTemplateInline, )
 
-    class Meta:
-        verbose_name = 'Company'
-        verbose_name_plural = 'Companies'
+#    class Meta:
+#        verbose_name = 'Company'
+#        verbose_name_plural = 'Companies'
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/reports/company/{}/change'.format(obj.id))
@@ -77,14 +77,14 @@ class CompanyAdmin(admin.ModelAdmin):
 class ServiceInline(admin.StackedInline):
     model = Service
     can_delete = True
-    verbose_name_plural = 'Services'
+#    verbose_name_plural = 'Services'
     extra = 1
 
 
 class TypeOfVisitInline(admin.TabularInline):
     model = TypeOfVisit
     can_delete = True
-    verbose_name_plural = 'Types of visits'
+#    verbose_name_plural = 'Types of visits'
     extra = 1
 
 
@@ -96,7 +96,7 @@ class DiseaseAdmin(admin.ModelAdmin):
 class ServiceItemInline(admin.StackedInline):
     model = ServiceItem
     can_delete = True
-    verbose_name_plural = 'Service Items'
+#    verbose_name_plural = 'Service Items'
     fk_name = 'report'
     extra = 1
 
@@ -104,7 +104,7 @@ class ServiceItemInline(admin.StackedInline):
 class AdditionalImageInline(admin.StackedInline):
     model = AdditionalImage
     can_delete = True
-    verbose_name_plural = 'Images'
+#    verbose_name_plural = _('Images')
     fk_name = 'report'
     extra = 1
 
@@ -158,14 +158,14 @@ class ReportAdmin(admin.ModelAdmin):
 class CityInline(admin.StackedInline):
     model = City
     can_delete = True
-    verbose_name_plural = 'Cities'
+#    verbose_name_plural = 'Cities'
 
 
 class DistrictInline(EditLinkToInlineObject, admin.StackedInline):
     model = District
     readonly_fields = ('edit_link', )
     can_delete = True
-    verbose_name_plural = 'Districts'
+#    verbose_name_plural = 'Districts'
     extra = 1
 
 
@@ -173,7 +173,7 @@ class RegionInline(EditLinkToInlineObject, admin.StackedInline):
     model = Region
     readonly_fields = ('edit_link', )
     can_delete = True
-    verbose_name_plural = 'Regions'
+#    verbose_name_plural = 'Regions'
     extra = 1
 
 
@@ -201,7 +201,7 @@ class VisitTariffInline(admin.TabularInline):
     model = VisitTariff
     formset = VisitTariffInlineFormSet
     can_delete = False
-    verbose_name_plural = 'Visit Price List'
+#    verbose_name_plural = 'Visit Price List'
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)

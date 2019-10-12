@@ -1,19 +1,20 @@
 {% extends 'reports/base_reports.html' %}
+{% load i18n %}
 
 {% block title %}
-  {{ block.super }} - Reports
+  {{ block.super }} - {% trans "Reports" %}
 {% endblock %}
 
 {% block content %}
 
       {% if request.GET.search %}
-      <h5 class='ml-3'> Search results for "{{ request.GET.search }}": </h5>
+      <h5 class='ml-3'> {% trans "Search results for" %} "{{ request.GET.search }}": </h5>
       <h5 class='ml-3'>
         {{ report_list.count }}
         {% if report_list.count == 1%}
-        item
+        {% trans "item" %}
         {% else %}
-        items
+        {% trans "items" %}
         {% endif %}
       </h5>
       {% endif %}
@@ -21,13 +22,13 @@
       <div class="container">
         <div class="row mb-2 col-md-12">
           <div class="col">
-            <b>Report</b>
+            <b>{% trans "Report" %}</b>
           </div>
           <div class="col">
-          <b>City</b>
+          <b>{% trans "City" %}</b>
           </div>
           <div class="col">
-            <b>Date of visit</b>
+            <b>{% trans "Date of visit" %}</b>
           </div>
         </div>
       {% for report in report_list %}

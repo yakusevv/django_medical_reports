@@ -1,8 +1,8 @@
 {% extends 'reports/base_reports.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title %}
-  {{ block.super }} - Create report
+  {{ block.super }} - {% trans "Create report" %}
 {% endblock %}
 
 {% block extrahead %}
@@ -60,14 +60,14 @@
         {{ images|crispy }}
       </div>
     </div>
-  <button type="submit" name="Create" class="btn btn-primary">Create report</button>
+  <button type="submit" name="Create" class="btn btn-primary">{% trans "Create report" %}</button>
 
 </form>
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
   <script type="text/javascript">
   $('.formset_row').formset({
-    addText: 'add service item',
-    deleteText: 'remove',
+    addText: '{% trans "add service item" %}',
+    deleteText: '{% trans "remove" %}',
     prefix: '{{ service_items.prefix }}',
     formTemplate: null,
     addCssClass: 'add-row',

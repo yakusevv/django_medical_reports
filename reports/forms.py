@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
+from django.utils.translation import gettext_lazy as _
 
 from tempus_dominus.widgets import DateTimePicker, DatePicker
 from django_select2.forms import Select2MultipleWidget, Select2Widget
@@ -73,14 +74,14 @@ class ReportForm(forms.ModelForm):
                         )
         if not self.instance.pk:
             if same_reports.exists():
-                msg = "Report with this name is already exist"
+                msg = _("Report with this name is already exist")
                 self.add_error('ref_number', msg)
                 self.add_error('patients_first_name', msg)
                 self.add_error('patients_last_name', msg)
         else:
             same_reports = same_reports.exclude(pk=self.instance.pk)
             if len(same_reports) > 0:
-                msg = "Other report with this name is already exist"
+                msg = _("Other report with this name is already exist")
                 self.add_error('ref_number', msg)
                 self.add_error('patients_first_name', msg)
                 self.add_error('patients_last_name', msg)
@@ -132,11 +133,13 @@ class ServiceItemsFormset(BaseInlineFormSet):
                     quantity = form.cleaned_data['quantity']
                     number_of_forms += 1
                     if service in services:
-                        form.add_error('service','Duplicate values for "Service" are not allowed.')
+                        msg = _('Duplicate values for "Service" are not allowed.')
+                        form.add_error('service', msg)
                     else:
                         services.add(service)
                     if quantity < 1:
-                        form.add_error('quantity', "Quantity must be equal to or greater than 1")
+                        msg = _("Quantity must be equal to or greater than 1")
+                        form.add_error('quantity', msg)
 
 
 ServiceItemsFormSet = inlineformset_factory(
@@ -154,7 +157,7 @@ class AdditionalImageForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AdditionalImageForm, self).__init__(*args, **kwargs)
-        self.fields['image'].label = "Images"
+        self.fields['image'].label = _("Images")
 
     def save(self, *args, **kwargs):
         file_list = self.files.getlist('image')
@@ -196,11 +199,14 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
                 if form.cleaned_data.get('price'):
                     price = form.cleaned_data.get('price')
                     if float(price) < 0:
-                        form.add_error('price', 'The Price can\'t be less than 0')
+                        msg = _('The Price can\'t be less than 0')
+                        form.add_error('price', msg)
                 elif form.cleaned_data.get('price') == 0:
-                    form.add_error('price', 'The Price can\'t be 0')
+                    msg = _('The Price can\'t be 0')
+                    form.add_error('price', msg)
             except ValueError:
-                form.add_error('price', 'The Price should be numeric type')
+                msg = _('The Price should be numeric type')
+                form.add_error('price', msg)
 
 
 class ReportTemplateInlineFormSet(BaseInlineFormSet):

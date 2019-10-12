@@ -39,11 +39,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'medical_reports.urls'
@@ -113,10 +115,20 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-US'
+#LANGUAGE_CODE = 'ru'
+
+LANGUAGES = (
+    ('en', 'English'),
+    ('ru', 'Russian'),
+)
 
 USE_I18N = True
 
-USE_L10N = False
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
+USE_L10N = True
 
 USE_TZ = True
 

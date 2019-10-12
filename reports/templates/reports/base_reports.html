@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block admin-panel-content %}
-<a class="btn btn-secondary" href="{% url 'report_create_url' %}">Create report</a>
+<a class="btn btn-secondary" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
 {% endblock %}

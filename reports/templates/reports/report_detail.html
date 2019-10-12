@@ -1,13 +1,14 @@
 {% extends 'reports/base_reports.html' %}
+{% load i18n %}
 
 {% block title %}
-  {{ block.super }} - {{ report.ref_number }} - View
+  {{ block.super }} - {{ report.ref_number }} - {% trans "View" %}
 {% endblock %}
 
 {% block admin-panel-content %}
 {% if not report.checked %}
-<a class="btn btn-secondary" href="{{ report.get_update_url }}">Update report</a>
-<a class="btn btn-danger" href="{{ report.get_delete_url }}">Delete report</a>
+<a class="btn btn-secondary" href="{{ report.get_update_url }}">{% trans "Edit report" %}</a>
+<a class="btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
 {% endif %}
 {% endblock %}
 
@@ -33,7 +34,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Company, ref. number: </b>
+      <b> {% trans "Company, ref. number:" %} </b>
     </div>
     <div class="col">
       {{ report.company }}
@@ -42,7 +43,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Date of birth </b>
+      <b> {% trans "Date of birth" %} </b>
     </div>
     <div class="col">
       {{ report.patients_date_of_birth }}
@@ -51,7 +52,7 @@
   {% if report.patients_policy_number %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Policy: </b>
+      <b> {% trans "Policy:" %} </b>
     </div>
     <div class="col">
       {{ report.patients_policy_number }}
@@ -60,7 +61,7 @@
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Date of visit </b>
+      <b> {% trans "Date of visit" %} </b>
     </div>
     <div class="col">
       {{ report.date_of_visit }}
@@ -68,7 +69,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Location: </b>
+      <b> {% trans "Location:" %} </b>
     </div>
     <div class="col">
       {{ report.city.district.region }}, {{ report.city }}
@@ -79,7 +80,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Type of visit </b>
+      <b> {% trans "Type of visit" %} </b>
     </div>
     <div class="col">
       {{ report.type_of_visit }}
@@ -87,7 +88,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Cause of visit: </b>
+      <b> {% trans "Cause of visit:" %} </b>
     </div>
     <div class="col">
       {{ report.cause_of_visit|linebreaks }}
@@ -95,7 +96,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Checkup </b>
+      <b> {% trans "Checkup" %} </b>
     </div>
     <div class="col">
       {{ report.checkup|linebreaks }}
@@ -104,7 +105,7 @@
   {% if report.additional_checkup %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Additional checkup: </b>
+      <b> {% trans "Additional checkup:" %} </b>
     </div>
     <div class="col">
       {{ report.additional_checkup|linebreaks }}
@@ -113,7 +114,7 @@
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Diagnosis: </b>
+      <b> {% trans "Diagnosis:" %} </b>
     </div>
     <div class="col">
       {% for disease in report.diagnosis.get_queryset %}
@@ -123,7 +124,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Prescription: </b>
+      <b> {% trans "Prescription:" %} </b>
     </div>
     <div class="col">
       {{ report.prescription }}
@@ -131,7 +132,7 @@
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Doctor: </b>
+      <b> {% trans "Doctor:" %} </b>
     </div>
     <div class="col">
       {{ report.doctor }}
@@ -140,7 +141,7 @@
   {% if request.user.is_staff %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Visit price: </b>
+      <b> {% trans "Visit price:" %} </b>
     </div>
     <div class="col" {% if not report.city.district in report.doctor.districts.all or report.visit_price == 0 %} style="color: red; font-weight: bold;" {% endif %}>
       {{ report.visit_price }}
@@ -150,7 +151,7 @@
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Service items: </b>
+      <b> {% trans "Service items:" %} </b>
     </div>
     <div class="col">
       {% for service in report.service_items.get_queryset %}
@@ -164,7 +165,7 @@
   {% if request.user.is_staff %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3">
-      <b> Total price: </b>
+      <b> {% trans "Total price:" %} </b>
     </div>
     <div class="col">
       {{ report.get_total_price }}
@@ -173,7 +174,7 @@
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-sm-3 mb-2">
-      <b> Images: </b>
+      <b> {% trans "Images:" %} </b>
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
@@ -187,7 +188,7 @@
 {% if request.user.is_staff %}
 <form action="{{ report.get_absolute_url }}" method="post">
   {% csrf_token %}
-  <input class="btn {% if report.checked %}btn-secondary{% else %}btn-primary{% endif %}" type="submit" name="is_checked" value="Is checked">
+  <input class="btn {% if report.checked %}btn-secondary{% else %}btn-primary{% endif %}" type="submit" name="is_checked" value={% trans "Is checked" %}>
 </form>
 {% endif %}
 {% endblock %}

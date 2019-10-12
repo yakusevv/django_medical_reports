@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
-  {{ block.super }} - login
+  {{ block.super }} - {% trans "login" %}
 {% endblock %}
 
 {% block toolbar %}
@@ -12,7 +13,7 @@
 {% block content %}
 <div class="text-center mt-5">
   <img class='mb-2' src={% static "images/logo.jpg" %} width=200 alt="">
-<h4> Login </h4>
+<h4> {% trans "Login" %} </h4>
 <form method="post">
   {% csrf_token %}
   <div class="row justify-content-md-center">
@@ -20,7 +21,7 @@
       {{ form|crispy }}
     </div>
   </div>
-    <button class='btn btn-primary' type="submit">Login</button>
+    <button class='btn btn-primary' type="submit">{% trans "Login" %}</button>
 </form>
 </div>
 {% endblock %}

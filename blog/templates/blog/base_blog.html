@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block admin-panel-content %}
 {% if user.is_staff %}
-<a class="btn btn-secondary" href="{% url 'post_create_url' %}">Create post</a>
-<a href="{{ admin_obj.get_update_url }}" class="btn btn-secondary edit" style={% if detail %}"display: block;"{% endif %}>Edit post</a>
-<a href="{{ admin_obj.get_delete_url }}" class="btn btn-danger delete" style="{% if detail %}display:block;{% endif %}">Delete post</a>
+<a class="btn btn-secondary" href="{% url 'post_create_url' %}">{% trans "Create post" %}</a>
+<a href="{{ admin_obj.get_update_url }}" class="btn btn-secondary edit" style={% if detail %}"display: block;"{% endif %}>{% trans "Edit post" %}</a>
+<a href="{{ admin_obj.get_delete_url }}" class="btn btn-danger delete" style="{% if detail %}display:block;{% endif %}">{% trans "Delete post" %}</a>
 {% endif %}
 {% endblock %}

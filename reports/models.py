@@ -9,6 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from .utils import DocReportGenerator
 
@@ -35,50 +36,50 @@ class OverwriteStorage(FileSystemStorage):
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
 
     class Meta:
-        verbose_name = 'Country'
-        verbose_name_plural = 'Countries'
+        verbose_name = _('Country')
+        verbose_name_plural = _('Countries')
 
     def __str__(self):
         return self.name
 
 
 class Region(models.Model):
-    name = models.CharField(max_length=100)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
 
     class Meta:
         unique_together = (('name', 'country',),)
-        verbose_name = 'Region'
-        verbose_name_plural = 'Regions'
+        verbose_name = _('Region')
+        verbose_name_plural = _('Regions')
 
     def __str__(self):
         return self.name
 
 
 class District(models.Model):
-    name = models.CharField(max_length=50)
-    region = models.ForeignKey(Region, on_delete=models.PROTECT)
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    region = models.ForeignKey(Region, on_delete=models.PROTECT, verbose_name=_("Region"))
 
     class Meta:
         unique_together = (('name', 'region',),)
-        verbose_name = 'District'
-        verbose_name_plural = 'Districts'
+        verbose_name = _('District')
+        verbose_name_plural = _('Districts')
 
     def __str__(self):
         return ' - '.join((str(self.region), self.name))
 
 
 class City(models.Model):
-    name = models.CharField(max_length=100)
-    district = models.ForeignKey(District, on_delete=models.PROTECT)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    district = models.ForeignKey(District, on_delete=models.PROTECT, verbose_name=_("District"))
 
     class Meta:
         unique_together = (('name', 'district',),)
-        verbose_name = 'City'
-        verbose_name_plural = 'Cities'
+        verbose_name = _('City')
+        verbose_name_plural = _('Cities')
 
     def __str__(self):
         return self.name
@@ -87,28 +88,28 @@ class City(models.Model):
         qs = City.objects.filter(district__region__country=self.district.region.country)
         if self.pk is None:
             if qs.filter(name=self.name).exists():
-                raise ValidationError("City with this name in the current country is already exists")
+                raise ValidationError(_("City with this name in the current country is already exists"))
 
 
 # Every disease in reports must have a name in language of country where was visit
 # so property "country" has been added
 class Disease(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
 
     class Meta:
-        verbose_name = 'Disease'
-        verbose_name_plural = 'Diseases'
+        verbose_name = _('Disease')
+        verbose_name_plural = _('Diseases')
 
     def __str__(self):
         return self.name
 
 
 class PriceGroup(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
 
-    verbose_name = 'Price group'
-    verbose_name_plural = 'Price groups'
+    verbose_name = _('Price group')
+    verbose_name_plural = _('Price groups')
 
     def __str__(self):
         return self.name
@@ -116,53 +117,53 @@ class PriceGroup(models.Model):
 
 # Every country must have a list of visit types with appropriative names
 class TypeOfVisit(models.Model):
-    name = models.CharField(max_length=100)
-    is_second_visit = models.BooleanField(default=False)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    is_second_visit = models.BooleanField(default=False, verbose_name=_("Is second visit"))
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
 
     class Meta:
         unique_together = (('name', 'country',),)
-        verbose_name = 'Type of visit'
-        verbose_name_plural = 'Types of visits'
+        verbose_name = _('Type of visit')
+        verbose_name_plural = _('Types of visits')
 
     def __str__(self):
         return self.name
 
 
 class Tariff(models.Model):
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
-    price_group = models.ForeignKey(PriceGroup, on_delete=models.CASCADE)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_("District"))
+    price_group = models.ForeignKey(PriceGroup, on_delete=models.CASCADE, verbose_name=_("Price group"))
 
     class Meta:
         unique_together = (('district', 'price_group',),)
-        verbose_name = 'Tariff'
-        verbose_name_plural = 'Tariffs'
+        verbose_name = _('Tariff')
+        verbose_name_plural = _('Tariffs')
 
     def __str__(self):
         return ' - '.join((str(self.district), str(self.price_group)))
 
 
 class VisitTariff(models.Model):
-    tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
-    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, verbose_name=_("Tariff"))
+    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE, verbose_name=_("Type of visit"))
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
 
     class Meta:
         unique_together = (('tariff', 'type_of_visit',),)
-        verbose_name = 'Visit tariff'
-        verbose_name_plural = 'Visit tariffs'
+        verbose_name = _('Visit tariff')
+        verbose_name_plural = _('Visit tariffs')
 
     def __str__(self):
         return ' - '.join((str(self.tariff), str(self.type_of_visit)))
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=20, unique=True)
-    price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT)
+    name = models.CharField(max_length=20, unique=True, verbose_name=_("Name"))
+    price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT, verbose_name=_("Price group"))
 
     class Meta:
-        verbose_name = 'Company'
-        verbose_name_plural = 'Companies'
+        verbose_name = _('Company')
+        verbose_name_plural = _('Companies')
 
     def __str__(self):
         return self.name
@@ -170,41 +171,41 @@ class Company(models.Model):
 
 # Every company need to have templates for each country in appropriative language
 class ReportTemplate(models.Model):
-    template = models.FileField(upload_to=get_docxtemplate_path, storage=OverwriteStorage())
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    template = models.FileField(upload_to=get_docxtemplate_path, storage=OverwriteStorage(), verbose_name=_("Template"))
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_("Company"))
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name=_("Country"))
 
     class Meta:
         unique_together = (('company', 'country',),)
-        verbose_name = 'Report template'
-        verbose_name_plural = 'Report templates'
+        verbose_name = _('Report template')
+        verbose_name_plural = _('Report templates')
 
 class Report(models.Model):
-    ref_number = models.CharField(max_length=50)
-    company_ref_number = models.CharField(max_length=50)
-    company = models.ForeignKey(Company, on_delete=models.PROTECT)
-    patients_first_name = models.CharField(max_length=50)
-    patients_last_name = models.CharField(max_length=50)
-    patients_date_of_birth = models.DateField()
-    patients_policy_number = models.CharField(max_length=100, blank=True)
-    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT)
-    visit_price = models.DecimalField(max_digits=8, decimal_places=2)
-    date_of_visit = models.DateTimeField()
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-    detailed_location = models.CharField(max_length=100, blank=True)
-    cause_of_visit = models.TextField(max_length=700)
-    checkup = models.TextField(max_length=1200)
-    additional_checkup = models.TextField(max_length=700, blank=True)
-    diagnosis = models.ManyToManyField('Disease', related_name='reports')
-    prescription = models.TextField(max_length=700)
-    checked = models.BooleanField(default=False)
-    doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT)
-    docx_download_link = models.CharField(max_length=500, blank=True)
+    ref_number = models.CharField(max_length=50, verbose_name=_("Ref. number"))
+    company_ref_number = models.CharField(max_length=50, verbose_name=_("Company ref. number"))
+    company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
+    patients_first_name = models.CharField(max_length=50, verbose_name=_("First name"))
+    patients_last_name = models.CharField(max_length=50, verbose_name=_("Last name"))
+    patients_date_of_birth = models.DateField(verbose_name=_("Date of birth"))
+    patients_policy_number = models.CharField(max_length=100, blank=True, verbose_name=_("Policy number"))
+    type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT, verbose_name=_("Type of visit"))
+    visit_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Visit price"))
+    date_of_visit = models.DateTimeField(verbose_name=_("Date of visit"))
+    city = models.ForeignKey(City, on_delete=models.PROTECT, verbose_name=_("City"))
+    detailed_location = models.CharField(max_length=100, blank=True, verbose_name=_("Detailed location"))
+    cause_of_visit = models.TextField(max_length=700, verbose_name=_("Cause of visit"))
+    checkup = models.TextField(max_length=1200, verbose_name=_("Checkup"))
+    additional_checkup = models.TextField(max_length=700, blank=True, verbose_name=_("Additional checkup"))
+    diagnosis = models.ManyToManyField('Disease', related_name='reports', verbose_name=_("Diagnosis"))
+    prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
+    checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
+    doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
+    docx_download_link = models.CharField(max_length=500, blank=True, verbose_name=_("Download link"))
 
     class Meta:
         unique_together = (('patients_first_name', 'patients_last_name', 'ref_number'),)
-        verbose_name = 'Report'
-        verbose_name_plural = 'Reports'
+        verbose_name = _('Report')
+        verbose_name_plural = _('Reports')
 
     def __str__(self):
         return ' '.join((self.ref_number, self.patients_last_name, self.patients_first_name))
@@ -232,43 +233,43 @@ class Report(models.Model):
             return total
         return total
 
-    get_total_price.fget.short_description = 'Total price'
+    get_total_price.fget.short_description = _('Total price')
 
 
 class AdditionalImage(models.Model):
-    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images')
-    image = models.ImageField(upload_to=get_image_path)
-    position = models.IntegerField(blank=False)
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
+    image = models.ImageField(upload_to=get_image_path, verbose_name=_("Image"))
+    position = models.IntegerField(blank=False, verbose_name=_("Position"))
 
     class Meta:
-        verbose_name = 'Additional Image'
-        verbose_name_plural = 'Additional Images'
+        verbose_name = _('Additional Image')
+        verbose_name_plural = _('Additional Images')
 
 #    Every country has a list of services with prices for each.
 class Service(models.Model):
-    name = models.CharField(max_length=100)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='services', default=1)
-    price = models.DecimalField(max_digits=8, decimal_places=2 )
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='services', default=1, verbose_name=_("Country"))
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
 
     class Meta:
         unique_together = (('name', 'country',),)
-        verbose_name = 'Service'
-        verbose_name_plural = 'Services'
+        verbose_name = _('Service')
+        verbose_name_plural = _('Services')
 
     def __str__(self):
         return self.country.name + ' - ' + self.name
 
 
 class ServiceItem(models.Model):
-    report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT)
-    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    quantity = models.PositiveIntegerField(default=1)
+    report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE, verbose_name=_("Report"))
+    service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT, verbose_name=_("Service"))
+    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price"))
+    quantity = models.PositiveIntegerField(default=1, verbose_name=_("Quantity"))
 
     class Meta:
         unique_together = (('report', 'service',),)
-        verbose_name = 'Service item'
-        verbose_name_plural = 'Service items'
+        verbose_name = _('Service item')
+        verbose_name_plural = _('Service items')
 
     def __str__(self):
         if self.quantity > 1:

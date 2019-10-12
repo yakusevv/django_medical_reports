@@ -1,16 +1,19 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from time import time
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=200, db_index=True)
-    body = models.TextField(blank=True, db_index=False)
-    date_pub = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=200, db_index=True, verbose_name=_("Title"))
+    body = models.TextField(blank=True, db_index=False, verbose_name=_("Body"))
+    date_pub = models.DateTimeField(auto_now_add=True, verbose_name=_("Date pub."))
 
     class Meta:
         ordering = ['-date_pub']
+        verbose_name = _('Post')
+        verbose_name_plural = _('Posts')
 
     def __str__(self):
         return self.title
