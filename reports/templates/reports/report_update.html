@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{{ report.get_update_url }}" method="post" enctype="multipart/form-data">
+<form action="{{ report.get_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
   {% for field in form %}
   <div class="form-group col-md-12 mb-2 border-top">
