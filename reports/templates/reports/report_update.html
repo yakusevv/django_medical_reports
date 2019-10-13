@@ -16,7 +16,7 @@
 
 {% block admin-panel-content %}
 {% if not report.checked %}
-<a class="btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
+<a class="admin-panel-element btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
 {% endif %}
 {% endblock %}
 

@@ -1,30 +1,23 @@
 .admin-panel {
-    background: ipx solid #999;
+    background: rgba(1, 1, 1, 0.2);
     border-radius: 2px;
     position: fixed;
-    right: 50px;
-    bottom: 30px;
-    opacity: 0.5;
-    padding: 15px;
-    width: 200px;
-}
-
-.admin-panel:hover {
+    right: 15px;
+    bottom: 10px;
     opacity: 1;
+    padding: 10px;
+    width: 200px;
+    transition: 0.5s;
+    outline: none;
 }
-
 
 .admin-panel a {
     display: block;
     margin: 5px 0;
 }
 
-a.edit, a.delete {
-    display: none;
-}
-
-.admin-panel p {
-    text-align: center;
+.admin-panel-element {
+    overflow: hidden;
 }
 
 .admin-panel p {

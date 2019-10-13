@@ -6,9 +6,10 @@
 {% endblock %}
 
 {% block admin-panel-content %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
 {% if not report.checked %}
-<a class="btn btn-secondary" href="{{ report.get_update_url }}">{% trans "Edit report" %}</a>
-<a class="btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
+<a class="admin-panel-element btn btn-secondary" href="{{ report.get_update_url }}">{% trans "Edit report" %}</a>
+<a class="admin-panel-element btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
 {% endif %}
 {% endblock %}
 

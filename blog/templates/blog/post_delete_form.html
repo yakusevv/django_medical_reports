@@ -11,7 +11,7 @@
   <div class="text-center mt-5">
    <h3>{% trans "Are you sure you want to delete" %} <b>"{{ post.title|title }}"</b> {% trans "post?" %}</h3>
    <a href="{{ post.get_absolute_url }}">{% trans "Cancel" %}</a>
-   <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+   <button type="submit" class="btn btn-danger ml-3">{% trans "Delete" %}</button>
   </div>
 </form>
 {% endblock %}

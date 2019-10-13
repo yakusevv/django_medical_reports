@@ -90,20 +90,40 @@
             </div>
           </div>
 
-     <div class="admin-panel align-items-center" id="admin-panel">
      {% if user.is_authenticated %}
-      <p style="font-weight: bold"> {{ user.username }}</p>
+     <div class="admin-panel" id='admin-panel'>
+       <button class="admin-panel-collide" onclick="openPanel()">&#9776;</button>
+      <p class="admin-panel-element" style="font-weight: bold"> {{ user.username }}</p>
      {% endif %}
      {% if request.user.is_authenticated and request.user.is_staff %}
-     <a href="/admin" class="btn btn-outline-info mb-4">{% trans "Admin page" %}</a>
+     <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>
      {% endif %}
      {% if user.is_authenticated %}
      {% block admin-panel-content %}
      {% endblock %}
-     <a href="{% url 'logout' %}" class="btn btn-link">{% trans "Logout" %}</a>
+     <a href="{% url 'logout' %}" class="admin-panel-element btn btn-link">{% trans "Logout" %}</a>
      {% endif %}
-     </div>
-
+   </div>
+    <script type="text/javascript">
+      function openPanel(){
+        let panel = document.getElementById('admin-panel')
+        let elements = panel.querySelectorAll(".admin-panel-element")
+        if (panel.style.width == "50px"){
+          panel.style.width = "200px";
+          for (let i = 0; i < elements.length; i++){
+            elements[i].style.display = "block"
+          }
+        }
+        else{
+          panel.style.width = "50px";
+          for (let i = 0; i < elements.length; i++){
+            elements[i].style.display = "none"
+          }
+        }
+      }
+    </script>
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
-  <script>
 </html>

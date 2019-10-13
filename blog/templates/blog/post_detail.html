@@ -5,6 +5,14 @@
 {{ block.super }} - {{ post.title|title }}
 {% endblock %}
 
+{% block admin-panel-content %}
+{% if user.is_staff %}
+<a class="admin-panel-element btn btn-success" href="{% url 'post_create_url' %}">{% trans "Create post" %}</a>
+<a href="{{ admin_obj.get_update_url }}" class="admin-panel-element btn btn-secondary edit">{% trans "Edit post" %}</a>
+<a href="{{ admin_obj.get_delete_url }}" class="admin-panel-element btn btn-danger delete">{% trans "Delete post" %}</a>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <h1 class="mt-5">
   {{ post.title }}

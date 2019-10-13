@@ -21,16 +21,16 @@ class PostList(LoginRequiredMixin, ListView):
         context['news_link_active'] = "active"
         return context
 
+
 class PostDetail(LoginRequiredMixin, View):
     model = Post
     template = 'blog/post_detail.html'
 
     def get(self, request, pk):
-        post = get_object_or_404(self.model, pk=pk)
+        obj = get_object_or_404(self.model, pk=pk)
         return render(request, self.template, context={
-                                                'post': post,
-                                                'admin_obj': post,
-                                                'detail': True,
+                                                'post': obj,
+                                                'admin_obj': obj,
                                                 'news_link_active': "active"
                                                 })
 
@@ -42,8 +42,10 @@ class PostCreate(PermissionRequiredMixin, View):
 
     def get(self, request):
         form = self.model_form()
-        return render(request, self.template, context={'form': form,
-                                                       'news_link_active': "active"})
+        return render(request, self.template, context={
+                                                'form': form,
+                                                'news_link_active': "active"
+                                                })
 
     def post(self, request):
         bound_form = self.model_form(request.POST)
@@ -64,6 +66,7 @@ class PostUpdate(PermissionRequiredMixin, View):
         bound_form = self.model_form(instance=obj)
         return render(request, self.template,
                       context={'form': bound_form,
+                               'admin_obj': obj,
                                self.model.__name__.lower(): obj,
                                'news_link_active': "active"
                                })
@@ -93,7 +96,7 @@ class PostDelete(PermissionRequiredMixin, View):
                                                 self.model.__name__.lower(): obj,
                                                 'news_link_active': "active"
                                                 })
-                                                
+
     def post(self, request, pk):
         obj = self.model.objects.get(pk=pk)
         obj.delete()

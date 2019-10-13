@@ -7,6 +7,9 @@
 
 {% load crispy_forms_tags %}
 
+{% block admin-panel-content %}
+{% endblock %}
+
 {% block content %}
 <form action="{% url 'post_create_url' %}" method="post">
   {% csrf_token %}

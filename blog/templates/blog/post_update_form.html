@@ -7,6 +7,12 @@
 
 {% load crispy_forms_tags %}
 
+{% block admin-panel-content %}
+{% if user.is_staff %}
+<a href="{{ admin_obj.get_delete_url }}" class="admin-panel-element btn btn-danger delete">{% trans "Delete post" %}</a>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <form action="{{ post.get_update_url }}" method="post">
   {% csrf_token %}
