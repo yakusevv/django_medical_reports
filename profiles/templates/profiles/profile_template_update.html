@@ -10,12 +10,16 @@
 {% block content %}
 <form action="{{ object.get_update_url }}" method="post">
   {% csrf_token %}
-  {% for field in form.visible_fields %}
-  <div class="form-group col-md-12 mb-2 border-top">
-      <div class="form-group col-md-6 mb-0">
-        {{ field|as_crispy_field }}
+  {% for field in form %}
+    {% if not field.is_hidden %}
+      <div class="form-group col-md-12 mb-2 border-top">
+        <div class="form-group col-md-6 mb-0">
+          {{ field|as_crispy_field }}
+        </div>
       </div>
-    </div>
+    {% else %}
+      {{ field }}
+    {% endif %}
   {% endfor %}
 <button type="submit" name="Create" class="btn btn-primary">{% trans "Update template" %}</button>
 <button type="submit" name="Delete" class="btn btn-danger" value='Delete'>{% trans "Delete template" %}</button>

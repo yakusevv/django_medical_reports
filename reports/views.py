@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -15,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.db import transaction
 from django.http import Http404
 from django.utils.translation import ugettext as _
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import (
                 Report,
@@ -111,6 +114,16 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ReportCreateView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
+        templates_query = self.request.user.profile.report_templates.all()
+        templates = templates_query.values(
+                                        'name',
+                                        'cause_of_visit_template',
+                                        'checkup_template' ,
+                                        'additional_checkup_template',
+                                        'prescription_template'
+                                        )
+        context['json_templates'] = list(templates)
+        print(context['json_templates'])
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST)
             context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)

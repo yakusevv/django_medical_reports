@@ -18,6 +18,23 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+{% if request.user.profile.report_templates %}
+  <div class="form-group col-md-12 mb-2 border-top">
+    <div class="form-group col-md-6 mb-0">
+      <label for="report_template" class="col-form-label">
+                {% trans "Use autocomplete template" %}
+      </label>
+      <select name="report_template" class="form-control form-control-sm" id="id_report_template" onchange="selectTemplate()">
+        <option value=""></option>
+        {% for template in request.user.profile.report_templates.all %}
+        <option value="{{ template.name }}">{{ template.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+{% endif %}
+
 <form action="{% url 'report_create_url' %}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
     {% for field in form %}
@@ -80,4 +97,23 @@
   });
 </script>
 
+<script type="text/javascript">
+  function selectTemplate(){
+    {% autoescape off %}
+    var queryset = {{ json_templates }}
+    {% endautoescape %}
+    var e = document.getElementById("id_report_template");
+    var name = e.options[e.selectedIndex].value;
+    var cause = document.getElementById("id_cause_of_visit");
+    var check = document.getElementById("id_checkup");
+    var addit = document.getElementById("id_additional_checkup");
+    var presc = document.getElementById("id_prescription");
+    var item = queryset.find(item => item.name === name);
+
+    cause.defaultValue = item.cause_of_visit_template;
+    check.defaultValue = item.checkup_template;
+    addit.defaultValue = item.additional_checkup_template;
+    presc.defaultValue = item.prescription_template;
+  }
+</script>
 {% endblock %}
