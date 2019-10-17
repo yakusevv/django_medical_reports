@@ -10,6 +10,7 @@
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   {{ form.media }}
+  <link rel="stylesheet" href="{% static 'node_modules/croppie/croppie.css' %}" />
 {% endblock %}
 
 {% block admin-panel-content %}
@@ -76,8 +77,11 @@
       <div class="form-group col-md-6 mb-0">
         {{ images|crispy }}
       </div>
-    </div>
-  <button type="submit" name="Create" class="btn btn-primary">{% trans "Create report" %}</button>
+      <div class="col">
+        <div id="id_image_crop"></div>
+      </div>
+  </div>
+  <button type="submit" name="Create" class="btn btn-primary" id="id_create">{% trans "Create report" %}</button>
 
 </form>
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
@@ -95,6 +99,48 @@
     added: (row)=>{ row.find('select[name*="service_items"]').djangoSelect2() },
     removed: null
   });
+</script>
+
+<script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
+
+<script type="text/javascript">
+		var $uploadCrop;
+
+		function readFile(input) {
+ 			if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+
+	            reader.onload = function (e) {
+					$('#id_image_crop').addClass('ready');
+	            	$uploadCrop.croppie('bind', {
+	            		url: e.target.result
+	            	}).then(function(){
+	            		console.log('jQuery bind complete');
+	            	});
+	            }
+
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+		        swal("Sorry - you're browser doesn't support the FileReader API");
+		    }
+		}
+		$uploadCrop = $('#id_image_crop').croppie({
+      enableExif: true,
+      enableOrientation: true,
+      enableResize: true,
+      mouseWheelZoom: 'ctrl',
+      viewport: {
+         width: 200,
+         height: 200,
+         },
+      boundary: {
+         width: 300,
+         height: 300
+     }
+		});
+		$('#id_image').on('change', function () { readFile(this); });
+    $('#id_create').on('click', function () { console.log($uploadCrop.croppie('get').points); });
 </script>
 
 <script type="text/javascript">

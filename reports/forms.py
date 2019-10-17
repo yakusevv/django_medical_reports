@@ -147,7 +147,7 @@ ServiceItemsFormSet = inlineformset_factory(
 
 
 class AdditionalImageForm(forms.ModelForm):
-    image = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
+    image = forms.ImageField(widget=forms.FileInput(),required=False)
 
     class Meta:
         model = AdditionalImage
@@ -158,17 +158,15 @@ class AdditionalImageForm(forms.ModelForm):
         self.fields['image'].label = _("Images")
 
     def save(self, *args, **kwargs):
-        file_list = self.files.getlist('image')
-        position = 1
-        if len(file_list)>0:
-            for file in file_list:
-                inst = AdditionalImage(
-                    report=self.instance.report,
-                    image=file,
-                    position=position
-                    )
-                inst.save()
-                position += 1
+        image = self.files.get('image')
+        print(self)
+        if image:
+            inst = AdditionalImage(
+                report=self.instance.report,
+                image=image,
+                position=0
+                )
+            inst.save()
 
 
 class VisitTariffInlineFormSet(BaseInlineFormSet):

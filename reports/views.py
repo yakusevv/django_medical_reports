@@ -123,7 +123,6 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
                                         'prescription_template'
                                         )
         context['json_templates'] = list(templates)
-        print(context['json_templates'])
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST)
             context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)

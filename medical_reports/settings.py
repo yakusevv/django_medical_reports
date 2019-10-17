@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'django_select2',
     'tempus_dominus',
-    'crispy_forms'
+    'crispy_forms',
 ]
 
 #apps settings
