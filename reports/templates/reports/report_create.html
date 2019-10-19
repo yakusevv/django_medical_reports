@@ -140,7 +140,16 @@
      }
 		});
 		$('#id_image').on('change', function () { readFile(this); });
-    $('#id_create').on('click', function () { console.log($uploadCrop.croppie('get').points); });
+    $('#id_create').on('click', function () {
+    console.log($uploadCrop.croppie('get').points);
+    var cropData = $uploadCrop.croppie('get').points;
+    $("#id_x").val(cropData[0]);
+    $("#id_y").val(cropData[1]);
+    $("#id_w").val(cropData[2]);
+    $("#id_h").val(cropData[3]);
+
+//    $("#formUpload").submit();
+  });
 </script>
 
 <script type="text/javascript">

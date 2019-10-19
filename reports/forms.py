@@ -4,9 +4,13 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.base import ContentFile
 
 from tempus_dominus.widgets import DateTimePicker, DatePicker
 from django_select2.forms import Select2MultipleWidget, Select2Widget
+from PIL import Image
+import io
 
 from .models import (
                     Report,
@@ -148,25 +152,32 @@ ServiceItemsFormSet = inlineformset_factory(
 
 class AdditionalImageForm(forms.ModelForm):
     image = forms.ImageField(widget=forms.FileInput(),required=False)
+    x = forms.FloatField(widget=forms.HiddenInput())
+    y = forms.FloatField(widget=forms.HiddenInput())
+    w = forms.FloatField(widget=forms.HiddenInput())
+    h = forms.FloatField(widget=forms.HiddenInput())
 
     class Meta:
         model = AdditionalImage
-        fields = ['image']
+        fields = ('image','x', 'y', 'w', 'h', )
 
     def __init__(self, *args, **kwargs):
         super(AdditionalImageForm, self).__init__(*args, **kwargs)
         self.fields['image'].label = _("Images")
 
     def save(self, *args, **kwargs):
-        image = self.files.get('image')
-        print(self)
-        if image:
-            inst = AdditionalImage(
-                report=self.instance.report,
-                image=image,
-                position=0
-                )
-            inst.save()
+        image = self.cleaned_data.get('image')
+        x = self.cleaned_data.get('x')
+        y = self.cleaned_data.get('y')
+        w = self.cleaned_data.get('w')
+        h = self.cleaned_data.get('h')
+        cropped_image = Image.open(image).crop((x, y, w, h))
+        thumb_io = io.BytesIO()
+        print(image)
+        cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
+        self.instance.image.save(str(image), ContentFile(thumb_io.getvalue()), save=False)
+        self.instance.position = 0
+        self.instance.save()
 
 
 class VisitTariffInlineFormSet(BaseInlineFormSet):
