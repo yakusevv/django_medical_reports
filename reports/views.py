@@ -34,7 +34,7 @@ from .models import (
 from .forms import (
                 ReportForm,
                 ServiceItemsFormSet,
-                AdditionalImageForm
+                AdditionalImageFormSet
                 )
 
 
@@ -125,10 +125,10 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         context['json_templates'] = list(templates)
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST)
-            context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
+            context['images'] = AdditionalImageFormSet(self.request.POST, self.request.FILES)
         else:
             context['service_items'] = ServiceItemsFormSet()
-            context['images'] = AdditionalImageForm()
+            context['images'] = AdditionalImageFormSet()
         if self.request.user.profile.city:
             current_country   = self.request.user.profile.city.district.region.country.pk
             type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)

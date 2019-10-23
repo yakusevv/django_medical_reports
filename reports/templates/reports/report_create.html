@@ -58,7 +58,7 @@
       </tr>
     </thead>
     {% endif %}
-    <tr class="formset_row">
+    <tr class="service_formset_row">
       {% for field in form.visible_fields %}
       <td>
         {% if forloop.first %}
@@ -73,20 +73,124 @@
     </tr>
     {% endfor %}
   </table>
-  <div class="form-group col-md-12 mb-2 border-top">
+
+  <script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
+  <table class="table">
+    {{ images.management_form }}
+    {{ images.non_form_errors }}
+    {% for form in images.forms %}
+    {% if forloop.first %}
+    <thead>
+      <tr>
+        {% for field in form.visible_fields %}
+        <th>{{ field.label|capfirst }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    {% endif %}
+    <tr class="images_formset_row">
+      {% for field in form.visible_fields %}
+      <td>
+        {% if forloop.first %}
+          {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+        {% endif %}
+        {{ field.errors.as_ul }}
+        {{ field }}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="col" id="id_image_crop_set">
+  </div>
+
+{% comment %}
+     <div class="form-group col-md-12 mb-2 border-top">
       <div class="form-group col-md-6 mb-0">
         {{ images|crispy }}
       </div>
-      <div class="col">
+      <div class="col" id="id_image_crop_set">
         <div id="id_image_crop"></div>
       </div>
-  </div>
+     </div>
+{% endcomment %}
+
   <button type="submit" name="Create" class="btn btn-primary" id="id_create">{% trans "Create report" %}</button>
 
 </form>
+
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+function addImageCrop(id){
+    var clean_id = id.replace(/\D/g,'');
+    var div_id = "id_image_crop_" + clean_id;
+
+    console.log('clean_id', clean_id);
+  //  if (!($("#id_image_crop_" + clean_id).length)){
+      var div = document.createElement("div");
+      div.id = div_id;
+      var set = $('#id_image_crop_set');
+      set.append(div);
+//    }
+
+    var  $uploadCrop;
+
+    function readFile(input) {
+      if (input.files && input.files[0]) {
+              var reader = new FileReader();
+//              console.log('new reader')
+              reader.onload = function (e) {
+          $("#" + div_id).addClass('ready');
+//                console.log('ready')
+                $uploadCrop.croppie('bind', {
+                  url: e.target.result
+                }).then(function(){
+                  console.log('jQuery bind complete');
+                });
+              }
+              reader.readAsDataURL(input.files[0]);
+          }
+          else {
+            alert("Sorry - you're browser doesn't support the FileReader API");
+        }
+    }
+      $uploadCrop = $("#"+ div_id);
+      $uploadCrop.croppie({
+      enableExif: true,
+      enableOrientation: true,
+      enableResize: true,
+      mouseWheelZoom: 'ctrl',
+      viewport: {
+         width: 200,
+         height: 200,
+         },
+      boundary: {
+         width: 300,
+         height: 300
+     }
+    });
+//    $("#id_additional_images-" + clean_id + "-image").on('change', function () { readFile(this); });
+    readFile($("#id_additional_images-" + clean_id + "-image")[0]);
+
+    $('#id_create').on('click', function () {
+//      console.log($uploadCrop.croppie('get').points);
+    var cropData = $uploadCrop.croppie('get').points;
+    $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
+    $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
+    $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
+    $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
+  });
+}
+    window.addImageCrop = addImageCrop
+})
+</script>
+
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
   <script type="text/javascript">
-  $('.formset_row').formset({
+  $('.service_formset_row').formset({
     addText: '{% trans "add service item" %}',
     deleteText: '{% trans "remove" %}',
     prefix: '{{ service_items.prefix }}',
@@ -101,55 +205,20 @@
   });
 </script>
 
-<script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
-
 <script type="text/javascript">
-		var $uploadCrop;
-
-		function readFile(input) {
- 			if (input.files && input.files[0]) {
-	            var reader = new FileReader();
-
-	            reader.onload = function (e) {
-					$('#id_image_crop').addClass('ready');
-	            	$uploadCrop.croppie('bind', {
-	            		url: e.target.result
-	            	}).then(function(){
-	            		console.log('jQuery bind complete');
-	            	});
-	            }
-
-	            reader.readAsDataURL(input.files[0]);
-	        }
-	        else {
-		        swal("Sorry - you're browser doesn't support the FileReader API");
-		    }
-		}
-		$uploadCrop = $('#id_image_crop').croppie({
-      enableExif: true,
-      enableOrientation: true,
-      enableResize: true,
-      mouseWheelZoom: 'ctrl',
-      viewport: {
-         width: 200,
-         height: 200,
-         },
-      boundary: {
-         width: 300,
-         height: 300
-     }
-		});
-		$('#id_image').on('change', function () { readFile(this); });
-    $('#id_create').on('click', function () {
-    console.log($uploadCrop.croppie('get').points);
-    var cropData = $uploadCrop.croppie('get').points;
-    $("#id_x").val(cropData[0]);
-    $("#id_y").val(cropData[1]);
-    $("#id_w").val(cropData[2]);
-    $("#id_h").val(cropData[3]);
-
-//    $("#formUpload").submit();
-  });
+$('.images_formset_row').formset({
+  addText: '{% trans "add image" %}',
+  deleteText: '{% trans "remove" %}',
+  prefix: '{{ images.prefix }}',
+  formTemplate: null,
+  addCssClass: 'add-row',
+  deleteCssClass: 'delete-row',
+  formCssClass: 'dynamic-form',
+  extraClasses: [],
+//  keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
+  added: null,
+  removed: null
+});
 </script>
 
 <script type="text/javascript">
@@ -157,12 +226,12 @@
     {% autoescape off %}
     var queryset = {{ json_templates }}
     {% endautoescape %}
-    var e = document.getElementById("id_report_template");
+    var e = $("#id_report_template");
     var name = e.options[e.selectedIndex].value;
-    var cause = document.getElementById("id_cause_of_visit");
-    var check = document.getElementById("id_checkup");
-    var addit = document.getElementById("id_additional_checkup");
-    var presc = document.getElementById("id_prescription");
+    var cause = $("#id_cause_of_visit");
+    var check = $("#id_checkup");
+    var addit = $("#id_additional_checkup");
+    var presc = $("#id_prescription");
     var item = queryset.find(item => item.name === name);
 
     cause.defaultValue = item.cause_of_visit_template;

@@ -151,7 +151,7 @@ ServiceItemsFormSet = inlineformset_factory(
 
 
 class AdditionalImageForm(forms.ModelForm):
-    image = forms.ImageField(widget=forms.FileInput(),required=False)
+    image = forms.ImageField(widget=forms.FileInput(attrs={'onchange': 'addImageCrop(id)'}),required=False, )
     x = forms.FloatField(widget=forms.HiddenInput())
     y = forms.FloatField(widget=forms.HiddenInput())
     w = forms.FloatField(widget=forms.HiddenInput())
@@ -171,13 +171,32 @@ class AdditionalImageForm(forms.ModelForm):
         y = self.cleaned_data.get('y')
         w = self.cleaned_data.get('w')
         h = self.cleaned_data.get('h')
-        cropped_image = Image.open(image).crop((x, y, w, h))
-        thumb_io = io.BytesIO()
-        print(image)
-        cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
-        self.instance.image.save(str(image), ContentFile(thumb_io.getvalue()), save=False)
+        if all(x,y,w,h):
+            cropped_image = Image.open(image).crop((x, y, w, h))
+            thumb_io = io.BytesIO()
+            cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
+            self.instance.image.save(str(image), ContentFile(thumb_io.getvalue()), save=False)
         self.instance.position = 0
         self.instance.save()
+
+
+class AdditionalImageFormset(BaseInlineFormSet):
+
+    def clean(self):
+        if any(self.errors):
+            return
+        number_of_forms = 0
+        for form in self.forms:
+            if form.cleaned_data:
+                if not form.cleaned_data['DELETE']:
+                    number_of_forms += 1
+                    form.cleaned_data['position'] = number_of_forms
+
+
+AdditionalImageFormSet = inlineformset_factory(
+                    Report, AdditionalImage, formset=AdditionalImageFormset,
+                    form=AdditionalImageForm, extra=1
+                    )
 
 
 class VisitTariffInlineFormSet(BaseInlineFormSet):
