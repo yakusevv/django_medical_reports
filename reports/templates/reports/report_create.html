@@ -129,12 +129,14 @@ function addImageCrop(id){
     var div_id = "id_image_crop_" + clean_id;
 
     console.log('clean_id', clean_id);
-  //  if (!($("#id_image_crop_" + clean_id).length)){
+    if (!($("#" + div_id).length)){
       var div = document.createElement("div");
       div.id = div_id;
       var set = $('#id_image_crop_set');
       set.append(div);
-//    }
+    } else {
+      $("#" + div_id).croppie('destroy')
+    }
 
     var  $uploadCrop;
 
