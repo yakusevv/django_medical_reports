@@ -103,7 +103,7 @@
     </tr>
     {% endfor %}
   </table>
-  <div class="col" id="id_image_crop_set">
+  <div class="row" id="id_image_crop_set">
   </div>
 
 {% comment %}
@@ -111,7 +111,7 @@
       <div class="form-group col-md-6 mb-0">
         {{ images|crispy }}
       </div>
-      <div class="col" id="id_image_crop_set">
+      <div class="row" id="id_image_crop_set">
         <div id="id_image_crop"></div>
       </div>
      </div>
@@ -127,12 +127,12 @@ jQuery(document).ready(function($) {
 function addImageCrop(id){
     var clean_id = id.replace(/\D/g,'');
     var div_id = "id_image_crop_" + clean_id;
+    var set = $('#id_image_crop_set');
 
     console.log('clean_id', clean_id);
     if (!($("#" + div_id).length)){
       var div = document.createElement("div");
       div.id = div_id;
-      var set = $('#id_image_crop_set');
       set.append(div);
     } else {
       $("#" + div_id).croppie('destroy')
@@ -174,8 +174,16 @@ function addImageCrop(id){
          height: 300
      }
     });
-//    $("#id_additional_images-" + clean_id + "-image").on('change', function () { readFile(this); });
-    readFile($("#id_additional_images-" + clean_id + "-image")[0]);
+
+  readFile($("#id_additional_images-" + clean_id + "-image")[0]);
+
+  $(".croppie-container").sort(function(a, b) {
+  if (a.id < b.id) {
+    return -1;
+  } else {
+    return 1;
+  }
+}).appendTo(set);
 
     $('#id_create').on('click', function () {
 //      console.log($uploadCrop.croppie('get').points);
@@ -186,7 +194,7 @@ function addImageCrop(id){
     $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
   });
 }
-    window.addImageCrop = addImageCrop
+    window.addImageCrop = addImageCrop;
 })
 </script>
 
