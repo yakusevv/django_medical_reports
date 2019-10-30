@@ -45,7 +45,7 @@
         </div>
       </div>
     {% endfor %}
-  <table class="table">
+  <table class="table" id="service_items_table">
     {{ service_items.management_form }}
     {{ service_items.non_form_errors }}
     {% for form in service_items.forms %}
@@ -74,8 +74,8 @@
     {% endfor %}
   </table>
 
-  <script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
-  <table class="table">
+
+  <table class="table" id="images_table">
     {{ images.management_form }}
     {{ images.non_form_errors }}
     {% for form in images.forms %}
@@ -106,22 +106,11 @@
   <div class="row" id="id_image_crop_set">
   </div>
 
-{% comment %}
-     <div class="form-group col-md-12 mb-2 border-top">
-      <div class="form-group col-md-6 mb-0">
-        {{ images|crispy }}
-      </div>
-      <div class="row" id="id_image_crop_set">
-        <div id="id_image_crop"></div>
-      </div>
-     </div>
-{% endcomment %}
-
   <button type="submit" name="Create" class="btn btn-primary" id="id_create">{% trans "Create report" %}</button>
 
 </form>
 
-
+<script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
 <script type="text/javascript">
 jQuery(document).ready(function($) {
 function addImageCrop(id){
@@ -185,6 +174,19 @@ function addImageCrop(id){
   }
 }).appendTo(set);
 
+/*
+$('.thing').bind('destroyed', function() {
+  // do stuff
+})
+
+/*
+    $("#id_additional_images-" + clean_id + "-image").bind('destroyed', function (){
+      alert(1);
+        $("#" + div_id).croppie('destroy');
+        $("#" + div_id).remove();
+    });
+*/
+
     $('#id_create').on('click', function () {
 //      console.log($uploadCrop.croppie('get').points);
     var cropData = $uploadCrop.croppie('get').points;
@@ -200,14 +202,14 @@ function addImageCrop(id){
 
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
   <script type="text/javascript">
-  $('.service_formset_row').formset({
+  $('#service_items_table tbody tr').formset({
     addText: '{% trans "add service item" %}',
     deleteText: '{% trans "remove" %}',
     prefix: '{{ service_items.prefix }}',
     formTemplate: null,
     addCssClass: 'add-row',
     deleteCssClass: 'delete-row',
-    formCssClass: 'dynamic-form',
+    formCssClass: 'dynamic-formset1',
     extraClasses: [],
     keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
     added: (row)=>{ row.find('select[name*="service_items"]').djangoSelect2() },
@@ -216,18 +218,25 @@ function addImageCrop(id){
 </script>
 
 <script type="text/javascript">
-$('.images_formset_row').formset({
+$('#images_table tbody tr').formset({
   addText: '{% trans "add image" %}',
   deleteText: '{% trans "remove" %}',
   prefix: '{{ images.prefix }}',
   formTemplate: null,
   addCssClass: 'add-row',
   deleteCssClass: 'delete-row',
-  formCssClass: 'dynamic-form',
+  formCssClass: 'dynamic-formset2',
   extraClasses: [],
-//  keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
   added: null,
-  removed: null
+  removed: (row)=>{
+      var id = row.find('input[name*="id"]')[0].id.replace(/\D/g,'');
+      if ($("#id_image_crop_" + id).length){
+        $("#id_image_crop_" + id).remove();
+    }
+//      if (id>0){
+
+//      }
+  }
 });
 </script>
 
@@ -237,17 +246,17 @@ $('.images_formset_row').formset({
     var queryset = {{ json_templates }}
     {% endautoescape %}
     var e = $("#id_report_template");
-    var name = e.options[e.selectedIndex].value;
+    var name = e[0].value;
     var cause = $("#id_cause_of_visit");
     var check = $("#id_checkup");
     var addit = $("#id_additional_checkup");
     var presc = $("#id_prescription");
     var item = queryset.find(item => item.name === name);
 
-    cause.defaultValue = item.cause_of_visit_template;
-    check.defaultValue = item.checkup_template;
-    addit.defaultValue = item.additional_checkup_template;
-    presc.defaultValue = item.prescription_template;
+    cause.val(item.cause_of_visit_template);
+    check.val(item.checkup_template);
+    addit.val(item.additional_checkup_template);
+    presc.val(item.prescription_template);
   }
 </script>
 {% endblock %}

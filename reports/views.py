@@ -162,7 +162,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
                 service_items.instance = self.object
                 service_items.save()
             if images.is_valid():
-                images.instance.report = self.object
+                images.instance = self.object
                 images.save()
         return super(ReportCreateView, self).form_valid(form)
 

@@ -161,6 +161,12 @@ class AdditionalImageForm(forms.ModelForm):
         model = AdditionalImage
         fields = ('image','x', 'y', 'w', 'h', )
 
+    def clean(self):
+        cleaned_data = super(AdditionalImageForm, self).clean()
+        if cleaned_data['DELETE']:
+            self.instance.delete()
+        return cleaned_data
+
     def __init__(self, *args, **kwargs):
         super(AdditionalImageForm, self).__init__(*args, **kwargs)
         self.fields['image'].label = _("Images")
@@ -171,7 +177,7 @@ class AdditionalImageForm(forms.ModelForm):
         y = self.cleaned_data.get('y')
         w = self.cleaned_data.get('w')
         h = self.cleaned_data.get('h')
-        if all(x,y,w,h):
+        if all((x,y,w,h)):
             cropped_image = Image.open(image).crop((x, y, w, h))
             thumb_io = io.BytesIO()
             cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
