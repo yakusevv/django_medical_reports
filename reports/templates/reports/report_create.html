@@ -230,12 +230,20 @@ $('#images_table tbody tr').formset({
   added: null,
   removed: (row)=>{
       var id = row.find('input[name*="id"]')[0].id.replace(/\D/g,'');
+      var int_id = parseInt(id);
       if ($("#id_image_crop_" + id).length){
         $("#id_image_crop_" + id).remove();
     }
-//      if (id>0){
+      if (int_id > 0){
+        var crop_divs = $("#id_image_crop_set").children()
+        crop_divs.each(function(){
+          var int_crop_id = parseInt(this.id.replace(/\D/g,''))
+          if (int_crop_id > int_id) {
+            $(this)[0].id = this.id.replace(int_crop_id, (int_crop_id - 1));
+          }
+        });
 
-//      }
+      }
   }
 });
 </script>
