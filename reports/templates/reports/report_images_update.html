@@ -1,0 +1,166 @@
+{% extends 'reports/base_reports.html' %}
+{% load static i18n %}
+
+{% block title %}
+  {{ block.super }} - {{ report.ref_number }} - {% trans "Edit images" %}
+{% endblock %}
+
+{% block extrahead %}
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  {{ form.media }}
+  <link rel="stylesheet" href="{% static 'node_modules/croppie/croppie.css' %}" />
+{% endblock %}
+
+{% block admin-panel-content %}
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<form action="{{ report.get_images_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <table class="table" id="images_table">
+    {{ form.management_form }}
+    {{ form.non_form_errors }}
+    {% for form_item in form.forms %}
+    {% if forloop.first %}
+    <thead>
+      <tr>
+        {% for field in form_item.visible_fields %}
+        <th>{{ field.label|capfirst }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    {% endif %}
+    <tr class="images_formset_row">
+      {% for field in form_item.visible_fields %}
+      <td>
+        {% if forloop.first %}
+          {% for hidden in form_item.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+        {% endif %}
+        {{ field.errors.as_ul }}
+        {{ field }}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="row" id="id_image_crop_set">
+  </div>
+
+  <button type="submit" name="Create" class="btn btn-primary" id="id_create">{% trans "Create report" %}</button>
+
+</form>
+
+<script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+function addImageCrop(id){
+    var clean_id = id.replace(/\D/g,'');
+    var div_id = "id_image_crop_" + clean_id;
+    var set = $('#id_image_crop_set');
+
+    console.log('clean_id', clean_id);
+    if (!($("#" + div_id).length)){
+      var div = document.createElement("div");
+      div.id = div_id;
+      set.append(div);
+    } else {
+      $("#" + div_id).croppie('destroy')
+    }
+
+    var  $uploadCrop;
+
+    function readFile(input) {
+      if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function (e) {
+          $("#" + div_id).addClass('ready');
+                $uploadCrop.croppie('bind', {
+                  url: e.target.result
+                }).then(function(){
+                  console.log('jQuery bind complete');
+                });
+              }
+              reader.readAsDataURL(input.files[0]);
+          }
+          else {
+            alert("Sorry - you're browser doesn't support the FileReader API");
+        }
+    }
+      $uploadCrop = $("#"+ div_id);
+      $uploadCrop.croppie({
+      enableExif: true,
+      enableOrientation: true,
+      enableResize: true,
+      mouseWheelZoom: 'ctrl',
+      viewport: {
+         width: 200,
+         height: 200,
+         },
+      boundary: {
+         width: 300,
+         height: 300
+     }
+    });
+
+  readFile($("#id_additional_images-" + clean_id + "-image")[0]);
+
+  $(".croppie-container").sort(function(a, b) {
+  if (a.id < b.id) {
+    return -1;
+  } else {
+    return 1;
+  }
+}).appendTo(set);
+
+    $('#id_create').on('click', function () {
+    var cropData = $uploadCrop.croppie('get').points;
+    $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
+    $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
+    $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
+    $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
+  });
+}
+    window.addImageCrop = addImageCrop;
+})
+</script>
+
+  <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
+
+<script type="text/javascript">
+$('#images_table tbody tr').formset({
+  addText: '{% trans "add image" %}',
+  deleteText: '{% trans "remove" %}',
+  prefix: '{{ images.prefix }}',
+  formTemplate: null,
+  addCssClass: 'add-row',
+  deleteCssClass: 'delete-row',
+  formCssClass: 'dynamic-formset2',
+  extraClasses: [],
+  added: null,
+  removed: (row)=>{
+      var id = row.find('input[name*="id"]')[0].id.replace(/\D/g,'');
+      var int_id = parseInt(id);
+      if ($("#id_image_crop_" + id).length){
+        $("#id_image_crop_" + id).remove();
+    }
+      if (int_id > 0){
+        var crop_divs = $("#id_image_crop_set").children()
+        crop_divs.each(function(){
+          var int_crop_id = parseInt(this.id.replace(/\D/g,''))
+          if (int_crop_id > int_id) {
+            $(this)[0].id = this.id.replace(int_crop_id, (int_crop_id - 1));
+          }
+        });
+
+      }
+  }
+});
+</script>
+
+{% endblock %}

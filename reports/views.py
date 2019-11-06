@@ -188,9 +188,10 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             form = self.get_form(form_class)
             service_items = self.get_context_data()['service_items']
             images = self.get_context_data()['images']
-            del_images = [i for i in request.POST.keys() if 'del_image' in i]
+#            del_images = [i for i in request.POST.keys() if 'del_image' in i]
             if form.is_valid() and service_items.is_valid() and images.is_valid():
-                return self.form_valid(form, service_items, images, del_images)
+#                return self.form_valid(form, service_items, images, del_images)
+                 return self.form_valid(form, service_items, images)
             else:
                 return self.form_invalid(form)
         else:
@@ -201,10 +202,10 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         context['report_link_active'] = "active"
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST, instance=self.object)
-            context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
+#            context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
         else:
             context['service_items'] = ServiceItemsFormSet(instance=self.object)
-            context['images'] = AdditionalImageForm()
+#            context['images'] = AdditionalImageForm()
         if self.request.user.profile.city:
             current_country   = self.request.user.profile.city.district.region.country.pk
             type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)
@@ -220,9 +221,9 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form, service_items, images, del_images):
         with transaction.atomic():
-            for image in del_images:
-                image_pk = image.split('id')[-1:][0]
-                AdditionalImage.objects.get(pk=image_pk).delete()
+#            for image in del_images:
+#                image_pk = image.split('id')[-1:][0]
+#                AdditionalImage.objects.get(pk=image_pk).delete()
             company = form.cleaned_data['company']
             city = form.cleaned_data['city']
             type_of_visit = form.cleaned_data['type_of_visit']
@@ -238,9 +239,9 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             if service_items.is_valid():
                 service_items.instance = self.object
                 service_items.save()
-            if images.is_valid():
-                images.instance.report = self.object
-                images.save()
+#            if images.is_valid():
+#                images.instance.report = self.object
+#                images.save()
         return super(ReportUpdateView, self).form_valid(form)
 
 
@@ -267,6 +268,45 @@ class ReportDeleteView(PermissionRequiredMixin, DeleteView):
             return redirect(reverse(self.redirect_url))
         else:
             raise Http404(_("Checked report cannot be deleted"))
+
+
+class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
+    model = Report
+    template_name = 'reports/report_images_update.html'
+    form_class = AdditionalImageFormSet
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if not self.object.checked:
+            return self.render_to_response(self.get_context_data(form=form))
+        else:
+            raise Http404(_("Checked report cannot be edited"))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.checked:
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+#            service_items = self.get_context_data()['service_items']
+#            images = self.get_context_data()['images']
+#            del_images = [i for i in request.POST.keys() if 'del_image' in i]
+            if form.is_valid() and service_items.is_valid() and images.is_valid():
+#                return self.form_valid(form, service_items, images, del_images)
+                 return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        else:
+            raise Http404(_("Checked report cannot be edited"))
+
+    def form_valid(self, form, service_items, images, del_images):
+        with transaction.atomic():
+#            for image in del_images:
+#                image_pk = image.split('id')[-1:][0]
+#                AdditionalImage.objects.get(pk=image_pk).delete()
+            self.object = form.save()
+        return super(ReportAdditionalImagesUpdateView, self).form_valid(form)
 
 
 class PriceTableView(PermissionRequiredMixin, DetailView):

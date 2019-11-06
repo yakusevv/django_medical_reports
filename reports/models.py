@@ -216,6 +216,9 @@ class Report(models.Model):
     def get_update_url(self):
         return reverse('report_update_url', kwargs={'pk': self.pk})
 
+    def get_images_update_url(self):
+        return reverse('report_images_update_url', kwargs={'pk': self.pk})
+
     def get_delete_url(self):
         return reverse('report_delete_url', kwargs={'pk': self.pk})
 

@@ -60,17 +60,12 @@
   </table>
   {% for image in report.additional_images.get_queryset %}
   <div class="row mb-2">
-      <div class="col">
         <p class='mb-1'>
           <img src="{{ image.image.url }}" alt="" width='100%'>
         </p>
-      </div>
-      <div class="col mt-2">
-        <input type="checkbox" name="del_image_id{{ image.pk }}" value="">
-        <label for="del_image_id{{ image.pk }}">{% trans "Delete" %}</label>
-      </div>
   </div>
   {% endfor %}
+
   <div class="form-group col-md-12 mb-2 border-top">
       <div class="form-group col-md-6 mb-0">
         {{ images|crispy }}
