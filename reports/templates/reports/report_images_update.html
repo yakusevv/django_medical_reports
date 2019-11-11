@@ -18,6 +18,8 @@
 
 {% block content %}
 
+<script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
+
 <form action="{{ report.get_images_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
 
@@ -50,13 +52,46 @@
     {% endfor %}
   </table>
   <div class="row" id="id_image_crop_set">
+    {% for image in report.additional_images.get_queryset %}
+    <div id="id_image_crop_{{ forloop.counter0 }}">
+    </div>
+    <script type="text/javascript">
+    var el = $("#id_image_crop_{{ forloop.counter0 }}");
+    console.log(el);
+    var resize = new Croppie(el[0], {
+      viewport: {
+         width: 200,
+         height: 200,
+         },
+      boundary: {
+         width: 300,
+         height: 300
+       },
+    enableExif: true,
+    enableOrientation: true,
+    enableResize: true,
+    mouseWheelZoom: 'ctrl',
+});
+resize.bind({
+    url: '{{ image.image.url }}',
+});
+
+$('#id_create').on('click', function () {
+var cropData = $uploadCrop.croppie('get').points;
+$("#id_additional_images-{{ forloop.counter0 }}-x").val(cropData[0]);
+$("#id_additional_images-{{ forloop.counter0 }}-y").val(cropData[1]);
+$("#id_additional_images-{{ forloop.counter0 }}-w").val(cropData[2]);
+$("#id_additional_images-{{ forloop.counter0 }}-h").val(cropData[3]);
+});
+    </script>
+    {% endfor %}
   </div>
 
   <button type="submit" name="Create" class="btn btn-primary" id="id_create">{% trans "Create report" %}</button>
 
 </form>
 
-<script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
+
 <script type="text/javascript">
 jQuery(document).ready(function($) {
 function addImageCrop(id){
@@ -107,7 +142,6 @@ function addImageCrop(id){
          height: 300
      }
     });
-
   readFile($("#id_additional_images-" + clean_id + "-image")[0]);
 
   $(".croppie-container").sort(function(a, b) {
@@ -130,13 +164,13 @@ function addImageCrop(id){
 })
 </script>
 
-  <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
+<script src="{% static 'js/formset/jquery.formset.js' %}"></script>
 
 <script type="text/javascript">
 $('#images_table tbody tr').formset({
   addText: '{% trans "add image" %}',
   deleteText: '{% trans "remove" %}',
-  prefix: '{{ images.prefix }}',
+  prefix: '{{ form.prefix }}',
   formTemplate: null,
   addCssClass: 'add-row',
   deleteCssClass: 'delete-row',

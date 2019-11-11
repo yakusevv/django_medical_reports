@@ -170,6 +170,10 @@ class AdditionalImageForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AdditionalImageForm, self).__init__(*args, **kwargs)
         self.fields['image'].label = _("Images")
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['image'].disabled = True
+
 
     def save(self, *args, **kwargs):
         image = self.cleaned_data.get('image')
