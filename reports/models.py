@@ -247,6 +247,7 @@ class AdditionalImage(models.Model):
     class Meta:
         verbose_name = _('Additional Image')
         verbose_name_plural = _('Additional Images')
+        
 
 #    Every country has a list of services with prices for each.
 class Service(models.Model):

@@ -163,7 +163,7 @@ class AdditionalImageForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(AdditionalImageForm, self).clean()
-        if cleaned_data['DELETE']:
+        if cleaned_data['DELETE'] and self.instance.pk:
             self.instance.delete()
         return cleaned_data
 
@@ -173,14 +173,29 @@ class AdditionalImageForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['image'].disabled = True
+        self.fields['x'].required = False
+        self.fields['y'].required = False
+        self.fields['w'].required = False
+        self.fields['h'].required = False
+#            self.fields['image'].value = instance.image
+#            print(instance.image)
+#            print(dir(instance))
 
 
     def save(self, *args, **kwargs):
+        #instance = getattr(self, 'instance', None)
+        #image = super(AdditionalImageForm, self).save()
+#        if self.instance:
+#            image = self.instance.image.image
+#        else:
         image = self.cleaned_data.get('image')
+#        print(image)
+#        print(self.instance)
         x = self.cleaned_data.get('x')
         y = self.cleaned_data.get('y')
         w = self.cleaned_data.get('w')
         h = self.cleaned_data.get('h')
+#        print(x,y,w,h)
         if all((x,y,w,h)):
             cropped_image = Image.open(image).crop((x, y, w, h))
             thumb_io = io.BytesIO()
@@ -188,12 +203,14 @@ class AdditionalImageForm(forms.ModelForm):
             self.instance.image.save(str(image), ContentFile(thumb_io.getvalue()), save=False)
         self.instance.position = 0
         self.instance.save()
+        return super(AdditionalImageForm, self).save()
 
 
 class AdditionalImageFormset(BaseInlineFormSet):
 
     def clean(self):
         if any(self.errors):
+            print(self.errors)
             return
         number_of_forms = 0
         for form in self.forms:

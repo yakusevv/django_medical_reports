@@ -55,9 +55,10 @@
     {% for image in report.additional_images.get_queryset %}
     <div id="id_image_crop_{{ forloop.counter0 }}">
     </div>
-    <script type="text/javascript">
+
+<script type="text/javascript">
+/*
     var el = $("#id_image_crop_{{ forloop.counter0 }}");
-    console.log(el);
     var resize = new Croppie(el[0], {
       viewport: {
          width: 200,
@@ -72,22 +73,65 @@
     enableResize: true,
     mouseWheelZoom: 'ctrl',
 });
-resize.bind({
+*/
+function ResizeImage(div_id){
+
+var set = $('#id_image_crop_set');
+var div = document.createElement("div");
+div.id = div_id;
+set.append(div);
+var $resizeCrop;
+$resizeCrop = $("#"+ div_id);
+$resizeCrop.croppie({
+enableExif: true,
+enableOrientation: true,
+enableResize: true,
+mouseWheelZoom: 'ctrl',
+viewport: {
+   width: 200,
+   height: 200,
+   },
+boundary: {
+   width: 300,
+   height: 300
+}
+});
+  $resizeCrop.croppie('bind', {
     url: '{{ image.image.url }}',
 });
+$(document).ready(function() {
+  $('#id_update').on('click', function () {
+//      var cropData = $("id_image_crop_{{ forloop.counter0 }}").croppie('get').points;
+      var cropData = $resizeCrop.croppie('get').points;
+//      alert($resizeCrop);
+//      alert(cropData);
+      $("#id_additional_images-{{ forloop.counter0 }}-x").val(cropData[0]);
+      $("#id_additional_images-{{ forloop.counter0 }}-y").val(cropData[1]);
+      $("#id_additional_images-{{ forloop.counter0 }}-w").val(cropData[2]);
+      $("#id_additional_images-{{ forloop.counter0 }}-h").val(cropData[3]);
+  });
+    });
+};
+ResizeImage("id_image_crop_{{ forloop.counter0 }}");
+//$resizeCrop.bind({
+//    url: '{{ image.image.url }}',
 
-$('#id_create').on('click', function () {
+/*
+$('#id_update').on('click', function () {
+      console.log($uploadCrop.croppie('get').points);
 var cropData = $uploadCrop.croppie('get').points;
 $("#id_additional_images-{{ forloop.counter0 }}-x").val(cropData[0]);
 $("#id_additional_images-{{ forloop.counter0 }}-y").val(cropData[1]);
 $("#id_additional_images-{{ forloop.counter0 }}-w").val(cropData[2]);
 $("#id_additional_images-{{ forloop.counter0 }}-h").val(cropData[3]);
 });
-    </script>
+*/
+</script>
+
     {% endfor %}
   </div>
 
-  <button type="submit" name="Create" class="btn btn-primary" id="id_create">{% trans "Create report" %}</button>
+  <button type="submit" name="Update" class="btn btn-primary" id="id_update">{% trans "Update images" %}</button>
 
 </form>
 
@@ -98,8 +142,6 @@ function addImageCrop(id){
     var clean_id = id.replace(/\D/g,'');
     var div_id = "id_image_crop_" + clean_id;
     var set = $('#id_image_crop_set');
-
-    console.log('clean_id', clean_id);
     if (!($("#" + div_id).length)){
       var div = document.createElement("div");
       div.id = div_id;
@@ -151,17 +193,52 @@ function addImageCrop(id){
     return 1;
   }
 }).appendTo(set);
-
-    $('#id_create').on('click', function () {
+/*
+$('#id_update').on('click', function () {
+//      console.log($uploadCrop.croppie('get').points);
+var cropData = $uploadCrop.croppie('get').points;
+$("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
+$("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
+$("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
+$("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
+});
+*/
+//*/
+$('#id_update').on('click', function () {
     var cropData = $uploadCrop.croppie('get').points;
+//    alert(cropData);
     $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
     $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
     $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
     $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
-  });
+});
 }
     window.addImageCrop = addImageCrop;
-})
+
+
+/*
+    $('#id_update').on('click', function () {
+      debugger
+      var crop_divs = $("#id_image_crop_set").children();
+
+      let test = "asfasfa";
+      console.log('afsa')
+
+      crop_divs.each(function(){
+      if (this.tagName == 'DIV'){
+        var int_crop_id = parseInt(this.id.replace(/\D/g,''));
+        var cropData = $("id_image_crop_" + int_crop_id).croppie('get').points;
+        alert(cropData);
+        $("#id_additional_images-" + int_crop_id + "-x").val(cropData[0]);
+        $("#id_additional_images-" + int_crop_id + "-y").val(cropData[1]);
+        $("#id_additional_images-" + int_crop_id + "-w").val(cropData[2]);
+        $("#id_additional_images-" + int_crop_id + "-h").val(cropData[3]);
+      }
+    });
+    });
+*/
+});
+
 </script>
 
 <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
@@ -174,7 +251,7 @@ $('#images_table tbody tr').formset({
   formTemplate: null,
   addCssClass: 'add-row',
   deleteCssClass: 'delete-row',
-  formCssClass: 'dynamic-formset2',
+  formCssClass: 'dynamic-formset',
   extraClasses: [],
   added: null,
   removed: (row)=>{
@@ -182,7 +259,8 @@ $('#images_table tbody tr').formset({
       var int_id = parseInt(id);
       if ($("#id_image_crop_" + id).length){
         $("#id_image_crop_" + id).remove();
-    }
+    };
+    /*
       if (int_id > 0){
         var crop_divs = $("#id_image_crop_set").children()
         crop_divs.each(function(){
@@ -193,7 +271,9 @@ $('#images_table tbody tr').formset({
         });
 
       }
+    */
   }
+
 });
 </script>
 
