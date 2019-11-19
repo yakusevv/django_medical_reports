@@ -83,7 +83,7 @@
   {% endfor %}
   {% endcomment %}
   <button type="submit" name="Update" class="btn btn-primary">{% trans "Update report" %}</button>
-
+  <a href="{{ report.get_absolute_url }}" class="btn btn-danger">{% trans "Cancel"%}</a>
 </form>
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
   <script type="text/javascript">

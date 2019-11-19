@@ -132,7 +132,7 @@ $("#id_additional_images-{{ forloop.counter0 }}-h").val(cropData[3]);
   </div>
 
   <button type="submit" name="Update" class="btn btn-primary" id="id_update">{% trans "Update images" %}</button>
-
+  <a href="{{ report.get_update_url }}" class="btn btn-danger">{% trans "Cancel"%}</a>
 </form>
 
 
