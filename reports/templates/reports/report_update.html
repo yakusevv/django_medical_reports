@@ -58,6 +58,22 @@
     </tr>
     {% endfor %}
   </table>
+  <div class="row mb-2 col-md-12 border-top">
+    <div class="col-sm-3 mb-2">
+      <b> {% trans "Images:" %} </b>
+    </div>
+  </div>
+  <div class="row mb-2 col-md-12 border-top">
+    <div class="col">
+      {% for image in report.additional_images.get_queryset %}
+        <p class='mb-2'><img src="{{ image.image.url }}" alt="" width='80%'></p>
+      {% endfor %}
+    </div>
+    <div class="row mb-2 ml-2 col-md-12">
+      <a href="{{ report.get_images_update_url }}" class="btn btn-secondary">{% trans "Edit images" %}</a>
+    </div>
+  </div>
+  {% comment %}
   {% for image in report.additional_images.get_queryset %}
   <div class="row mb-2">
         <p class='mb-1'>
@@ -65,12 +81,7 @@
         </p>
   </div>
   {% endfor %}
-
-  <div class="form-group col-md-12 mb-2 border-top">
-      <div class="form-group col-md-6 mb-0">
-        {{ images|crispy }}
-      </div>
-    </div>
+  {% endcomment %}
   <button type="submit" name="Update" class="btn btn-primary">{% trans "Update report" %}</button>
 
 </form>
