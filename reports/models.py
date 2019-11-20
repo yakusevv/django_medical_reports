@@ -180,6 +180,7 @@ class ReportTemplate(models.Model):
         verbose_name = _('Report template')
         verbose_name_plural = _('Report templates')
 
+
 class Report(models.Model):
     ref_number = models.CharField(max_length=50, verbose_name=_("Ref. number"))
     company_ref_number = models.CharField(max_length=50, verbose_name=_("Company ref. number"))
@@ -247,7 +248,7 @@ class AdditionalImage(models.Model):
     class Meta:
         verbose_name = _('Additional Image')
         verbose_name_plural = _('Additional Images')
-        
+
 
 #    Every country has a list of services with prices for each.
 class Service(models.Model):
@@ -296,11 +297,13 @@ def submission_delete(sender, instance, **kwargs):
                     )
 
 @receiver(post_save, sender=AdditionalImage)
-@receiver(post_delete, sender=ServiceItem)
+@receiver(post_delete, sender=AdditionalImage)
 @receiver(post_save, sender=ServiceItem)
 @receiver(post_delete, sender=ServiceItem)
 @receiver(post_save, sender=Report)
 def report_generating(sender, instance, **kwargs):
+    print('report generating')
+    print(instance)
     if isinstance(instance, AdditionalImage):
         report = instance.report
     elif isinstance(instance, ServiceItem):
