@@ -177,32 +177,23 @@ class AdditionalImageForm(forms.ModelForm):
 #        self.fields['y'].required = False
 #        self.fields['w'].required = False
 #        self.fields['h'].required = False
-#            self.fields['image'].value = instance.image
-#            print(instance.image)
-#            print(dir(instance))
 
 
     def save(self, commit=True, *args, **kwargs):
-        #instance = getattr(self, 'instance', None)
         instance = super(AdditionalImageForm, self).save(commit=False)
-#        image = instance.image
-#        if self.instance:
-#            image = self.instance.image.image
-#        else:
         image = self.cleaned_data.get('image')
         x = self.cleaned_data.get('x')
         y = self.cleaned_data.get('y')
         w = self.cleaned_data.get('w')
         h = self.cleaned_data.get('h')
         self.instance.position = 0
-        if all((x,y,w,h)):
+        coords = (x,y,w,h)
+        if any(coords) and not None in coords:
             cropped_image = Image.open(image).crop((x, y, w, h))
             thumb_io = io.BytesIO()
             cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
-#            self.instance.image.save(str(image).split('/')[-1], ContentFile(thumb_io.getvalue()), save=False)
             instance.image.save(str(image).split('/')[-1], ContentFile(thumb_io.getvalue()), save=False)
         if commit:
-#            self.instance.save()
             instance.save()
         return instance
 

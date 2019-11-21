@@ -242,7 +242,7 @@ class Report(models.Model):
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
-    image = models.ImageField(upload_to=get_image_path, verbose_name=_("Image"))
+    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), verbose_name=_("Image"))
     position = models.IntegerField(blank=False, verbose_name=_("Position"))
 
     class Meta:
@@ -302,8 +302,6 @@ def submission_delete(sender, instance, **kwargs):
 @receiver(post_delete, sender=ServiceItem)
 @receiver(post_save, sender=Report)
 def report_generating(sender, instance, **kwargs):
-    print('report generating')
-    print(instance)
     if isinstance(instance, AdditionalImage):
         report = instance.report
     elif isinstance(instance, ServiceItem):
