@@ -57,29 +57,9 @@
     </div>
 
 <script type="text/javascript">
-/*
-    var el = $("#id_image_crop_{{ forloop.counter0 }}");
-    var resize = new Croppie(el[0], {
-      viewport: {
-         width: 200,
-         height: 200,
-         },
-      boundary: {
-         width: 300,
-         height: 300
-       },
-    enableExif: true,
-    enableOrientation: true,
-    enableResize: true,
-    mouseWheelZoom: 'ctrl',
-});
-*/
 function ResizeImage(div_id){
 
 var set = $('#id_image_crop_set');
-//var div = document.createElement("div");
-//div.id = div_id;
-//set.append(div);
 var $resizeCrop;
 $resizeCrop = $("#"+ div_id);
 $resizeCrop.croppie({
@@ -113,19 +93,6 @@ $(document).ready(function() {
     });
 };
 ResizeImage("id_image_crop_{{ forloop.counter0 }}");
-//$resizeCrop.bind({
-//    url: '{{ image.image.url }}',
-
-/*
-$('#id_update').on('click', function () {
-      console.log($uploadCrop.croppie('get').points);
-var cropData = $uploadCrop.croppie('get').points;
-$("#id_additional_images-{{ forloop.counter0 }}-x").val(cropData[0]);
-$("#id_additional_images-{{ forloop.counter0 }}-y").val(cropData[1]);
-$("#id_additional_images-{{ forloop.counter0 }}-w").val(cropData[2]);
-$("#id_additional_images-{{ forloop.counter0 }}-h").val(cropData[3]);
-});
-*/
 </script>
 
     {% endfor %}
@@ -169,6 +136,7 @@ function addImageCrop(id){
             alert("Sorry - you're browser doesn't support the FileReader API");
         }
     }
+    if ($('#'+id)[0].value) {
       $uploadCrop = $("#"+ div_id);
       $uploadCrop.croppie({
       enableExif: true,
@@ -184,6 +152,7 @@ function addImageCrop(id){
          height: 300
      }
     });
+
   readFile($("#id_additional_images-" + clean_id + "-image")[0]);
 
   $(".croppie-container").sort(function(a, b) {
@@ -193,50 +162,19 @@ function addImageCrop(id){
     return 1;
   }
 }).appendTo(set);
-/*
-$('#id_update').on('click', function () {
-//      console.log($uploadCrop.croppie('get').points);
-var cropData = $uploadCrop.croppie('get').points;
-$("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
-$("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
-$("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
-$("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
-});
-*/
-//*/
-$('#id_update').on('click', function () {
+
+$('#id_update').on('click', function() {
+  if ($('#'+id)[0].value) {
     var cropData = $uploadCrop.croppie('get').points;
-//    alert(cropData);
     $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
     $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
     $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
     $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
+  }
 });
 }
+}
     window.addImageCrop = addImageCrop;
-
-
-/*
-    $('#id_update').on('click', function () {
-      debugger
-      var crop_divs = $("#id_image_crop_set").children();
-
-      let test = "asfasfa";
-      console.log('afsa')
-
-      crop_divs.each(function(){
-      if (this.tagName == 'DIV'){
-        var int_crop_id = parseInt(this.id.replace(/\D/g,''));
-        var cropData = $("id_image_crop_" + int_crop_id).croppie('get').points;
-        alert(cropData);
-        $("#id_additional_images-" + int_crop_id + "-x").val(cropData[0]);
-        $("#id_additional_images-" + int_crop_id + "-y").val(cropData[1]);
-        $("#id_additional_images-" + int_crop_id + "-w").val(cropData[2]);
-        $("#id_additional_images-" + int_crop_id + "-h").val(cropData[3]);
-      }
-    });
-    });
-*/
 });
 
 </script>

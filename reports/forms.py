@@ -173,29 +173,30 @@ class AdditionalImageForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['image'].disabled = True
-#        self.fields['x'].required = False
-#        self.fields['y'].required = False
-#        self.fields['w'].required = False
-#        self.fields['h'].required = False
+        self.fields['x'].required = False
+        self.fields['y'].required = False
+        self.fields['w'].required = False
+        self.fields['h'].required = False
 
 
     def save(self, commit=True, *args, **kwargs):
         instance = super(AdditionalImageForm, self).save(commit=False)
         image = self.cleaned_data.get('image')
-        x = self.cleaned_data.get('x')
-        y = self.cleaned_data.get('y')
-        w = self.cleaned_data.get('w')
-        h = self.cleaned_data.get('h')
-        self.instance.position = 0
-        coords = (x,y,w,h)
-        if any(coords) and not None in coords:
-            cropped_image = Image.open(image).crop((x, y, w, h))
-            thumb_io = io.BytesIO()
-            cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
-            instance.image.save(str(image).split('/')[-1], ContentFile(thumb_io.getvalue()), save=False)
-        if commit:
-            instance.save()
-        return instance
+        if image:
+            x = self.cleaned_data.get('x')
+            y = self.cleaned_data.get('y')
+            w = self.cleaned_data.get('w')
+            h = self.cleaned_data.get('h')
+            self.instance.position = 0
+            coords = (x,y,w,h)
+            if any(coords) and not None in coords:
+                cropped_image = Image.open(image).crop((x, y, w, h))
+                thumb_io = io.BytesIO()
+                cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
+                instance.image.save(str(image).split('/')[-1], ContentFile(thumb_io.getvalue()), save=False)
+            if commit:
+                instance.save()
+            return instance
 
 
 class AdditionalImageFormset(BaseInlineFormSet):

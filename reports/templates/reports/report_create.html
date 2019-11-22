@@ -118,7 +118,6 @@ function addImageCrop(id){
     var div_id = "id_image_crop_" + clean_id;
     var set = $('#id_image_crop_set');
 
-    console.log('clean_id', clean_id);
     if (!($("#" + div_id).length)){
       var div = document.createElement("div");
       div.id = div_id;
@@ -132,10 +131,8 @@ function addImageCrop(id){
     function readFile(input) {
       if (input.files && input.files[0]) {
               var reader = new FileReader();
-//              console.log('new reader')
               reader.onload = function (e) {
           $("#" + div_id).addClass('ready');
-//                console.log('ready')
                 $uploadCrop.croppie('bind', {
                   url: e.target.result
                 }).then(function(){
@@ -148,6 +145,7 @@ function addImageCrop(id){
             alert("Sorry - you're browser doesn't support the FileReader API");
         }
     }
+    if ($('#'+id)[0].value) {
       $uploadCrop = $("#"+ div_id);
       $uploadCrop.croppie({
       enableExif: true,
@@ -174,27 +172,16 @@ function addImageCrop(id){
   }
 }).appendTo(set);
 
-/*
-$('.thing').bind('destroyed', function() {
-  // do stuff
-})
-
-/*
-    $("#id_additional_images-" + clean_id + "-image").bind('destroyed', function (){
-      alert(1);
-        $("#" + div_id).croppie('destroy');
-        $("#" + div_id).remove();
-    });
-*/
-
     $('#id_create').on('click', function () {
-//      console.log($uploadCrop.croppie('get').points);
-    var cropData = $uploadCrop.croppie('get').points;
-    $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
-    $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
-    $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
-    $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
+      if ($('#'+id)[0].value) {
+        var cropData = $uploadCrop.croppie('get').points;
+        $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
+        $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
+        $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);
+        $("#id_additional_images-" + clean_id + "-h").val(cropData[3]);
+      }
   });
+}
 }
     window.addImageCrop = addImageCrop;
 })
