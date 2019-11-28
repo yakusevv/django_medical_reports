@@ -34,7 +34,7 @@
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Company, ref. number:" %} </b>
     </div>
     <div class="col">
@@ -43,8 +43,8 @@
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
-      <b> {% trans "Date of birth" %} </b>
+    <div class="col-md-4">
+      <b> {% trans "Date of birth:" %} </b>
     </div>
     <div class="col">
       {{ report.patients_date_of_birth }}
@@ -52,7 +52,7 @@
   </div>
   {% if report.patients_policy_number %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Policy:" %} </b>
     </div>
     <div class="col">
@@ -61,15 +61,15 @@
   </div>
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
-      <b> {% trans "Date of visit" %} </b>
+    <div class="col-md-4">
+      <b> {% trans "Date of visit:" %} </b>
     </div>
     <div class="col">
       {{ report.date_of_visit }}
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Location:" %} </b>
     </div>
     <div class="col">
@@ -80,15 +80,15 @@
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
-      <b> {% trans "Type of visit" %} </b>
+    <div class="col-md-4">
+      <b> {% trans "Type of visit:" %} </b>
     </div>
     <div class="col">
       {{ report.type_of_visit }}
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Cause of visit:" %} </b>
     </div>
     <div class="col">
@@ -96,8 +96,8 @@
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
-      <b> {% trans "Checkup" %} </b>
+    <div class="col-md-4">
+      <b> {% trans "Checkup:" %} </b>
     </div>
     <div class="col">
       {{ report.checkup|linebreaks }}
@@ -105,7 +105,7 @@
   </div>
   {% if report.additional_checkup %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Additional checkup:" %} </b>
     </div>
     <div class="col">
@@ -114,7 +114,7 @@
   </div>
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Diagnosis:" %} </b>
     </div>
     <div class="col">
@@ -124,7 +124,7 @@
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Prescription:" %} </b>
     </div>
     <div class="col">
@@ -132,7 +132,7 @@
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Doctor:" %} </b>
     </div>
     <div class="col">
@@ -141,7 +141,7 @@
   </div>
   {% if request.user.is_staff %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Visit price:" %} </b>
     </div>
     <div class="col" {% if not report.city.district in report.doctor.districts.all or report.visit_price == 0 %} style="color: red; font-weight: bold;" {% endif %}>
@@ -151,7 +151,7 @@
   </div>
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Service items:" %} </b>
     </div>
     <div class="col">
@@ -165,7 +165,7 @@
   </div>
   {% if request.user.is_staff %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3">
+    <div class="col-md-4">
       <b> {% trans "Total price:" %} </b>
     </div>
     <div class="col">
@@ -174,11 +174,16 @@
   </div>
   {% endif %}
   <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3 mb-2">
+    <div class="col-md-4">
       <b> {% trans "Images:" %} </b>
     </div>
+    <div class="col">
+      {% if not report.additional_images.get_queryset %}
+      -
+      {% endif %}
+    </div>
   </div>
-  <div class="row mb-2 col-md-12 border-top">
+  <div class="row mb-2 col-md-12">
     <div class="col">
       {% for image in report.additional_images.get_queryset %}
         <p class='mb-2'><img src="{{ image.image.url }}" alt="" width='80%'></p>
