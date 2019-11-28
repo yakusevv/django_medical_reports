@@ -187,7 +187,7 @@ class AdditionalImageForm(forms.ModelForm):
             y = self.cleaned_data.get('y')
             w = self.cleaned_data.get('w')
             h = self.cleaned_data.get('h')
-            self.instance.position = 0
+            instance.position = 0
             coords = (x,y,w,h)
             if any(coords) and not None in coords:
                 cropped_image = Image.open(image).crop((x, y, w, h))

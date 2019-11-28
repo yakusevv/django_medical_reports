@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -242,7 +242,7 @@ class Report(models.Model):
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
-    image = models.ImageField(upload_to=get_image_path, storage=OverwriteStorage(), verbose_name=_("Image"))
+    image = models.ImageField(upload_to=get_image_path, verbose_name=_("Image"))
     position = models.IntegerField(blank=False, verbose_name=_("Position"))
 
     class Meta:
@@ -318,6 +318,16 @@ def report_generating(sender, instance, **kwargs):
         report.save()
         post_save.connect(report_generating, sender=Report)
     except ReportTemplate.DoesNotExist:
+            pass
+
+
+@receiver(pre_save, sender=AdditionalImage)
+def image_update(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_image = AdditionalImage.objects.get(pk=instance.pk).image
+            os.remove(old_image.path)
+        except AdditionalImage.DoesNotExist:
             pass
 
 
