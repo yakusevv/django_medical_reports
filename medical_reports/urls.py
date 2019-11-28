@@ -14,7 +14,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('reports/', include('reports.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('profiles/', include('profiles.urls'))
+    path('profiles/', include('profiles.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 if settings.DEBUG:

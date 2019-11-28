@@ -50,10 +50,26 @@
       </li>
       {% endif %}
     </ul>
-    <form class="form-inline ml-auto" action="{% url 'reports_list_url' %}" method="get">
-      <input class="form-control mr-sm-2" name="search" type="search" placeholder='{% trans "Search" %}' aria-label="Search">
-      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">{% trans "Search" %}</button>
+
+    <form class="form-inline ml-auto mr-3" action="{% url 'reports_list_url' %}" method="get">
+      <input class="form-control form-control-sm mr-2" name="search" type="search" placeholder='{% trans "Search" %}' aria-label="Search">
+      <button class="btn btn-outline-primary my-2 btn-sm" type="submit">{% trans "Search" %}</button>
     </form>
+
+    <form action="{% url 'set_language' %}" id="language_form" method="post">
+    {% csrf_token %}
+      <select class="form-control-sm" name="language" onchange="changeLanguage()">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                {{ lang.1 }} ({{ lang.0 }})
+            </option>
+        {% endfor %}
+      </select>
+    </form>
+
+
   </div>
   </nav>
     {% endblock %}
@@ -104,6 +120,13 @@
      <a href="{% url 'logout' %}" class="admin-panel-element btn btn-link">{% trans "Logout" %}</a>
      {% endif %}
    </div>
+
+    <script type="text/javascript">
+      function changeLanguage(){
+        document.forms["language_form"].submit();
+      }
+    </script>
+
     <script type="text/javascript">
       function openPanel(){
         let panel = document.getElementById('admin-panel')
