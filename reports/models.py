@@ -108,8 +108,9 @@ class Disease(models.Model):
 class PriceGroup(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
 
-    verbose_name = _('Price group')
-    verbose_name_plural = _('Price groups')
+    class Meta:
+        verbose_name = _('Price group')
+        verbose_name_plural = _('Price groups')
 
     def __str__(self):
         return self.name
