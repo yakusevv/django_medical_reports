@@ -120,7 +120,11 @@ function addImageCrop(id){
 
     if (!($("#" + div_id).length)){
       var div = document.createElement("div");
+      var btn_rotate = document.createElement("button");
+      btn_rotate.id = 'id_image-rotate_' + clean_id;
+      btn_rotate.innerHTML = '{% trans "Rotate" %}';
       div.id = div_id;
+      div.append(btn_rotate);
       set.append(div);
     } else {
       $("#" + div_id).croppie('destroy')
@@ -153,17 +157,20 @@ function addImageCrop(id){
       enableResize: true,
       mouseWheelZoom: 'ctrl',
       viewport: {
-         width: 200,
-         height: 200,
+         width: 400,
+         height: 300,
          },
       boundary: {
-         width: 300,
-         height: 300
+         width: 500,
+         height: 400
      }
     });
 
   readFile($("#id_additional_images-" + clean_id + "-image")[0]);
 
+  $('#id_image-rotate_' + clean_id).on('click', function(ev) {
+    $uploadCrop.croppie('rotate', -90);
+  });
   $(".croppie-container").sort(function(a, b) {
   if (a.id < b.id) {
     return -1;
