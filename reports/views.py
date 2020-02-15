@@ -13,7 +13,7 @@ from django.views.generic import (
                                 UpdateView,
                                 DeleteView
                                 )
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
 from django.http import Http404
 from django.utils.translation import ugettext as _
@@ -36,6 +36,12 @@ from .forms import (
                 ServiceItemsFormSet,
                 AdditionalImageFormSet
                 )
+
+
+class AdminStaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
 
 
 class ReportsListView(LoginRequiredMixin, ListView):
@@ -242,8 +248,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         return super(ReportUpdateView, self).form_valid(form)
 
 
-class ReportDeleteView(PermissionRequiredMixin, DeleteView):
-    permission_required = 'is_staff'
+class ReportDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'reports/report_delete.html'
     redirect_url = 'reports_list_url'
     model = Report
@@ -303,8 +308,7 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         return reverse("report_update_url", kwargs={"pk": self.object.pk})
 
-class PriceTableView(PermissionRequiredMixin, DetailView):
-    permission_required = 'is_staff'
+class PriceTableView(AdminStaffRequiredMixin, DetailView):
     template_name = 'reports/price_table_view.html'
     model = Country
 
