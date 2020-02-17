@@ -53,7 +53,8 @@
   </table>
   <div class="row" id="id_image_crop_set">
     {% for image in report.additional_images.get_queryset %}
-    <div id="id_image_crop_{{ forloop.counter0 }}">
+    <div id="id_image_crop_{{ forloop.counter0 }}" style="text-align: center;">
+      <button type="button" id="id_image-rotate_{{ forloop.counter0 }}">&#10227;</button>
     </div>
 
 <script type="text/javascript">
@@ -68,8 +69,8 @@ enableOrientation: true,
 enableResize: true,
 mouseWheelZoom: 'ctrl',
 viewport: {
-   width: 400,
-   height: 300,
+   width: 450,
+   height: 350,
    },
 boundary: {
    width: 500,
@@ -80,11 +81,15 @@ boundary: {
     url: '{{ image.image.url }}',
 });
 $(document).ready(function() {
+  $('#id_image-rotate_{{ forloop.counter0 }}').on('click', function(ev) {
+    $resizeCrop.croppie('rotate', -90);
+  });
+
   $('#id_update').on('click', function () {
 //      var cropData = $("id_image_crop_{{ forloop.counter0 }}").croppie('get').points;
       var cropData = $resizeCrop.croppie('get').points;
-//      alert($resizeCrop);
-//      alert(cropData);
+      var orient = $resizeCrop.croppie('get').orientation;
+      $("#id_additional_images-{{ forloop.counter0 }}-orient").val(orient);
       $("#id_additional_images-{{ forloop.counter0 }}-x").val(cropData[0]);
       $("#id_additional_images-{{ forloop.counter0 }}-y").val(cropData[1]);
       $("#id_additional_images-{{ forloop.counter0 }}-w").val(cropData[2]);
@@ -109,9 +114,16 @@ function addImageCrop(id){
     var clean_id = id.replace(/\D/g,'');
     var div_id = "id_image_crop_" + clean_id;
     var set = $('#id_image_crop_set');
+    
     if (!($("#" + div_id).length)){
       var div = document.createElement("div");
+      var btn_rotate = document.createElement("button");
+      btn_rotate.id = 'id_image-rotate_' + clean_id;
+      btn_rotate.innerHTML = '&#10227';
+      btn_rotate.type = "button";
       div.id = div_id;
+      div.style = "text-align: center;";
+      div.append(btn_rotate);
       set.append(div);
     } else {
       $("#" + div_id).croppie('destroy')
@@ -144,8 +156,8 @@ function addImageCrop(id){
       enableResize: true,
       mouseWheelZoom: 'ctrl',
       viewport: {
-         width: 400,
-         height: 300,
+         width: 450,
+         height: 350,
          },
       boundary: {
          width: 500,
@@ -154,6 +166,10 @@ function addImageCrop(id){
     });
 
   readFile($("#id_additional_images-" + clean_id + "-image")[0]);
+
+  $('#id_image-rotate_' + clean_id).on('click', function(ev) {
+    $uploadCrop.croppie('rotate', -90);
+  });
 
   $(".croppie-container").sort(function(a, b) {
   if (a.id < b.id) {
@@ -166,6 +182,8 @@ function addImageCrop(id){
 $('#id_update').on('click', function() {
   if ($('#'+id)[0].value) {
     var cropData = $uploadCrop.croppie('get').points;
+    var orient = $uploadCrop.croppie('get').orientation;
+    $("#id_additional_images-" + clean_id + "-orient").val(orient);
     $("#id_additional_images-" + clean_id + "-x").val(cropData[0]);
     $("#id_additional_images-" + clean_id + "-y").val(cropData[1]);
     $("#id_additional_images-" + clean_id + "-w").val(cropData[2]);

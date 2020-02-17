@@ -156,11 +156,12 @@ class AdditionalImageForm(forms.ModelForm):
     y = forms.FloatField(widget=forms.HiddenInput())
     w = forms.FloatField(widget=forms.HiddenInput())
     h = forms.FloatField(widget=forms.HiddenInput())
+    orient = forms.FloatField(widget=forms.HiddenInput())
 
     class Meta:
         model = AdditionalImage
-        fields = ('image','x', 'y', 'w', 'h', )
-
+        fields = ('image','x', 'y', 'w', 'h', 'orient')
+#        fields = ('image','x', 'y', 'w', 'h')
     def clean(self):
         cleaned_data = super(AdditionalImageForm, self).clean()
         if cleaned_data['DELETE'] and self.instance.pk:
@@ -177,6 +178,7 @@ class AdditionalImageForm(forms.ModelForm):
         self.fields['y'].required = False
         self.fields['w'].required = False
         self.fields['h'].required = False
+        self.fields['orient'].required = False
 
 
     def save(self, commit=True, *args, **kwargs):
@@ -187,10 +189,21 @@ class AdditionalImageForm(forms.ModelForm):
             y = self.cleaned_data.get('y')
             w = self.cleaned_data.get('w')
             h = self.cleaned_data.get('h')
+            orient = self.cleaned_data.get('orient')
             instance.position = 0
             coords = (x,y,w,h)
             if any(coords) and not None in coords:
-                cropped_image = Image.open(image).crop((x, y, w, h))
+                print(orient)
+                if orient == 1:
+                    rotated_image = Image.open(image).rotate(0, expand=True)
+                elif orient == 6:
+                    rotated_image = Image.open(image).rotate(270, expand=True)
+                elif orient == 3:
+                    rotated_image = Image.open(image).rotate(180, expand=True)
+                elif orient == 8:
+                    rotated_image = Image.open(image).rotate(90, expand=True)
+#                cropped_image = Image.open(image).crop((x, y, w, h))
+                cropped_image = rotated_image.crop((x, y, w, h))
                 thumb_io = io.BytesIO()
                 cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
                 instance.image.save(str(image).split('/')[-1], ContentFile(thumb_io.getvalue()), save=False)
