@@ -125,7 +125,7 @@ function addImageCrop(id){
       btn_rotate.innerHTML = '&#10227';
       btn_rotate.type = "button";
       div.id = div_id;
-      div.style = "text-align: center;";
+      div.style = "text-align: center; z-index: 0";
       div.append(btn_rotate);
       set.append(div);
     } else {
@@ -173,7 +173,7 @@ function addImageCrop(id){
   $('#id_image-rotate_' + clean_id).on('click', function(ev) {
     $uploadCrop.croppie('rotate', -90);
   });
-  
+
   $(".croppie-container").sort(function(a, b) {
   if (a.id < b.id) {
     return -1;

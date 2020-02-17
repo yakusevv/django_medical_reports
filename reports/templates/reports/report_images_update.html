@@ -53,7 +53,7 @@
   </table>
   <div class="row" id="id_image_crop_set">
     {% for image in report.additional_images.get_queryset %}
-    <div id="id_image_crop_{{ forloop.counter0 }}" style="text-align: center;">
+    <div id="id_image_crop_{{ forloop.counter0 }}" style="text-align: center; z-index: 0">
       <button type="button" id="id_image-rotate_{{ forloop.counter0 }}">&#10227;</button>
     </div>
 
@@ -114,7 +114,7 @@ function addImageCrop(id){
     var clean_id = id.replace(/\D/g,'');
     var div_id = "id_image_crop_" + clean_id;
     var set = $('#id_image_crop_set');
-    
+
     if (!($("#" + div_id).length)){
       var div = document.createElement("div");
       var btn_rotate = document.createElement("button");
@@ -122,7 +122,7 @@ function addImageCrop(id){
       btn_rotate.innerHTML = '&#10227';
       btn_rotate.type = "button";
       div.id = div_id;
-      div.style = "text-align: center;";
+      div.style = "text-align: center; z-index: 0";
       div.append(btn_rotate);
       set.append(div);
     } else {
