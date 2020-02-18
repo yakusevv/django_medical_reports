@@ -148,6 +148,7 @@ class VisitTariff(models.Model):
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, verbose_name=_("Tariff"))
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE, verbose_name=_("Type of visit"))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
+    price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Price for the doctor"))
 
     class Meta:
         unique_together = (('tariff', 'type_of_visit',),)
@@ -192,6 +193,7 @@ class Report(models.Model):
     patients_policy_number = models.CharField(max_length=100, blank=True, verbose_name=_("Policy number"))
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT, verbose_name=_("Type of visit"))
     visit_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Visit price"))
+    visit_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Visit price for the doctor"))
     date_of_visit = models.DateTimeField(verbose_name=_("Date of visit"))
     city = models.ForeignKey(City, on_delete=models.PROTECT, verbose_name=_("City"))
     detailed_location = models.CharField(max_length=100, blank=True, verbose_name=_("Detailed location"))
@@ -238,8 +240,19 @@ class Report(models.Model):
             return total
         return total
 
-    get_total_price.fget.short_description = _('Total price')
+    @property
+    def get_total_price_doctor(self):
+        total = 0
+        if self.pk:
+            service = self.sirvice_items.get_queryset()
+            for siervice in services:
+                total += service.cost
+            total += self.visit_price
+            return total
+        return total
 
+    get_total_price.fget.short_description = _('Total price')
+    get_total_price.fget.short_description = _('Total price for the doctor')
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
@@ -256,6 +269,7 @@ class Service(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='services', default=1, verbose_name=_("Country"))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
+    price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price for the doctor"))
 
     class Meta:
         unique_together = (('name', 'country',),)
@@ -269,7 +283,8 @@ class Service(models.Model):
 class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE, verbose_name=_("Report"))
     service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT, verbose_name=_("Service"))
-    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price"))
+    service_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Service price"))
+    service_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Service price for the doctor"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("Quantity"))
 
     class Meta:
@@ -285,6 +300,10 @@ class ServiceItem(models.Model):
     @property
     def cost(self):
         return self.service_price * self.quantity
+
+    @property
+    def cost_doctor(self):
+        return self.service_price_doctor * self.quantity
 
 
 @receiver(post_delete, sender=Report)

@@ -46,7 +46,10 @@
               {% if tariff.price_group == price_group %}
                 {% for visit_price in tariff.visittariff_set.all %}
                   {% if visit_price.type_of_visit == type_of_visit %}
-                    {{ visit_price.price }}
+                    {{ visit_price.price }} &#8364;
+                  <p style="color:green">
+                    {{ visit_price.price_doctor }} &#8364;
+                  </p>
                   {% endif %}
                 {% endfor %}
               {% endif %}
@@ -59,7 +62,7 @@
   {% endfor %}
 
 </table>
-<table class='table-sm'>
+<table class='table-sm table-bordered mt-4 mb-5'>
   <tr class='table-primary'>
     <th> {% trans "Service" %} </th>
     <th> {% trans "Price" %} </th>
@@ -68,7 +71,9 @@
     {% if not service.type_of_visit %}
     <tr>
       <td>{{ service.name }}</td>
-      <td>{{ service.price }}</td>
+      <td>
+        {{ service.price }} &#8364;
+        <p class="mb-0" style="color:green">{{ service.price_doctor }} &#8364;</p></td>
     </tr>
     {% endif %}
   {% endfor %}
