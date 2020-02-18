@@ -139,17 +139,17 @@
       {{ report.doctor }}
     </div>
   </div>
-  {% if request.user.is_staff %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Visit price:" %} </b>
     </div>
-    <div class="col" {% if not report.city.district in report.doctor.districts.all or report.visit_price == 0 %} style="color: red; font-weight: bold;" {% endif %}>
-      {{ report.visit_price }}
-    </font>
+    <div class="col" {% if not report.city.district in report.doctor.districts.all or report.visit_price == 0 %} style="background: red; font-weight: bold;" {% endif %}>
+      {% if request.user.is_staff %}
+      {{ report.visit_price }} &#8364;
+      {% endif %}
+      <p class='mb-0' style='color: green'>{{ report.visit_price_doctor }} &#8364;</p>
     </div>
   </div>
-  {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Service items:" %} </b>
@@ -157,22 +157,27 @@
     <div class="col">
       {% for service in report.service_items.get_queryset %}
         <p class='mb-1'>
-          {% if request.user.is_staff %} {{ service.cost }} {% endif %}
+          {% if request.user.is_staff %}
+          {{ service.cost }} &#8364;
+          {% endif %}
+          <p class='mb-0' style='color: green'>{{ service.cost_doctor }} &#8364;</p>
           {{ service }}
         </p>
       {% endfor %}
     </div>
   </div>
-  {% if request.user.is_staff %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Total price:" %} </b>
     </div>
     <div class="col">
-      {{ report.get_total_price }}
+      {% if request.user.is_staff %}
+        {{ report.get_total_price }} &#8364;
+      {% endif %}
+      <p class="mb-0" style='color: green'>{{ report.get_total_price_doctor }} &#8364;</p>
     </div>
   </div>
-  {% endif %}
+
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Images:" %} </b>
