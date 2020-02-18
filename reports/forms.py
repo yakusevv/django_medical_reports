@@ -30,6 +30,7 @@ class ReportForm(forms.ModelForm):
         model = Report
         exclude = [
             'visit_price',
+            'visit_price_doctor',
             'checked',
             'doctor',
             'docx_download_link'
@@ -98,9 +99,11 @@ class ServiceItemForm(forms.ModelForm):
             'service',
             'quantity',
             'service_price',
+            'service_price_doctor'
             ]
         widgets = {
                    'service_price': forms.HiddenInput(attrs={}),
+                   'service_price_doctor': forms.HiddenInput(attrs={}),
                    'service'      : Select2Widget
                    }
 
@@ -118,6 +121,7 @@ class ServiceItemForm(forms.ModelForm):
         if cleaned_data.get('service', False):
             service = cleaned_data['service']
             cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
+            cleaned_data['service_price_doctor'] = Service.objects.get(pk=service.pk).price_doctor
         return cleaned_data
 
 
@@ -125,6 +129,7 @@ class ServiceItemsFormset(BaseInlineFormSet):
 
     def clean(self):
         if any(self.errors):
+            print(self.errors)
             return
         services = set()
         number_of_forms = 0

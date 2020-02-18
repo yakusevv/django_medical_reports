@@ -244,15 +244,15 @@ class Report(models.Model):
     def get_total_price_doctor(self):
         total = 0
         if self.pk:
-            service = self.sirvice_items.get_queryset()
-            for siervice in services:
-                total += service.cost
-            total += self.visit_price
+            services = self.service_items.get_queryset()
+            for service in services:
+                total += service.cost_doctor
+            total += self.visit_price_doctor
             return total
         return total
 
     get_total_price.fget.short_description = _('Total price')
-    get_total_price.fget.short_description = _('Total price for the doctor')
+    get_total_price_doctor.fget.short_description = _('Total price for the doctor')
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
@@ -283,8 +283,8 @@ class Service(models.Model):
 class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE, verbose_name=_("Report"))
     service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT, verbose_name=_("Service"))
-    service_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Service price"))
-    service_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Service price for the doctor"))
+    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price"))
+    service_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price for the doctor"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("Quantity"))
 
     class Meta:

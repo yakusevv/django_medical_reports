@@ -103,8 +103,8 @@ class AdditionalImageInline(admin.StackedInline):
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     inlines = (AdditionalImageInline, ServiceItemInline)
-    readonly_fields = ('get_total_price', 'docx_download_link')
-    list_display = ('__str__', 'date_of_visit', 'get_total_price', 'checked')
+    readonly_fields = ('get_total_price', 'get_total_price_doctor', 'docx_download_link')
+    list_display = ('__str__', 'date_of_visit', 'get_total_price', 'get_total_price_doctor', 'checked')
     ordering = ('-date_of_visit',)
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
                    'city__district__region',
@@ -138,8 +138,10 @@ class ReportAdmin(admin.ModelAdmin):
                 tariff = Tariff.objects.get(district=district, price_group=price_group)
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
                 obj.visit_price = visit_tariff.price
+                obj.visit_price_doctor = visit_tariff.price_doctor
             except Tariff.DoesNotExist:
                 obj.visit_price = 0
+                obj.visit_price_doctor = 0
         super(ReportAdmin, self).save_model(request, obj, form, change)
 
     def response_add(self, request, obj, post_url_continue=None):
