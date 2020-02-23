@@ -35,12 +35,33 @@ class ProfileDistrictInline(EditLinkToInlineObject, admin.TabularInline):
     can_delete = True
     fk_name = 'user'
 
+    def get_parent_object_from_request(self, request):
+        resolved = resolve(request.path_info)
+        if resolved.kwargs:
+            return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
+        return None
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+
+        field = super(ProfileDistrictInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+        if db_field.name == 'district':
+            if request._obj_ is not None:
+                field.queryset = field.queryset.filter(
+                    region__country = request._obj_.profile.city.district.region.country
+                    )
+            else:
+                field.queryset = field.queryset.none()
+
+        return field
+
 
 class ProfileDistrictVisitPriceInline(admin.TabularInline):
     model = ProfileDistrictVisitPrice
     formset = ProfileDistrictVisitPriceInlineFormSet
     can_delete = False
     fk_name = 'profile_district'
+
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
@@ -73,6 +94,9 @@ class CustomUserAdmin(UserAdmin):
             return list()
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
+    def get_form(self, request, obj=None, **kwargs):
+        request._obj_ = obj
+        return super(CustomUserAdmin, self).get_form(request, obj, **kwargs)
 
 @admin.register(ProfileDistrict)
 class ProfileDistrictAdmin(admin.ModelAdmin):
