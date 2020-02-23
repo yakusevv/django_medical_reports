@@ -161,7 +161,8 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
                 tariff = Tariff.objects.get(district=district, price_group=price_group)
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
                 form.instance.visit_price = visit_tariff.price
-                form.instance.visit_price_doctor = visit_tariff.price_doctor
+#                form.instance.visit_price_doctor = visit_tariff.price_doctor
+                form.instance.visit_price_doctor = 0 #temporarily
             except Tariff.DoesNotExist:
                 form.instance.visit_price = 0
                 form.instance.visit_price_doctor = 0

@@ -148,7 +148,7 @@ class VisitTariff(models.Model):
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, verbose_name=_("Tariff"))
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE, verbose_name=_("Type of visit"))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
-    price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Price for the doctor"))
+#    price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Price for the doctor"))
 
     class Meta:
         unique_together = (('tariff', 'type_of_visit',),)
@@ -253,6 +253,7 @@ class Report(models.Model):
 
     get_total_price.fget.short_description = _('Total price')
     get_total_price_doctor.fget.short_description = _('Total price for the doctor')
+
 
 class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))

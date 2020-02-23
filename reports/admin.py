@@ -138,7 +138,8 @@ class ReportAdmin(admin.ModelAdmin):
                 tariff = Tariff.objects.get(district=district, price_group=price_group)
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
                 obj.visit_price = visit_tariff.price
-                obj.visit_price_doctor = visit_tariff.price_doctor
+#                obj.visit_price_doctor = visit_tariff.price_doctor
+                obj.visit_price_doctor = 0 #temporarily
             except Tariff.DoesNotExist:
                 obj.visit_price = 0
                 obj.visit_price_doctor = 0

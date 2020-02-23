@@ -47,9 +47,11 @@
                 {% for visit_price in tariff.visittariff_set.all %}
                   {% if visit_price.type_of_visit == type_of_visit %}
                     {{ visit_price.price }} &#8364;
+  {% comment %}
                   <p style="color:green">
                     {{ visit_price.price_doctor }} &#8364;
                   </p>
+  {% endcomment %}
                   {% endif %}
                 {% endfor %}
               {% endif %}
