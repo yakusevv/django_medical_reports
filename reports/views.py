@@ -19,6 +19,8 @@ from django.http import Http404
 from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
 
+from profiles.models import ProfileDistrict, ProfileDistrictVisitPrice
+
 from .models import (
                 Report,
                 Country,
@@ -162,9 +164,13 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
                 form.instance.visit_price = visit_tariff.price
 #                form.instance.visit_price_doctor = visit_tariff.price_doctor
-                form.instance.visit_price_doctor = 0 #temporarily
-            except Tariff.DoesNotExist:
+            except Tariff.DoesNotExist or VisitTariff.DoesNotExist:
                 form.instance.visit_price = 0
+            try:
+                profile_district = ProfileDistrict.objects.get(district=district, user=self.request.user)
+                visit_price = ProfileDistrictVisitPrice.objects.get(profile_district=profile_district, type_of_visit=type_of_visit)
+                form.instance.visit_price_doctor = visit_price.price
+            except ProfileDistrict.DoesNotExist or ProfileDistrictVisitPrice.DoesNotExist:
                 form.instance.visit_price_doctor = 0
             self.object = form.save()
             if service_items.is_valid():
