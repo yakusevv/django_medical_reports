@@ -98,6 +98,16 @@ class CustomUserAdmin(UserAdmin):
         request._obj_ = obj
         return super(CustomUserAdmin, self).get_form(request, obj, **kwargs)
 
+    def save_model(self, request, obj, form, change):
+        print(dir(obj))
+        covered_districts = obj.profiledistrict_set
+        if covered_districts:
+            for dist in covered_districts.all():
+                if not dist.district.region.country == obj.profile.city.district.region.country:
+                    dist.delete()
+        super(CustomUserAdmin, self).save_model(request, obj, form, change)
+
+
 @admin.register(ProfileDistrict)
 class ProfileDistrictAdmin(admin.ModelAdmin):
     form = ProfileDistrictForm
