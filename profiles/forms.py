@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
-from .models import Profile, ProfileReportAutofillTemplate, ProfileDistrictVisitPrice
+from .models import Profile, ProfileReportAutofillTemplate, ProfileDistrict
 from reports.models import TypeOfVisit
 
 
@@ -60,3 +60,19 @@ class ProfileDistrictVisitPriceInlineFormSet(BaseInlineFormSet):
             except ValueError:
                 msg = _('The Price should be numeric type')
                 form.add_error('price', msg)
+
+
+class ProfileDistrictForm(forms.ModelForm):
+
+    class Meta:
+        model = ProfileDistrict
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super(ProfileDistrictForm, self).clean()
+        doctor = cleaned_data.get('user')
+        district = cleaned_data.get('district')
+        if not doctor.profile.city.district.region.country == district.region.country:
+            raise forms.ValidationError("Doctors can't cover districts of foreign country")
+        else:
+            return cleaned_data

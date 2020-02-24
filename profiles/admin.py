@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.urls import resolve
 
 from .models import Profile, ProfileDistrict, ProfileDistrictVisitPrice
-from .forms import ProfileDistrictVisitPriceInlineFormSet
+from .forms import ProfileDistrictVisitPriceInlineFormSet, ProfileDistrictForm
 from reports.models import TypeOfVisit
 
 
@@ -100,4 +100,5 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(ProfileDistrict)
 class ProfileDistrictAdmin(admin.ModelAdmin):
+    form = ProfileDistrictForm
     inlines = (ProfileDistrictVisitPriceInline, )
