@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 from django.urls import reverse
 from django.urls import resolve
+from django.shortcuts import redirect
 
 from .models import Profile, ProfileDistrict, ProfileDistrictVisitPrice
 from .forms import ProfileDistrictVisitPriceInlineFormSet, ProfileDistrictForm
@@ -112,3 +113,6 @@ class CustomUserAdmin(UserAdmin):
 class ProfileDistrictAdmin(admin.ModelAdmin):
     form = ProfileDistrictForm
     inlines = (ProfileDistrictVisitPriceInline, )
+
+    def response_change(self, request, obj, post_url_continue=None):
+        return redirect('/admin/auth/user/{}/change'.format(obj.user.id))
