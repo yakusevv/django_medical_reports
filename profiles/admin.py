@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.urls import resolve
 from django.shortcuts import redirect
 
-from .models import Profile, ProfileDistrict, ProfileDistrictVisitPrice
-from .forms import ProfileDistrictVisitPriceInlineFormSet, ProfileDistrictForm
+from .models import Profile, UserDistrict, UserDistrictVisitPrice
+from .forms import UserDistrictVisitPriceInlineFormSet, UserDistrictForm
 from reports.models import TypeOfVisit
 
 
@@ -30,8 +30,8 @@ class ProfileInline(admin.StackedInline):
     fk_name = 'user'
 
 
-class ProfileDistrictInline(EditLinkToInlineObject, admin.TabularInline):
-    model = ProfileDistrict
+class UserDistrictInline(EditLinkToInlineObject, admin.TabularInline):
+    model = UserDistrict
     readonly_fields = ('edit_link', )
     can_delete = True
     fk_name = 'user'
@@ -44,7 +44,7 @@ class ProfileDistrictInline(EditLinkToInlineObject, admin.TabularInline):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
 
-        field = super(ProfileDistrictInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        field = super(UserDistrictInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
         if db_field.name == 'district':
             if request._obj_ is not None:
@@ -57,11 +57,11 @@ class ProfileDistrictInline(EditLinkToInlineObject, admin.TabularInline):
         return field
 
 
-class ProfileDistrictVisitPriceInline(admin.TabularInline):
-    model = ProfileDistrictVisitPrice
-    formset = ProfileDistrictVisitPriceInlineFormSet
+class UserDistrictVisitPriceInline(admin.TabularInline):
+    model = UserDistrictVisitPrice
+    formset = UserDistrictVisitPriceInlineFormSet
     can_delete = False
-    fk_name = 'profile_district'
+    fk_name = 'user_district'
 
 
     def get_parent_object_from_request(self, request):
@@ -88,7 +88,7 @@ class ProfileDistrictVisitPriceInline(admin.TabularInline):
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    inlines = (ProfileInline, ProfileDistrictInline)
+    inlines = (ProfileInline, UserDistrictInline)
 
     def get_inline_instances(self, request, obj=None):
         if not obj:
@@ -100,8 +100,7 @@ class CustomUserAdmin(UserAdmin):
         return super(CustomUserAdmin, self).get_form(request, obj, **kwargs)
 
     def save_model(self, request, obj, form, change):
-        print(dir(obj))
-        covered_districts = obj.profiledistrict_set
+        covered_districts = obj.userdistrict_set
         if covered_districts:
             for dist in covered_districts.all():
                 if not dist.district.region.country == obj.profile.city.district.region.country:
@@ -109,10 +108,10 @@ class CustomUserAdmin(UserAdmin):
         super(CustomUserAdmin, self).save_model(request, obj, form, change)
 
 
-@admin.register(ProfileDistrict)
-class ProfileDistrictAdmin(admin.ModelAdmin):
-    form = ProfileDistrictForm
-    inlines = (ProfileDistrictVisitPriceInline, )
+@admin.register(UserDistrict)
+class UserDistrictAdmin(admin.ModelAdmin):
+    form = UserDistrictForm
+    inlines = (UserDistrictVisitPriceInline, )
 
     def response_change(self, request, obj, post_url_continue=None):
         return redirect('/admin/auth/user/{}/change'.format(obj.user.id))

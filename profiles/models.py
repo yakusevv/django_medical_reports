@@ -41,7 +41,7 @@ class ProfileReportAutofillTemplate(models.Model):
         return reverse('profile_template_update_url', kwargs={'pk': self.pk})
 
 
-class ProfileDistrict(models.Model):
+class UserDistrict(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("User"))
     district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_("District"))
 
@@ -54,15 +54,15 @@ class ProfileDistrict(models.Model):
         return ' - '.join((str(self.user.profile), str(self.district)))
 
 
-class ProfileDistrictVisitPrice(models.Model):
-    profile_district = models.ForeignKey(ProfileDistrict, on_delete=models.CASCADE, verbose_name=_("District"))
+class UserDistrictVisitPrice(models.Model):
+    user_district = models.ForeignKey(UserDistrict, on_delete=models.CASCADE, verbose_name=_("District"))
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE, verbose_name=_("Type of visit"))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
 
     class Meta:
-        unique_together = (('profile_district', 'type_of_visit'),)
+        unique_together = (('user_district', 'type_of_visit'),)
         verbose_name = _('Visit price for the doctor')
         verbose_name_plural = _('Visit prices for the doctors')
 
     def __str__(self):
-        return ' - '.join((str(self.profile_district), str(self.type_of_visit)))
+        return ' - '.join((str(self.user_district), str(self.type_of_visit)))
