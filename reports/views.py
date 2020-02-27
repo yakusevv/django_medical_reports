@@ -117,6 +117,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         if form.is_valid() and service_items.is_valid() and images.is_valid():
             return self.form_valid(form, service_items, images)
         else:
+            print(form.errors)
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -154,24 +155,24 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         with transaction.atomic():
             form.instance.doctor = self.request.user.profile
-            company = form.cleaned_data['company']
-            city = form.cleaned_data['city']
-            type_of_visit = form.cleaned_data['type_of_visit']
-            district = city.district
-            price_group = company.price_group
-            try:
-                tariff = Tariff.objects.get(district=district, price_group=price_group)
-                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-                form.instance.visit_price = visit_tariff.price
-#                form.instance.visit_price_doctor = visit_tariff.price_doctor
-            except Tariff.DoesNotExist or VisitTariff.DoesNotExist:
-                form.instance.visit_price = 0
-            try:
-                user_district = UserDistrict.objects.get(district=district, user=self.request.user)
-                visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district, type_of_visit=type_of_visit)
-                form.instance.visit_price_doctor = visit_price.price
-            except UserDistrict.DoesNotExist or UserDistrictVisitPrice.DoesNotExist:
-                form.instance.visit_price_doctor = 0
+#            company = form.cleaned_data['company']
+#            city = form.cleaned_data['city']
+#            type_of_visit = form.cleaned_data['type_of_visit']
+#            district = city.district
+#            price_group = company.price_group
+#            try:
+#                tariff = Tariff.objects.get(district=district, price_group=price_group)
+#                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+#                form.instance.visit_price = visit_tariff.price
+##                form.instance.visit_price_doctor = visit_tariff.price_doctor
+#            except (Tariff.DoesNotExist, VisitTariff.DoesNotExist):
+#                form.instance.visit_price = 0
+#            try:
+#                user_district = UserDistrict.objects.get(district=district, user=self.request.user)
+#                visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district, type_of_visit=type_of_visit)
+#                form.instance.visit_price_doctor = visit_price.price
+#            except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
+#                form.instance.visit_price_doctor = 0
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -236,20 +237,17 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form, service_items): #, images, del_images):
         with transaction.atomic():
-#            for image in del_images:
-#                image_pk = image.split('id')[-1:][0]
-#                AdditionalImage.objects.get(pk=image_pk).delete()
-            company = form.cleaned_data['company']
-            city = form.cleaned_data['city']
-            type_of_visit = form.cleaned_data['type_of_visit']
-            district = city.district
-            price_group = company.price_group
-            try:
-                tariff = Tariff.objects.get(district=district, price_group=price_group)
-                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-                form.instance.visit_price = visit_tariff.price
-            except Tariff.DoesNotExist:
-                form.instance.visit_price = 0
+#            company = form.cleaned_data['company']
+#            city = form.cleaned_data['city']
+#            type_of_visit = form.cleaned_data['type_of_visit']
+#            district = city.district
+#            price_group = company.price_group
+#            try:
+#                tariff = Tariff.objects.get(district=district, price_group=price_group)
+#                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+#                form.instance.visit_price = visit_tariff.price
+#            except Tariff.DoesNotExist:
+#                form.instance.visit_price = 0
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object

@@ -143,7 +143,7 @@
     <div class="col-md-4">
       <b> {% trans "Visit price:" %} </b>
     </div>
-    <div class="col" {% if not report.city.district in report.doctor.districts.all or report.visit_price == 0 %} style="background: red; font-weight: bold;" {% endif %}>
+    <div class="col" {% if report.visit_price == 0 %} style="background: red; font-weight: bold;" {% endif %}>
       {% if request.user.is_staff %}
       {{ report.visit_price }} &#8364;
       {% endif %}

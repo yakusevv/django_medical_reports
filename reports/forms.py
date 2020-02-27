@@ -22,25 +22,32 @@ from .models import (
                     Tariff,
                     Country
                     )
-
+from profiles.models import UserDistrict, UserDistrictVisitPrice
 
 class ReportForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(ReportForm, self).__init__(*args, **kwargs)
+        self.fields['visit_price'].required = False
+        self.fields['visit_price_doctor'].required = False
 
     class Meta:
         model = Report
         exclude = [
-            'visit_price',
-            'visit_price_doctor',
+#            'visit_price',
+#            'visit_price_doctor',
             'checked',
             'doctor',
             'docx_download_link'
                   ]
         widgets = {
-                   'diagnosis'    : Select2MultipleWidget,
-                   'city'         : Select2Widget,
-                   'company'      : Select2Widget,
-                   'type_of_visit': Select2Widget,
-                   'date_of_visit': DateTimePicker(
+#                   'visit_price'       : forms.HiddenInput(attrs={}),
+#                   'visit_price_doctor': forms.HiddenInput(attrs={}),
+                   'diagnosis'         : Select2MultipleWidget,
+                   'city'              : Select2Widget,
+                   'company'           : Select2Widget,
+                   'type_of_visit'     : Select2Widget,
+                   'date_of_visit'     : DateTimePicker(
                                         options={
                                             'useCurrent': True,
                                             },
@@ -91,6 +98,44 @@ class ReportForm(forms.ModelForm):
         return cleaned_data
 
 
+    def save(self, commit=True, *args, **kwargs):
+        instance = super(ReportForm, self).save(commit=False)
+        company = self.cleaned_data['company']
+        city = self.cleaned_data['city']
+        type_of_visit = self.cleaned_data['type_of_visit']
+        district = city.district
+        price_group = company.price_group
+
+        decisive_fields = {
+                            'company',
+                            'type_of_visit',
+                            'city'
+        }
+        changed_data_set = set(self.changed_data)
+        change_condition = bool(decisive_fields & changed_data_set)
+        print(self.changed_data)
+        print(change_condition)
+
+        if not self.cleaned_data['visit_price'] and change_condition:
+            try:
+                tariff = Tariff.objects.get(district=district, price_group=price_group)
+                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+                instance.visit_price = visit_tariff.price
+#           form.instance.visit_price_doctor = visit_tariff.price_doctor
+            except (Tariff.DoesNotExist, VisitTariff.DoesNotExist):
+                instance.visit_price = 0
+        if not self.cleaned_data['visit_price_doctor'] and change_condition:
+            try:
+                user_district = UserDistrict.objects.get(district=district, user=instance.doctor.user)
+                visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district,   type_of_visit=type_of_visit)
+                instance.visit_price_doctor = visit_price.price
+            except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
+                instance.visit_price_doctor = 0
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
 class ServiceItemForm(forms.ModelForm):
 
     class Meta:
@@ -98,12 +143,12 @@ class ServiceItemForm(forms.ModelForm):
         fields = [
             'service',
             'quantity',
-            'service_price',
-            'service_price_doctor'
+#            'service_price',
+#            'service_price_doctor'
             ]
         widgets = {
-                   'service_price': forms.HiddenInput(attrs={}),
-                   'service_price_doctor': forms.HiddenInput(attrs={}),
+#                   'service_price': forms.HiddenInput(attrs={}),
+#                   'service_price_doctor': forms.HiddenInput(attrs={}),
                    'service'      : Select2Widget
                    }
 
@@ -118,12 +163,21 @@ class ServiceItemForm(forms.ModelForm):
         if self.instance.id and cleaned_data.get('service', False):
             if cleaned_data['DELETE']:
                 self.instance.delete()
-        if cleaned_data.get('service', False):
-            service = cleaned_data['service']
-            cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
-            cleaned_data['service_price_doctor'] = Service.objects.get(pk=service.pk).price_doctor
+#        if cleaned_data.get('service', False):
+#            service = cleaned_data['service']
+#            cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
+#            cleaned_data['service_price_doctor'] = Service.objects.get(pk=service.pk).price_doctor
         return cleaned_data
 
+    def save(self, commit=True, *args, **kwargs):
+        instance = super(ServiceItemForm, self).save(commit=False)
+        service = self.cleaned_data.get('service')
+        if service:
+            instance.service_price = Service.objects.get(pk=service.pk).price
+            instance.service_price_doctor = Service.objects.get(pk=service.pk).price_doctor
+            if commit:
+                instance.save()
+            return instance
 
 class ServiceItemsFormset(BaseInlineFormSet):
 
@@ -198,7 +252,7 @@ class AdditionalImageForm(forms.ModelForm):
             instance.position = 0
             coords = (x,y,w,h)
             if any(coords) and not None in coords:
-                print(orient)
+#                print(orient)
                 if orient == 1:
                     rotated_image = Image.open(image).rotate(0, expand=True)
                 elif orient == 6:
