@@ -103,7 +103,7 @@ class AdditionalImageInline(admin.StackedInline):
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     inlines = (AdditionalImageInline, ServiceItemInline)
-    readonly_fields = ('get_total_price', 'get_total_price_doctor', 'docx_download_link')
+    readonly_fields = ('get_total_price', 'get_total_price_doctor')
     list_display = ('__str__', 'date_of_visit', 'get_total_price', 'get_total_price_doctor', 'checked')
     ordering = ('-date_of_visit',)
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),

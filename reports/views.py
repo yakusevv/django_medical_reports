@@ -1,4 +1,5 @@
 import json
+import io
 
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -15,9 +16,10 @@ from django.views.generic import (
                                 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required
 
 from profiles.models import UserDistrict, UserDistrictVisitPrice
 
@@ -38,6 +40,32 @@ from .forms import (
                 ServiceItemsFormSet,
                 AdditionalImageFormSet
                 )
+from .utils import DocReportGeneratorWithoutSaving
+
+
+@login_required
+def downloadReportDocx(request, pk, type):
+    buffer = io.BytesIO()
+    report = Report.objects.get(pk=pk)
+    if (request.user.profile == report.doctor and type == 'd') or request.user.is_staff:
+        file = DocReportGeneratorWithoutSaving(report, type)
+        if file:
+            file_name = "_".join((
+                            report.ref_number,
+                            report.patients_last_name,
+                            report.patients_first_name
+                            )) + '.docx'
+            file.save(buffer)
+            buffer.seek(0)
+            response = HttpResponse(buffer.read())
+            response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+
+            return response
+        return HttpResponse('<h1>{}</h1>'.format(_('Report template is not found')))
+    else:
+        return HttpResponseForbidden('403 Forbidden', content_type='text/html')
+
 
 
 class AdminStaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

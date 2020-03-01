@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.urls import include
 
 from .views import (
@@ -9,7 +9,8 @@ from .views import (
                 ReportUpdateView,
                 ReportDeleteView,
                 ReportAdditionalImagesUpdateView,
-                PriceTableView
+                PriceTableView,
+                downloadReportDocx
                 )
 
 
@@ -24,4 +25,5 @@ urlpatterns = [
         path('<int:pk>/view/', ReportDetailView.as_view(), name='report_detail_url'),
         path('price_table/<int:pk>/', PriceTableView.as_view(), name='price_table_url'),
         path('<int:pk>/delete/', ReportDeleteView.as_view(), name='report_delete_url'),
+        re_path('(?P<pk>\d+)/view/download/(?P<type>[a,d])', downloadReportDocx, name='download_report_docx_url')
          ]

@@ -38,7 +38,7 @@ class ReportForm(forms.ModelForm):
 #            'visit_price_doctor',
             'checked',
             'doctor',
-            'docx_download_link'
+#            'docx_download_link'
                   ]
         widgets = {
 #                   'visit_price'       : forms.HiddenInput(attrs={}),

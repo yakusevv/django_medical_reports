@@ -11,7 +11,7 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from .utils import DocReportGenerator
+#from .utils import DocReportGenerator
 
 
 
@@ -204,7 +204,7 @@ class Report(models.Model):
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
     doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
-    docx_download_link = models.CharField(max_length=500, blank=True, verbose_name=_("Download link"))
+#    docx_download_link = models.CharField(max_length=500, blank=True, verbose_name=_("Download link"))
 
     class Meta:
         unique_together = (('patients_first_name', 'patients_last_name', 'ref_number'),)
@@ -316,7 +316,7 @@ def submission_delete(sender, instance, **kwargs):
                         )),
                         ignore_errors=True
                     )
-
+'''
 @receiver(post_save, sender=AdditionalImage)
 @receiver(post_delete, sender=AdditionalImage)
 @receiver(post_save, sender=ServiceItem)
@@ -340,7 +340,7 @@ def report_generating(sender, instance, **kwargs):
         post_save.connect(report_generating, sender=Report)
     except ReportTemplate.DoesNotExist:
             pass
-
+'''
 
 @receiver(pre_save, sender=AdditionalImage)
 def image_update(sender, instance, **kwargs):

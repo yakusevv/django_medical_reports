@@ -61,3 +61,30 @@ def DocReportGenerator(doc_path, report):
         doc.save(file_full_path)
 
         return file_url_path.replace(' ', '%20')
+
+
+from .models import ReportTemplate
+
+def DocReportGeneratorWithoutSaving(report, type):
+    try:
+        doc_path = ReportTemplate.objects.get(
+            country=report.city.district.region.country,
+            company=report.company
+            ).template
+        doc = DocxTemplate(doc_path)
+        images = []
+        for image in report.additional_images.get_queryset():
+            images.append(InlineImage(doc, image.image, width=Mm(130)))
+
+        context = {
+                'r': report,
+                'i': images,
+                'd': report.diagnosis.get_queryset(),
+                's': report.service_items.get_queryset(),
+                't': type
+                }
+        doc.render(context)
+
+        return doc
+    except ReportTemplate.DoesNotExist:
+        return None

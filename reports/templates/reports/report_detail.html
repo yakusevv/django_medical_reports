@@ -21,13 +21,15 @@
       <div class="col mb-3">
       {% if request.user.is_staff %}
         <b>
-        <a href="{{ report.docx_download_link }}" style='{% if report.checked %} color: gray {% endif %}' download>
+        <a href="{% url 'download_report_docx_url' report.pk 'a' %}" style='{% if report.checked %} color: gray; {% endif %}' download>
           {{ report.ref_number }} {{ report.patients_last_name }} {{ report.patients_first_name }}
         </a>
         </b>
       {% else %}
       <b>
-      {{ report.ref_number }} {{ report.patients_last_name }} {{ report.patients_first_name }}
+        <a href="{% url 'download_report_docx_url' report.pk 'd' %}" style='{% if report.checked %} color: gray {% endif %}' download>
+          {{ report.ref_number }} {{ report.patients_last_name }} {{ report.patients_first_name }}
+        </a>
       </b>
       {% endif %}
       </div>
