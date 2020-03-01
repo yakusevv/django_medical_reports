@@ -40,28 +40,40 @@
         {{ profile.city.district.region.country }}, {{ profile.city.district.region }}, {{ profile.city }}
       </div>
   </div>
-  <div class="row mb-2 mt-3">
-      <div class="col-3">
-        <b>{% trans "Territory coverage:" %}</b>
-      </div>
-  </div>
-  {% for district in profile.districts.all %}
-  <div class="row {% if forloop.first %}border-top{% endif %}">
-      <div class="col">
-        {{ district }}
-      </div>
-  </div>
-  <div class="row border-bottom">
-      <div class="col font-italic">
-        {% for city in district.city_set.all %}
-        {{ city }}
-        {% if not forloop.last %}
-        ,
+
+  <table class="table table-bordered mt-3" frame="vsides">
+    <td class="table-primary" style="width: 20%">
+      <b>{% trans "Territory coverage:" %}</b>
+    </td>
+    {% for type_of_visit in type_of_visit_set %}
+    <td class="table-primary">
+      {{ type_of_visit }}
+    </td>
+    {% endfor %}
+    {% for district in profile.user.userdistrict_set.all %}
+    <tr>
+        <td>
+          {{ district.district }}
+          <br>
+          <div class="col font-italic">
+            {% for city in district.district.city_set.all %}{{ city }}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+          </div>
+        </td>
+    {% for type_of_visit in type_of_visit_set %}
+      {% for visitprice in district.userdistrictvisitprice_set.all %}
+        {% if visitprice.type_of_visit == type_of_visit %}
+        <td>
+          {{ visitprice.price }} &#8364;
+        </td>
         {% endif %}
-        {% endfor %}
-      </div>
-  </div>
+      {% endfor %}
+    {% endfor %}
+  </tr>
   {% endfor %}
+  </table>
+
+
   <div class="row mb-2 mt-4">
       <div class="col-3">
         <b>{% trans "Autofill templates:" %}</b>

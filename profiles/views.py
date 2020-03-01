@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from .forms import ProfileForm, ProfileReportAutofillTemplateForm
 from .models import Profile, ProfileReportAutofillTemplate
 
+from reports.models import TypeOfVisit
 
 class ProfileDetailView(LoginRequiredMixin, DetailView):
     template_name = 'profiles/profile_detail.html'
@@ -16,8 +17,15 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, pk):
         if request.user.profile.pk == pk or request.user.is_staff:
             profile = get_object_or_404(self.model, pk=pk)
-            return render(request, self.template_name, context={ 'profile': profile,
-                                                                 'profile_link_active': "active"})
+            type_of_visit_set = TypeOfVisit.objects.filter(country=profile.city.district.region.country)
+            return render(
+                        request,
+                        self.template_name,
+                        context={
+                                  'profile': profile,
+                                  'profile_link_active': "active",
+                                  'type_of_visit_set': type_of_visit_set
+                                })
         else:
             raise Http404
 
