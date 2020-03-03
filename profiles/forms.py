@@ -18,8 +18,9 @@ class ProfileReportAutofillTemplateForm(forms.ModelForm):
 
     class Meta:
         model = ProfileReportAutofillTemplate
-        fields = '__all__'
-        widgets = {'doctor': forms.HiddenInput(attrs={})}
+#        fields = '__all__'
+#        widgets = {'doctor': forms.HiddenInput(attrs={})}
+        exclude = ('doctor',)
 
     def clean(self):
         cleaned_data = super(ProfileReportAutofillTemplateForm, self).clean()

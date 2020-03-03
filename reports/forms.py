@@ -113,8 +113,8 @@ class ReportForm(forms.ModelForm):
         }
         changed_data_set = set(self.changed_data)
         change_condition = bool(decisive_fields & changed_data_set)
-        print(self.changed_data)
-        print(change_condition)
+#        print(self.changed_data)
+#        print(change_condition)
 
         if not self.cleaned_data['visit_price'] and change_condition:
             try:
@@ -178,6 +178,7 @@ class ServiceItemForm(forms.ModelForm):
             if commit:
                 instance.save()
             return instance
+
 
 class ServiceItemsFormset(BaseInlineFormSet):
 

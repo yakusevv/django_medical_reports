@@ -113,6 +113,13 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
     model = Report
     template_name = 'reports/report_detail.html'
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            return self.render_to_response(self.get_context_data())
+        else:
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
+
     def get_context_data(self, **kwargs):
         context = super(ReportDetailView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
@@ -180,7 +187,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form, service_items, images):
-        context = self.get_context_data()
+#        context = self.get_context_data()
         with transaction.atomic():
             form.instance.doctor = self.request.user.profile
 #            company = form.cleaned_data['company']
@@ -220,26 +227,32 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        if not self.object.checked:
-            return self.render_to_response(self.get_context_data(form=form))
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            if not self.object.checked:
+                return self.render_to_response(self.get_context_data(form=form))
+            else:
+                raise Http404(_("Checked report cannot be edited"))
         else:
-            raise Http404(_("Checked report cannot be edited"))
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not self.object.checked:
-            form_class = self.get_form_class()
-            form = self.get_form(form_class)
-            service_items = self.get_context_data()['service_items']
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            if not self.object.checked:
+                form_class = self.get_form_class()
+                form = self.get_form(form_class)
+                service_items = self.get_context_data()['service_items']
 #            images = self.get_context_data()['images']
 #            del_images = [i for i in request.POST.keys() if 'del_image' in i]
-            if form.is_valid() and service_items.is_valid(): # and images.is_valid():
+                if form.is_valid() and service_items.is_valid(): # and images.is_valid():
 #                return self.form_valid(form, service_items, images, del_images)
-                 return self.form_valid(form, service_items)#, images)
+                    return self.form_valid(form, service_items)#, images)
+                else:
+                    return self.form_invalid(form)
             else:
-                return self.form_invalid(form)
+                raise Http404(_("Checked report cannot be edited"))
         else:
-            raise Http404(_("Checked report cannot be edited"))
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
     def get_context_data(self, **kwargs):
         context = super(ReportUpdateView, self).get_context_data(**kwargs)
@@ -289,22 +302,30 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
     model = Report
 
     def get(self, request, pk):
-        obj = self.model.objects.get(pk=pk)
-        if not obj.checked:
-            return render(request, self.template_name, context={
-                                                'report': obj,
-                                                'report_link_active': "active"
-                                                })
+#        obj = self.model.objects.get(pk=pk)
+        self.object = self.get_object()
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            if not self.object.checked:
+                return render(request, self.template_name, context={
+                                                    'report': self.object,
+                                                    'report_link_active': "active"
+                                                    })
+            else:
+                raise Http404(_("Checked report cannot be deleted"))
         else:
-            raise Http404(_("Checked report cannot be deleted"))
+            return HttpResponseForbidden('403 Frobidden', content_type='text/html')
 
     def post(self, request, pk):
-        obj = self.model.objects.get(pk=pk)
-        if not obj.checked:
-            obj.delete()
-            return redirect(reverse(self.redirect_url))
+#        obj = self.model.objects.get(pk=pk)
+        self.object = self.get_object()
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            if not self.object.checked:
+                self.object.delete()
+                return redirect(reverse(self.redirect_url))
+            else:
+                raise Http404(_("Checked report cannot be deleted"))
         else:
-            raise Http404(_("Checked report cannot be deleted"))
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
 
 class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
@@ -316,22 +337,28 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        if not self.object.checked:
-            return self.render_to_response(self.get_context_data(form=form))
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            if not self.object.checked:
+                return self.render_to_response(self.get_context_data(form=form))
+            else:
+                raise Http404(_("Checked report cannot be edited"))
         else:
-            raise Http404(_("Checked report cannot be edited"))
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not self.object.checked:
-            form_class = self.get_form_class()
-            form = self.get_form(form_class)
-            if form.is_valid():
-                return self.form_valid(form)
+        if request.user.profile == self.object.doctor or request.user.is_staff:
+            if not self.object.checked:
+                form_class = self.get_form_class()
+                form = self.get_form(form_class)
+                if form.is_valid():
+                    return self.form_valid(form)
+                else:
+                    return self.form_invalid(form)
             else:
-                return self.form_invalid(form)
+                raise Http404(_("Checked report cannot be edited"))
         else:
-            raise Http404(_("Checked report cannot be edited"))
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
     def get_context_data(self, **kwargs):
         context = super(ReportAdditionalImagesUpdateView, self).get_context_data(**kwargs)
