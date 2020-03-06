@@ -207,9 +207,28 @@ class Report(models.Model):
 #    docx_download_link = models.CharField(max_length=500, blank=True, verbose_name=_("Download link"))
 
     class Meta:
-        unique_together = (('patients_first_name', 'patients_last_name', 'ref_number'),)
         verbose_name = _('Report')
         verbose_name_plural = _('Reports')
+#        unique_together = (
+#                           (
+#                            'patients_first_name',
+#                            'patients_last_name',
+#                            'ref_number',
+#                            )
+
+    def validate_unique(self, *args, **kwargs):
+        super(Report, self).validate_unique(*args, **kwargs)
+
+        if self.__class__.objects.filter(
+                    patients_first_name=self.patients_first_name,
+                    patients_last_name=self.patients_last_name,
+                    ref_number=self.ref_number,
+                    city__district__region__country=self.city.district.region.country
+                    ).exists():
+            raise ValidationError(
+                message=_('Report with this data is already exists.'),
+                code='unique_together',
+            )
 
     def __str__(self):
         return ' '.join((self.ref_number, self.patients_last_name, self.patients_first_name))
