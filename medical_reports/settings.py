@@ -1,15 +1,25 @@
 import os
 
 from .secret_data import SECRET_KEY, TIME_ZONE
-from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
+from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, ALLOWED_HOST
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = True
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
+
+DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
+
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+SECURE_BROWSER_XSS_FILTER = True
 
 ALLOWED_HOSTS = [
-                '192.168.56.102',
+                os.environ.get('ALLOWED_HOST', ALLOWED_HOST)
 ]
 
 
@@ -78,13 +88,13 @@ WSGI_APPLICATION = 'medical_reports.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
-        'OPTIONS': {
+        'ENGINE'  : 'django.db.backends.mysql',
+        'NAME'    : os.environ.get('DB_NAME', DB_NAME),
+        'USER'    : os.environ.get('DB_USER', DB_USER),
+        'PASSWORD': os.environ.get('DB_PASSWORD', DB_PASSWORD),
+        'HOST'    : os.environ.get('DB_HOST', DB_HOST),
+        'PORT'    : os.environ.get('DB_PORT', DB_PORT),
+        'OPTIONS' : {
             'autocommit': True,
             'charset': 'utf8'
         }
