@@ -87,6 +87,8 @@ class ReportsListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super(ReportsListView, self).get_queryset()
+        doctors_country = self.request.user.profile.city.district.region.country
+        queryset = queryset.filter(city__district__region__country=doctors_country)
         search_query = self.request.GET.get('search', '')
         if search_query:
             queryset = queryset.filter(
@@ -115,7 +117,11 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             return self.render_to_response(self.get_context_data())
         else:
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')
@@ -126,7 +132,12 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if request.user.is_staff and request.POST.get('is_checked'):
+        self.object = self.get_object()
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country = object_country == users_country
+
+        if request.user.is_staff and request.POST.get('is_checked') and country_case:
             report = self.get_object()
             report.checked = not report.checked
             report.save()
@@ -187,27 +198,8 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form, service_items, images):
-#        context = self.get_context_data()
         with transaction.atomic():
             form.instance.doctor = self.request.user.profile
-#            company = form.cleaned_data['company']
-#            city = form.cleaned_data['city']
-#            type_of_visit = form.cleaned_data['type_of_visit']
-#            district = city.district
-#            price_group = company.price_group
-#            try:
-#                tariff = Tariff.objects.get(district=district, price_group=price_group)
-#                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-#                form.instance.visit_price = visit_tariff.price
-##                form.instance.visit_price_doctor = visit_tariff.price_doctor
-#            except (Tariff.DoesNotExist, VisitTariff.DoesNotExist):
-#                form.instance.visit_price = 0
-#            try:
-#                user_district = UserDistrict.objects.get(district=district, user=self.request.user)
-#                visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district, type_of_visit=type_of_visit)
-#                form.instance.visit_price_doctor = visit_price.price
-#            except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
-#                form.instance.visit_price_doctor = 0
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -227,7 +219,13 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+
+        self.object = self.get_object()
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
             else:
@@ -237,7 +235,11 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)
@@ -304,7 +306,11 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
     def get(self, request, pk):
 #        obj = self.model.objects.get(pk=pk)
         self.object = self.get_object()
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 return render(request, self.template_name, context={
                                                     'report': self.object,
@@ -318,7 +324,11 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
     def post(self, request, pk):
 #        obj = self.model.objects.get(pk=pk)
         self.object = self.get_object()
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 self.object.delete()
                 return redirect(reverse(self.redirect_url))
@@ -337,7 +347,12 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
             else:
@@ -347,7 +362,12 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+
+        object_country = self.object.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)
