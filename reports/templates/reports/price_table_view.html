@@ -21,7 +21,7 @@
     {% endfor %}
     {% for district in region.district_set.all %}
     <tr>
-      <th rowspan="5" style="width: 30%">
+      <th rowspan="{{ types_of_visit.count }}" style="width: 30%">
         {{ district }}
         <p style="font-weight: lighter; font-size: 15px;">
           {% for city in district.city_set.all %}
