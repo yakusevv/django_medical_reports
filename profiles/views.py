@@ -16,7 +16,11 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
 
     def get(self, request, pk):
-        if request.user.profile.pk == pk or request.user.is_staff:
+        self.object = self.get_object()
+        profile_country = self.object.city.district.region.country
+        user_country = request.user.profile.city.district.region.country
+        country_case = profile_country == user_country
+        if request.user.profile.pk == pk or request.user.is_staff and country_case:
             profile = get_object_or_404(self.model, pk=pk)
             type_of_visit_set = TypeOfVisit.objects.filter(country=profile.city.district.region.country)
             return render(
@@ -28,7 +32,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
                                   'type_of_visit_set': type_of_visit_set
                                 })
         else:
-            raise Http404
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
 
 class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
@@ -58,7 +62,10 @@ class ProfileReportAutofillTemplateUpdateView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if request.user.profile == self.object.doctor or request.user.is_staff:
+        template_country = self.object.doctor.city.district.region.country
+        user_country = request.user.profile.city.district.region.country
+        country_case = template_country == user_country
+        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
             return self.render_to_response(self.get_context_data())
         else:
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')

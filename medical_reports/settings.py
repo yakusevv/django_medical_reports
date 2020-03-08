@@ -1,13 +1,13 @@
 import os
 
-from .secret_data import SECRET_KEY, TIME_ZONE
+from .secret_data import SECRET_KEY, TIME_ZONE, DEBUG
 from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST#, DB_PORT
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
 
-DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
+DEBUG = bool( os.environ.get('DJANGO_DEBUG', DEBUG) )
 
 #CSRF_COOKIE_SECURE = True
 
@@ -142,7 +142,7 @@ USE_TZ = True
 
 DATE_FORMAT = 'j E Y'
 
-TIME_ZONE = os.environ('TIME_ZONE', TIME_ZONE)
+TIME_ZONE = os.environ.get('TIME_ZONE', TIME_ZONE)
 
 TIME_FORMAT = 'H:i'
 
