@@ -224,7 +224,7 @@ class Report(models.Model):
                     patients_last_name=self.patients_last_name,
                     ref_number=self.ref_number,
                     city__district__region__country=self.city.district.region.country
-                    ).exists():
+                    ).exclude(pk=self.pk).exists():
             raise ValidationError(
                 message=_('Report with this data is already exists.'),
                 code='unique_together',

@@ -72,15 +72,16 @@ class ReportForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data=super(ReportForm, self).clean()
-        ref_number = cleaned_data.get("ref_number")
-        first_name = cleaned_data.get("patients_first_name")
-        last_name = cleaned_data.get("patients_last_name")
+        ref_number = cleaned_data.get("ref_number").upper()
+        patients_first_name = cleaned_data.get("patients_first_name").upper()
+        patients_last_name = cleaned_data.get("patients_last_name").upper()
+        company_ref_number = cleaned_data.get("company_ref_number").upper()
         same_reports = Report.objects.filter(
                             ref_number=ref_number
                         ).filter(
-                            patients_last_name=last_name
+                            patients_last_name=patients_last_name
                         ).filter(
-                            patients_first_name=first_name
+                            patients_first_name=patients_first_name
                         )
         if not self.instance.pk:
             if same_reports.exists():
@@ -95,6 +96,10 @@ class ReportForm(forms.ModelForm):
                 self.add_error('ref_number', msg)
                 self.add_error('patients_first_name', msg)
                 self.add_error('patients_last_name', msg)
+        cleaned_data['ref_number'] = ref_number
+        cleaned_data['patients_last_name'] = patients_last_name
+        cleaned_data['patients_first_name'] = patients_first_name
+        cleaned_data['company_ref_number'] = company_ref_number
         return cleaned_data
 
 

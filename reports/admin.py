@@ -127,6 +127,10 @@ class ReportAdmin(admin.ModelAdmin):
         super(ReportAdmin, self).save_formset(request, form, formset, change)
 
     def save_model(self, request, obj, form, change):
+        obj.patients_last_name = obj.patients_last_name.upper()
+        obj.patients_first_name = obj.patients_first_name.upper()
+        obj.ref_number = obj.ref_number.upper()
+        obj.company_ref_number = obj.company_ref_number.upper()
         if not change and obj.visit_price == 0 or obj.visit_price == 0:
             company = obj.company
             city = obj.city
