@@ -1,8 +1,7 @@
 import os
 
 from .secret_data import SECRET_KEY, TIME_ZONE
-from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, ALLOWED_HOST
-
+from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST#, DB_PORT
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -10,13 +9,14 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
 
 DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
-CSRF_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
 
-SESSION_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 SECURE_BROWSER_XSS_FILTER = True
+
 ALLOWED_HOSTS = [
                 os.environ.get('ALLOWED_HOST', ALLOWED_HOST)
 ]
@@ -92,7 +92,7 @@ DATABASES = {
         'USER'    : os.environ.get('DB_USER', DB_USER),
         'PASSWORD': os.environ.get('DB_PASSWORD', DB_PASSWORD),
         'HOST'    : os.environ.get('DB_HOST', DB_HOST),
-        'PORT'    : os.environ.get('DB_PORT', DB_PORT),
+ #       'PORT'    : os.environ.get('DB_PORT', DB_PORT),
         'OPTIONS' : {
             'autocommit': True,
             'charset': 'utf8'
@@ -141,6 +141,8 @@ USE_L10N = True
 USE_TZ = True
 
 DATE_FORMAT = 'j E Y'
+
+TIME_ZONE = os.environ('TIME_ZONE', TIME_ZONE)
 
 TIME_FORMAT = 'H:i'
 
