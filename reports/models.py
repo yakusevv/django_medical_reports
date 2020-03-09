@@ -290,6 +290,7 @@ class Service(models.Model):
     country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='services', default=1, verbose_name=_("Country"))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
     price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price for the doctor"))
+    unsummable_price = models.BooleanField(default=False, verbose_name=_('Unsummable price'))
 
     class Meta:
         unique_together = (('name', 'country',),)
@@ -303,9 +304,12 @@ class Service(models.Model):
 class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE, verbose_name=_("Report"))
     service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT, verbose_name=_("Service"))
-    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price"))
-    service_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price for the doctor"))
+#    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price"))
+#    service_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price for the doctor"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("Quantity"))
+    cost = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    cost_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
 
     class Meta:
         unique_together = (('report', 'service',),)
@@ -317,13 +321,13 @@ class ServiceItem(models.Model):
             return str(self.service.name) + ' [{}]'.format(self.quantity)
         return self.service.name
 
-    @property
-    def cost(self):
-        return self.service_price * self.quantity
+#    @property
+#    def cost(self):
+#        return self.service_price * self.quantity
 
-    @property
-    def cost_doctor(self):
-        return self.service_price_doctor * self.quantity
+#    @property
+#    def cost_doctor(self):
+#        return self.service_price_doctor * self.quantity
 
 
 @receiver(post_delete, sender=Report)

@@ -121,7 +121,7 @@ class ReportForm(forms.ModelForm):
 #        print(self.changed_data)
 #        print(change_condition)
 
-        if not self.cleaned_data['visit_price'] and change_condition:
+        if not self.cleaned_data.get('visit_price', False) and change_condition:
             try:
                 tariff = Tariff.objects.get(district=district, price_group=price_group)
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
@@ -129,7 +129,7 @@ class ReportForm(forms.ModelForm):
 #           form.instance.visit_price_doctor = visit_tariff.price_doctor
             except (Tariff.DoesNotExist, VisitTariff.DoesNotExist):
                 instance.visit_price = 0
-        if not self.cleaned_data['visit_price_doctor'] and change_condition:
+        if not self.cleaned_data.get('visit_price_doctor', False) and change_condition:
             try:
                 user_district = UserDistrict.objects.get(district=district, user=instance.doctor.user)
                 visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district,   type_of_visit=type_of_visit)
@@ -149,7 +149,9 @@ class ServiceItemForm(forms.ModelForm):
             'service',
             'quantity',
 #            'service_price',
-#            'service_price_doctor'
+#            'service_price_doctor',
+            'cost_doctor',
+            'cost'
             ]
         widgets = {
 #                   'service_price': forms.HiddenInput(attrs={}),
@@ -159,6 +161,9 @@ class ServiceItemForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ServiceItemForm, self).__init__(*args, **kwargs)
+        self.fields['cost'].required = False
+        self.fields['cost_doctor'].required = False
+        self.fields['service'].required = False
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['service'].disabled = True
@@ -177,9 +182,27 @@ class ServiceItemForm(forms.ModelForm):
     def save(self, commit=True, *args, **kwargs):
         instance = super(ServiceItemForm, self).save(commit=False)
         service = self.cleaned_data.get('service')
+
+        decisive_fields = {
+                            'quantity',
+                            'service',
+                }
+
+        changed_data_set = set(self.changed_data)
+        change_condition = bool(decisive_fields & changed_data_set)
+
         if service:
-            instance.service_price = Service.objects.get(pk=service.pk).price
-            instance.service_price_doctor = Service.objects.get(pk=service.pk).price_doctor
+#            instance.service_price = Service.objects.get(pk=service.pk).price
+#            instance.service_price_doctor = Service.objects.get(pk=service.pk).price_doctor
+            cost = self.cleaned_data.get('cost', False)
+            cost_doctor = self.cleaned_data.get('cost_doctor', False)
+            if not cost_doctor and change_condition:
+                if not service.unsummable_price:
+                    instance.cost_doctor = service.price_doctor * instance.quantity
+                else:
+                    instance.cost_doctor = service.price_doctor
+            if not cost and change_condition:
+                instance.cost = service.price * instance.quantity
             if commit:
                 instance.save()
             return instance
