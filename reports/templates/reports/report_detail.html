@@ -145,12 +145,14 @@
     <div class="col-md-4">
       <b> {% trans "Visit price:" %} </b>
     </div>
-    <div class="col" {% if report.visit_price == 0 %} style="background: red; font-weight: bold;" {% endif %}>
-      {% if request.user.is_staff %}
-      {{ report.visit_price }} &#8364;
-      {% endif %}
-      <p class='mb-0' style='color: green'>{{ report.visit_price_doctor }} &#8364;</p>
+    <div class="col" {% if report.visit_price_doctor == 0 %} style="background: red; font-weight: bold;" {% endif %}>
+    <p class='mb-0'>{{ report.visit_price_doctor }} &#8364;</p>
     </div>
+    {% if request.user.is_staff %}
+      <div class="col" {% if report.visit_price == 0 %} style="background: red; font-weight: bold;" {% endif %}>
+        <p class-'mb-0' style='color: green'> {{ report.visit_price }} &#8364; </p>
+      </div>
+    {% endif %}
   </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
@@ -158,13 +160,19 @@
     </div>
     <div class="col">
       {% for service in report.service_items.get_queryset %}
-        <p class='mb-1'>
+        <div class="row">
+        {{ service }}
+        </div>
+        <div class="row">
+        <div class="col">
+          <p class='mb-0'>{{ service.cost_doctor }} &#8364;</p>
+        </div>
           {% if request.user.is_staff %}
-          {{ service.cost }} &#8364;
+        <div class="col">
+          <p class-'mb-0' style='color: green'> {{ service.cost }} &#8364; </p>
+        </div>
           {% endif %}
-          <p class='mb-0' style='color: green'>{{ service.cost_doctor }} &#8364;</p>
-          {{ service }}
-        </p>
+        </div>
       {% endfor %}
     </div>
   </div>
@@ -173,11 +181,13 @@
       <b> {% trans "Total price:" %} </b>
     </div>
     <div class="col">
-      {% if request.user.is_staff %}
-        {{ report.get_total_price }} &#8364;
-      {% endif %}
-      <p class="mb-0" style='color: green'>{{ report.get_total_price_doctor }} &#8364;</p>
+      <p class="mb-0"> {{ report.get_total_price_doctor }} &#8364;</p>
     </div>
+    {% if request.user.is_staff %}
+    <div class='col'>
+      <p class="mb-0" style='color: green'> {{ report.get_total_price }} &#8364; </p>
+    </div>
+    {% endif %}
   </div>
 
   <div class="row mb-2 col-md-12 border-top">
