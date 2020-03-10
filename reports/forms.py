@@ -156,13 +156,16 @@ class ServiceItemForm(forms.ModelForm):
         widgets = {
 #                   'service_price': forms.HiddenInput(attrs={}),
 #                   'service_price_doctor': forms.HiddenInput(attrs={}),
-                   'service'      : Select2Widget
+                   'service'      : Select2Widget,
                    }
 
     def __init__(self, *args, **kwargs):
         super(ServiceItemForm, self).__init__(*args, **kwargs)
         self.fields['cost'].required = False
+        self.fields['cost'].widget.attrs['style'] = 'width: 100px'
         self.fields['cost_doctor'].required = False
+        self.fields['cost_doctor'].widget.attrs['style'] = 'width: 100px'
+        self.fields['quantity'].widget.attrs['style'] = 'width: 100px'
         self.fields['service'].required = False
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
@@ -173,10 +176,6 @@ class ServiceItemForm(forms.ModelForm):
         if self.instance.id and cleaned_data.get('service', False):
             if cleaned_data['DELETE']:
                 self.instance.delete()
-#        if cleaned_data.get('service', False):
-#            service = cleaned_data['service']
-#            cleaned_data['service_price'] = Service.objects.get(pk=service.pk).price
-#            cleaned_data['service_price_doctor'] = Service.objects.get(pk=service.pk).price_doctor
         return cleaned_data
 
     def save(self, commit=True, *args, **kwargs):
