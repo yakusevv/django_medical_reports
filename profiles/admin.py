@@ -7,7 +7,7 @@ from django.urls import resolve
 from django.shortcuts import redirect
 
 from .models import Profile, UserDistrict, UserDistrictVisitPrice
-from .forms import UserDistrictVisitPriceInlineFormSet, UserDistrictForm
+from .forms import UserDistrictVisitPriceInlineFormSet, UserDistrictInlineFormset, UserDistrictForm
 from reports.models import TypeOfVisit
 
 
@@ -35,6 +35,7 @@ class UserDistrictInline(EditLinkToInlineObject, admin.TabularInline):
     readonly_fields = ('edit_link', )
     can_delete = True
     fk_name = 'user'
+    formset = UserDistrictInlineFormset
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
@@ -42,14 +43,13 @@ class UserDistrictInline(EditLinkToInlineObject, admin.TabularInline):
             return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
         return None
 
-    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+    def formfield_for_manytomany(self, db_field, request=None, **kwargs):
 
-        field = super(UserDistrictInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
-
-        if db_field.name == 'district':
+        field = super(UserDistrictInline, self).formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == 'cities':
             if request._obj_ is not None:
                 field.queryset = field.queryset.filter(
-                    region__country = request._obj_.profile.city.district.region.country
+                    district__region__country = request._obj_.profile.city.district.region.country
                     )
             else:
                 field.queryset = field.queryset.none()
@@ -74,14 +74,18 @@ class UserDistrictVisitPriceInline(admin.TabularInline):
     def get_extra(self, request, obj=None, **kwargs):
         parent = self.get_parent_object_from_request(request)
         if parent:
-            extra = len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+            extra = len(TypeOfVisit.objects.filter(
+                country=parent.cities.all()[0].district.region.country
+                        ))
             return extra
         return 0
 
     def get_max_num(self, request, obj=None, **kwargs):
         parent = self.get_parent_object_from_request(request)
         if parent:
-            max_num = len(TypeOfVisit.objects.filter(country=parent.district.region.country))
+            max_num = len(TypeOfVisit.objects.filter(
+                country=parent.cities.all()[0].district.region.country
+                          ))
             return max_num
         return 0
 
@@ -101,10 +105,10 @@ class CustomUserAdmin(UserAdmin):
 
     def save_model(self, request, obj, form, change):
         covered_districts = obj.userdistrict_set
-        if covered_districts:
-            for dist in covered_districts.all():
-                if not dist.district.region.country == obj.profile.city.district.region.country:
-                    dist.delete()
+#        if covered_districts:
+#            for dist in covered_districts.all():
+#                if not dist.district.region.country == obj.profile.city.district.region.country:
+#                    dist.delete()
         super(CustomUserAdmin, self).save_model(request, obj, form, change)
 
 

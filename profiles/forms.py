@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Profile, ProfileReportAutofillTemplate, UserDistrict
 from reports.models import TypeOfVisit
@@ -32,7 +33,7 @@ class UserDistrictVisitPriceInlineFormSet(BaseInlineFormSet):
         if kwargs['instance'].pk:
             current_instances = [inst.type_of_visit.pk for inst in kwargs['instance'].userdistrictvisitprice_set.all()]
             type_of_visit_filtered = TypeOfVisit.objects.filter(
-                        country=kwargs['instance'].district.region.country
+                        country=kwargs['instance'].cities.all()[0].district.region.country
         ).exclude(
                         pk__in=current_instances
                  )
@@ -64,16 +65,42 @@ class UserDistrictVisitPriceInlineFormSet(BaseInlineFormSet):
 
 
 class UserDistrictForm(forms.ModelForm):
-
     class Meta:
         model = UserDistrict
         fields = '__all__'
-
+        exclude = ('cities',)
+        
+"""
     def clean(self):
         cleaned_data = super(UserDistrictForm, self).clean()
         user = cleaned_data.get('user')
         district = cleaned_data.get('district')
-        if not user.profile.city.district.region.country == district.region.country:
-            raise forms.ValidationError("Doctors can't cover districts of foreign country")
+        cities = cleaned_data.get('cities')
+        for city in cities:
+            if not user.profile.city.district.region.country == city.district.region.country:
+                raise forms.ValidationError("Doctors can't cover districts of foreign country")
         else:
             return cleaned_data
+"""
+
+class UserDistrictInlineFormset(BaseInlineFormSet):
+
+    def clean(self):
+        all_cities = []
+        repeated_cities = []
+        for form in self.forms:
+            if form.cleaned_data.get('cities', False) and not form.cleaned_data.get('DELETE'):
+                cities = form.cleaned_data.get('cities').all()
+                for city in cities:
+                    all_cities.append(city)
+            elif form.cleaned_data.get('cities', False) and form.instance:
+                form.add_error('cities', _('At least one city must be chosen'))
+        if all_cities:
+            for city in all_cities:
+                if all_cities.count(city)>1:
+                    repeated_cities.append(city)
+            for form in self.forms:
+                if form.cleaned_data and form.cleaned_data.get('cities'):
+                    repeated_case = set(repeated_cities) & set(form.cleaned_data.get('cities'))
+                    if bool(repeated_case):
+                        form.add_error('cities', _('{} - can\'t be dublicated'.format(', '.join(str(city) for city in repeated_case))))

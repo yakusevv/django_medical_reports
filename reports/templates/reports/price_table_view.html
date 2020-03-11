@@ -26,9 +26,9 @@
         <p style="font-weight: lighter; font-size: 15px;">
           {% for city in district.city_set.all %}
             {% if not forloop.last %}
-              {{ city }},
+              {{ city.name }},
             {% else %}
-              {{ city }}
+              {{ city.name }}
             {% endif %}
             {% if forloop.counter|divisibleby:4 %}
             <br>
@@ -46,12 +46,7 @@
               {% if tariff.price_group == price_group %}
                 {% for visit_price in tariff.visittariff_set.all %}
                   {% if visit_price.type_of_visit == type_of_visit %}
-                    {{ visit_price.price }} &#8364;
-  {% comment %}
-                  <p style="color:green">
-                    {{ visit_price.price_doctor }} &#8364;
-                  </p>
-  {% endcomment %}
+                    <p class="mb-0" style="color:green">{{ visit_price.price }} &#8364; </p>
                   {% endif %}
                 {% endfor %}
               {% endif %}
@@ -74,8 +69,8 @@
     <tr>
       <td>{{ service.name }}</td>
       <td>
-        {{ service.price }} &#8364;
-        <p class="mb-0" style="color:green">{{ service.price_doctor }} &#8364;</p></td>
+        <p class="mb-0" style="color:green">{{ service.price }} &#8364;</p>
+        <p class="mb-0">{{ service.price_doctor }} &#8364;</p></td>
     </tr>
     {% endif %}
   {% endfor %}

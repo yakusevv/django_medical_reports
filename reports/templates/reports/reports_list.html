@@ -39,7 +39,7 @@
             <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
           </div>
           <div class="col">
-            {{ report.city }}
+            {{ report.city.name }}
           </div>
           <div class="col">
             {{ report.date_of_visit }}

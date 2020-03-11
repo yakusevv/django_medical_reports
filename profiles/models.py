@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 from reports.models import District, City, TypeOfVisit
 
@@ -43,15 +44,16 @@ class ProfileReportAutofillTemplate(models.Model):
 
 class UserDistrict(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("User"))
-    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_("District"))
+#    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_("District"))
+    cities = models.ManyToManyField('reports.City', related_name='cities', verbose_name=_("Cities"))
 
     class Meta:
-        unique_together = (('user', 'district'),)
+#        unique_together = (('user', 'district'),)
         verbose_name = _('District coverage')
         verbose_name_plural = _('Districts coverage')
 
     def __str__(self):
-        return ' - '.join((str(self.user.profile), str(self.district)))
+        return ' - '.join((str(self.user.profile), 'district', str(str(self.cities.all()[0].name) + '...')))
 
 
 class UserDistrictVisitPrice(models.Model):

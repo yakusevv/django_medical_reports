@@ -75,7 +75,7 @@
       <b> {% trans "Location:" %} </b>
     </div>
     <div class="col">
-      {{ report.city.district.region }}, {{ report.city }}
+      {{ report.city.district.region }}, {{ report.city.name }}
       {% if report.detailed_location %}
       <p> {{ report.detailed_location }} </p>
       {% endif %}

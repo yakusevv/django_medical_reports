@@ -131,7 +131,7 @@ class ReportForm(forms.ModelForm):
                 instance.visit_price = 0
         if not self.cleaned_data.get('visit_price_doctor', False) and change_condition:
             try:
-                user_district = UserDistrict.objects.get(district=district, user=instance.doctor.user)
+                user_district = UserDistrict.objects.get(cities__in=[city,], user=instance.doctor.user)
                 visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district,   type_of_visit=type_of_visit)
                 instance.visit_price_doctor = visit_price.price
             except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
