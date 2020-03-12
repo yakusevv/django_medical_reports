@@ -225,7 +225,8 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
             else:
@@ -310,7 +311,8 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 return render(request, self.template_name, context={
                                                     'report': self.object,
@@ -328,7 +330,8 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 self.object.delete()
                 return redirect(reverse(self.redirect_url))
@@ -352,7 +355,8 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
             else:
@@ -367,7 +371,8 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)

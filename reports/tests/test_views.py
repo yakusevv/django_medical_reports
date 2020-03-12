@@ -141,6 +141,28 @@ class AccessRequiredViewTest(TestCase):
         test_report21.diagnosis.add(test_disease2)
         test_report21.save()
 
+        test_report22 = Report.objects.create(
+                    ref_number = 'D123',
+                    company_ref_number = '12345',
+                    company = test_company,
+                    patients_first_name = 'Fname2',
+                    patients_last_name = 'Lname2',
+                    patients_date_of_birth = timezone.now() - datetime.timedelta(days=9999),
+                    patients_policy_number = '123456789',
+                    type_of_visit = test_type_of_visit2,
+                    visit_price = '321',
+                    visit_price_doctor = '123',
+                    date_of_visit = timezone.now() - datetime.timedelta(days=2),
+                    city = test_city2,
+                    cause_of_visit = 'testcause',
+                    checkup = 'testcheckup',
+                    additional_checkup = 'testadditionalcheckup',
+                    prescription = 'testprescription',
+                    doctor = test_profile11
+        )
+        test_report22.diagnosis.add(test_disease2)
+        test_report22.save()
+
 #reports list view
     def test_redirect_if_not_logged_in_reports_list(self):
         resp = self.client.get(reverse('reports_list_url'))
@@ -238,6 +260,13 @@ class AccessRequiredViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'reports/report_detail.html')
 
+        reportpk = Report.objects.get(ref_number='D123', doctor__user__username='testuser11').pk
+
+        resp = self.client.get(reverse('report_detail_url', kwargs={'pk': reportpk}))
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'reports/report_detail.html')
+
     def test_success_if_user_is_staff_and_not_users_report_report_detail(self):
         reportpk = Report.objects.get(ref_number='A123', doctor__user__username='testuser11').pk
         login = self.client.login(username='testuser12', password='12345')
@@ -246,12 +275,12 @@ class AccessRequiredViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'reports/report_detail.html')
 
-    def test_forbidden_if_not_country_case_report_detail(self):
-        reportpk = Report.objects.get(ref_number='C123', doctor__user__username='testuser21').pk
-        login = self.client.login(username='testuser12', password='12345')
-        resp = self.client.get(reverse('report_detail_url', kwargs={'pk': reportpk}))
+#    def test_forbidden_if_not_country_case_report_detail(self):
+#        reportpk = Report.objects.get(ref_number='C123', doctor__user__username='testuser21').pk
+#        login = self.client.login(username='testuser12', password='12345')
+#        resp = self.client.get(reverse('report_detail_url', kwargs={'pk': reportpk}))
 
-        self.assertEqual(resp.status_code, 403)
+#        self.assertEqual(resp.status_code, 403)
 
 #report update view
     def test_redirect_if_not_logged_in_report_update(self):
@@ -283,9 +312,14 @@ class AccessRequiredViewTest(TestCase):
         self.assertTemplateUsed(resp, 'reports/report_update.html')
 
     def test_forbidden_if_not_country_case_report_update(self):
-        reportpk = Report.objects.get(ref_number='C123', doctor__user__username='testuser21').pk
-        login = self.client.login(username='testuser12', password='12345')
+        reportpk = Report.objects.get(ref_number='D123', doctor__user__username='testuser11').pk
+        login = self.client.login(username='testuser11', password='12345')
         resp = self.client.get(reverse('report_update_url', kwargs={'pk': reportpk}))
+
+        self.assertEqual(resp.status_code, 403)
+
+        login = self.client.login(username='testuser12', password='12345')
+        resp = self.client.get(reverse('report_delete_url', kwargs={'pk': reportpk}))
 
         self.assertEqual(resp.status_code, 403)
 
@@ -319,9 +353,14 @@ class AccessRequiredViewTest(TestCase):
         self.assertTemplateUsed(resp, 'reports/report_images_update.html')
 
     def test_forbidden_if_not_country_case_report_images_update(self):
-        reportpk = Report.objects.get(ref_number='C123', doctor__user__username='testuser21').pk
-        login = self.client.login(username='testuser12', password='12345')
+        reportpk = Report.objects.get(ref_number='D123', doctor__user__username='testuser11').pk
+        login = self.client.login(username='testuser11', password='12345')
         resp = self.client.get(reverse('report_images_update_url', kwargs={'pk': reportpk}))
+
+        self.assertEqual(resp.status_code, 403)
+
+        login = self.client.login(username='testuser12', password='12345')
+        resp = self.client.get(reverse('report_delete_url', kwargs={'pk': reportpk}))
 
         self.assertEqual(resp.status_code, 403)
 
@@ -357,7 +396,12 @@ class AccessRequiredViewTest(TestCase):
         Report.objects.get(pk=reportpk).checked=True
 
     def test_forbidden_if_not_country_case_report_delete(self):
-        reportpk = Report.objects.get(ref_number='C123', doctor__user__username='testuser21').pk
+        reportpk = Report.objects.get(ref_number='D123', doctor__user__username='testuser11').pk
+        login = self.client.login(username='testuser11', password='12345')
+        resp = self.client.get(reverse('report_delete_url', kwargs={'pk': reportpk}))
+
+        self.assertEqual(resp.status_code, 403)
+
         login = self.client.login(username='testuser12', password='12345')
         resp = self.client.get(reverse('report_delete_url', kwargs={'pk': reportpk}))
 
