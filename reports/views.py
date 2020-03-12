@@ -88,7 +88,10 @@ class ReportsListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super(ReportsListView, self).get_queryset()
         doctors_country = self.request.user.profile.city.district.region.country
-        queryset = queryset.filter(city__district__region__country=doctors_country)
+        if self.request.user.is_staff:
+            queryset = queryset.filter(
+                                city__district__region__country=doctors_country
+                                )
         search_query = self.request.GET.get('search', '')
         if search_query:
             queryset = queryset.filter(

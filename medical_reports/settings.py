@@ -95,7 +95,8 @@ DATABASES = {
  #       'PORT'    : os.environ.get('DB_PORT', DB_PORT),
         'OPTIONS' : {
             'autocommit': True,
-            'charset': 'utf8'
+            'charset': 'utf8',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
     }
 }
