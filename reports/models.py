@@ -94,7 +94,7 @@ class City(models.Model):
 # Every disease in reports must have a name in language of country where was visit
 # so property "country" has been added
 class Disease(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
+    name = models.CharField(max_length=80, unique=True, verbose_name=_("Name"))
     country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
 
     class Meta:
