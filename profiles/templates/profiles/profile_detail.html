@@ -24,6 +24,7 @@
         {{ profile.user.first_name }}
       </div>
   </div>
+  {% if not profile.user.is_staff %}
   <div class="row mb-2">
       <div class="col-md-3">
         <b>{% trans "Num. col.:" %}</b>
@@ -32,6 +33,7 @@
         {{ profile.num_col }}
       </div>
   </div>
+  {% endif %}
   <div class="row mb-2">
       <div class="col-md-3">
         <b>{% trans "Location:" %}</b>
@@ -40,14 +42,18 @@
         {{ profile.city.district.region.country }}, {{ profile.city.district.region }}, {{ profile.city.name }}
       </div>
   </div>
-
+{% if not profile.user.is_staff %}
   <table class="table table-bordered mt-3" frame="vsides">
     <td class="table-primary" style="width: 20%">
       <b>{% trans "Territory coverage:" %}</b>
     </td>
     {% for type_of_visit in type_of_visit_set %}
     <td class="table-primary">
-      {{ type_of_visit }}
+      {% if type_of_visit.short_name %}
+        {{ type_of_visit.short_name }}
+      {% else %}
+        {{ type_of_visit.name }}
+      {% endif %}
     </td>
     {% endfor %}
     {% for district in profile.user.userdistrict_set.all %}
@@ -73,6 +79,8 @@
   </tr>
   {% endfor %}
   </table>
+
+  {% endif %}
 
 
   <div class="row mb-2 mt-4">
