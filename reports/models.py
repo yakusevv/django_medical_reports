@@ -119,11 +119,12 @@ class PriceGroup(models.Model):
 # Every country must have a list of visit types with appropriative names
 class TypeOfVisit(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
+    short_name = models.CharField(max_length=50, verbose_name=_("Short name"), blank=True)
     is_second_visit = models.BooleanField(default=False, verbose_name=_("Is second visit"))
     country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
 
     class Meta:
-        unique_together = (('name', 'country',),)
+        unique_together = (('name', 'country',))
         verbose_name = _('Type of visit')
         verbose_name_plural = _('Types of visits')
 

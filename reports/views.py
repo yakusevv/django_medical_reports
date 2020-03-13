@@ -405,7 +405,7 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         country = kwargs['object']
-        context['price_groups'] = PriceGroup.objects.all()
+        context['price_groups'] = PriceGroup.objects.all().order_by('pk')
         context['types_of_visit'] = TypeOfVisit.objects.filter(country=country)
         context['price_table_link_active'] = "active"
         return context
