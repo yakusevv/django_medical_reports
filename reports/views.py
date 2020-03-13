@@ -21,7 +21,7 @@ from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
 
-from profiles.models import UserDistrict, UserDistrictVisitPrice
+from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
 
 from .models import (
                 Report,
@@ -193,16 +193,28 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
+            doctors_set       = Profile.objects.filter(
+                                city__district__region__country=current_country,
+                                user__is_staff=False
+                                    )
             context['form'].fields['type_of_visit'].queryset = type_of_visit_set
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
+            if self.request.user.is_staff:
+                context['form'].fields['doctor'].required = True
+                context['form'].fields['doctor'].queryset = doctors_set
+            else:
+                context['form'].fields['doctor'].queryset = doctors_set.filter(
+                                        pk=self.request.user.profile.pk
+                                    )
             for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
         return context
 
     def form_valid(self, form, service_items, images):
         with transaction.atomic():
-            form.instance.doctor = self.request.user.profile
+            if not self.request.user.is_staff:
+                form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -275,26 +287,28 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
+            doctors_set       = Profile.objects.filter(
+                                city__district__region__country=current_country,
+                                user__is_staff=False
+                                    )
             context['form'].fields['type_of_visit'].queryset = type_of_visit_set
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
             for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
+            if self.request.user.is_staff:
+                context['form'].fields['doctor'].required = True
+                context['form'].fields['doctor'].queryset = doctors_set
+            else:
+                context['form'].fields['doctor'].queryset = doctors_set.filter(
+                                        pk=self.request.user.profile.pk
+                                    )
         return context
 
     def form_valid(self, form, service_items): #, images, del_images):
         with transaction.atomic():
-#            company = form.cleaned_data['company']
-#            city = form.cleaned_data['city']
-#            type_of_visit = form.cleaned_data['type_of_visit']
-#            district = city.district
-#            price_group = company.price_group
-#            try:
-#                tariff = Tariff.objects.get(district=district, price_group=price_group)
-#                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-#                form.instance.visit_price = visit_tariff.price
-#            except Tariff.DoesNotExist:
-#                form.instance.visit_price = 0
+            if not self.request.user.is_staff:
+                form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -397,6 +411,7 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         self.object = self.get_object()
         return reverse("report_update_url", kwargs={"pk": self.object.pk})
+
 
 class PriceTableView(AdminStaffRequiredMixin, DetailView):
     template_name = 'reports/price_table_view.html'

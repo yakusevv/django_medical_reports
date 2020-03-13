@@ -30,6 +30,7 @@ class ReportForm(forms.ModelForm):
         super(ReportForm, self).__init__(*args, **kwargs)
         self.fields['visit_price'].required = False
         self.fields['visit_price_doctor'].required = False
+        self.fields['doctor'].required = False
 
     class Meta:
         model = Report
@@ -37,7 +38,7 @@ class ReportForm(forms.ModelForm):
 #            'visit_price',
 #            'visit_price_doctor',
             'checked',
-            'doctor',
+#            'doctor',
 #            'docx_download_link'
                   ]
         widgets = {
