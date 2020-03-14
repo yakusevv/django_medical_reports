@@ -110,6 +110,7 @@
      <div class="admin-panel" id='admin-panel'>
        <button class="admin-panel-collide" onclick="openPanel()">&#9776;</button>
       <p class="admin-panel-element" style="font-weight: bold"> {{ user.username }}</p>
+      <p class="admin-panel-element">{{ user.profile.city.name }}, {{ user.profile.city.district.region.country }}</p>
      {% endif %}
      {% if request.user.is_authenticated and request.user.is_staff %}
      <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>
