@@ -1,0 +1,35 @@
+{% extends 'reports/base_reports.html' %}
+{% load i18n %}
+
+{% block title %}
+  {{ block.super }} - {% trans "Doctors" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row mb-2 col-md-12">
+    <div class="col">
+      <b>{% trans "Doctor" %}</b>
+    </div>
+    <div class="col">
+    <b>{% trans "City" %}</b>
+    </div>
+    <div class="col">
+      <b>{% trans "Region" %}</b>
+    </div>
+  </div>
+{% for profile in profile_list %}
+  <div class="row mb-1 col-md-12 {% if forloop.last %}border-bottom{% endif %} border-top">
+    <div class="col">
+      <a href="{{ profile.get_absolute_url }}"> {{ profile }}</a>
+    </div>
+    <div class="col">
+      {{ profile.city.name }}
+    </div>
+    <div class="col">
+      {{ profile.city.district.region }}
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

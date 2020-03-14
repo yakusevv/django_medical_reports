@@ -82,7 +82,7 @@
 
   {% endif %}
 
-
+  {% if profile.report_templates.all %}
   <div class="row mb-2 mt-4">
       <div class="col-3">
         <b>{% trans "Autofill templates:" %}</b>
@@ -95,11 +95,13 @@
       </div>
   </div>
   {% endfor %}
+  {% endif %}
+  {% if profile.user == request.user %}
   <div class="row mt-4">
       <div class="col">
         <a class='btn btn-primary' href="{% url 'profile_template_create_url' %}">{% trans "Create template" %}</a>
       </div>
   </div>
 </div>
-
+  {% endif %}
 {% endblock %}

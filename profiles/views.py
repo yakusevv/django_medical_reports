@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, UpdateView, CreateView
+from django.views.generic import DetailView, UpdateView, CreateView, ListView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.shortcuts import redirect
@@ -10,6 +10,8 @@ from .forms import ProfileForm, ProfileReportAutofillTemplateForm
 from .models import Profile, ProfileReportAutofillTemplate
 
 from reports.models import TypeOfVisit
+from reports.views import  AdminStaffRequiredMixin
+
 
 class ProfileDetailView(LoginRequiredMixin, DetailView):
     template_name = 'profiles/profile_detail.html'
@@ -23,16 +25,39 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         if request.user.profile.pk == pk or request.user.is_staff and country_case:
             profile = get_object_or_404(self.model, pk=pk)
             type_of_visit_set = TypeOfVisit.objects.filter(country=profile.city.district.region.country)
+            context = {
+                      'profile': profile,
+                      'type_of_visit_set': type_of_visit_set
+                    }
+            if profile.pk == request.user.profile.pk:
+                context['profile_link_active'] = 'active'
+            else:
+                context['doctors_list_link_active'] = 'active'
             return render(
                         request,
                         self.template_name,
-                        context={
-                                  'profile': profile,
-                                  'profile_link_active': "active",
-                                  'type_of_visit_set': type_of_visit_set
-                                })
+                        context=context)
         else:
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')
+
+
+class ProfileListView(AdminStaffRequiredMixin, ListView):
+    model = Profile
+    template_name = 'profiles/profiles_list.html'
+    ordering = ('city__district__region',)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProfileListView, self).get_context_data()
+        context['doctors_list_link_active'] = "active"
+        return context
+
+    def get_queryset(self):
+        queryset = super(ProfileListView, self).get_queryset()
+        doctors_country = self.request.user.profile.city.district.region.country
+        queryset = queryset.filter(
+                                city__district__region__country=doctors_country, user__is_staff=False
+                                )
+        return queryset
 
 
 class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
@@ -71,11 +96,14 @@ class ProfileReportAutofillTemplateUpdateView(LoginRequiredMixin, UpdateView):
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
     def get_success_url(self, **kwargs):
-        return self.request.user.profile.get_absolute_url()
+        return self.object.doctor.get_absolute_url()
 
     def get_context_data(self, **kwargs):
         context = super(ProfileReportAutofillTemplateUpdateView, self).get_context_data(**kwargs)
-        context['profile_link_active'] = "active"
+        if self.object.doctor == self.request.user.profile:
+            context['profile_link_active'] = "active"
+        else:
+            context['doctors_list_link_active'] = "active"
         return context
 
     def post(self, request, *args, **kwargs):

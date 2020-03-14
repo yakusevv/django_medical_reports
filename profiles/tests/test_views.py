@@ -98,6 +98,34 @@ class AccessRequiredViewTest(TestCase):
 
         self.assertEqual(resp.status_code, 403)
 
+#reports list view
+    def test_redirect_if_not_logged_in_profiles_list(self):
+        resp = self.client.get(reverse('profiles_list_url'))
+        self.assertRedirects(resp, '/accounts/login/?next=/profiles/list/')
+
+    def test_forbidden_if_not_user_is_staff_profiles_list(self):
+        login = self.client.login(username='testuser11', password='12345')
+        resp = self.client.get(reverse('profiles_list_url'))
+
+        self.assertEqual(resp.status_code, 403)
+
+    def test_user_is_staff_correct_template_profiles_list(self):
+        login = self.client.login(username='testuser12', password='12345')
+        resp = self.client.get(reverse('profiles_list_url'))
+
+        self.assertEqual(str(resp.context['user']), 'testuser12')
+
+        profile_list = resp.context['profile_list']
+        profiles_country = resp.context['user'].profile.city.district.region.country
+
+        self.assertEqual(set(profile_list), set(Profile.objects.filter(
+                                        city__district__region__country=profiles_country, user__is_staff=False
+                                        )
+                        ))
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertTemplateUsed(resp, 'profiles/profiles_list.html')
+
 #ProfileReportAutofillTemplate update
     def test_redirect_if_not_logged_in_template_update(self):
         templatepk = ProfileReportAutofillTemplate.objects.all()[0].pk

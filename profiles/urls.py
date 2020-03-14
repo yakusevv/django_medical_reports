@@ -4,6 +4,7 @@ from django.urls import include
 
 from .views import (
                 ProfileDetailView,
+                ProfileListView,
                 ProfileReportAutofillTemplateCreateView,
                 ProfileReportAutofillTemplateUpdateView,
                 )
@@ -11,6 +12,7 @@ from .views import (
 
 urlpatterns = [
         path('<int:pk>/detail/', ProfileDetailView.as_view(), name='profile_detail_url'),
+        path('list/', ProfileListView.as_view(), name='profiles_list_url'),
         path(
              'templates/create_template/',
              ProfileReportAutofillTemplateCreateView.as_view(),
