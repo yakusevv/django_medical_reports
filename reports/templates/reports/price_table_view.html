@@ -45,7 +45,11 @@
       </th>
         {% for type_of_visit in types_of_visit %}
           <td style="width: 20%">
-            {{ type_of_visit.short_name }}
+            {% if type_of_visit.short_name %}
+                {{ type_of_visit.short_name }}
+            {% else %}
+                {{ type_of_visit.name }}
+            {% endif %}
           </td>
           {% for price_group in price_groups %}
             <td>
