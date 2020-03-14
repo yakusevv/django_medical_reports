@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-14 22:52+0100\n"
+"POT-Creation-Date: 2020-03-14 23:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -175,14 +175,10 @@ msgid "Cities"
 msgstr "Города"
 
 #: profiles/models.py:52
-#, fuzzy
-#| msgid "Territory coverage:"
 msgid "District coverage"
 msgstr "Покрытие района:"
 
 #: profiles/models.py:53
-#, fuzzy
-#| msgid "Districts"
 msgid "Districts coverage"
 msgstr "Покрытия районов"
 
@@ -197,7 +193,7 @@ msgid "Type of visit"
 msgstr "Тип визита"
 
 #: profiles/models.py:62 reports/models.py:151 reports/models.py:292
-#: reports/templates/reports/price_table_view.html:72
+#: reports/templates/reports/price_table_view.html:76
 msgid "Price"
 msgstr "Цена"
 
@@ -250,10 +246,8 @@ msgid "Delete template"
 msgstr "Удалить шаблон"
 
 #: profiles/templates/profiles/profiles_list.html:5 templates/base.html:42
-#, fuzzy
-#| msgid "Doctor"
 msgid "Doctors"
-msgstr "Доктор"
+msgstr "Доктора"
 
 #: profiles/templates/profiles/profiles_list.html:18 reports/models.py:55
 #: reports/models.py:64
@@ -323,8 +317,6 @@ msgid "Price groups"
 msgstr "Ценовые группы"
 
 #: reports/models.py:122
-#, fuzzy
-#| msgid "First name"
 msgid "Short name"
 msgstr "Сокращенное название"
 
@@ -422,8 +414,6 @@ msgid "Report"
 msgstr "Отчет"
 
 #: reports/models.py:230
-#, fuzzy
-#| msgid "Report with this name is already exist"
 msgid "Report with this data is already exists."
 msgstr "Отчет с введенными данными уже существует"
 
@@ -461,7 +451,7 @@ msgid "Unsummable price"
 msgstr "Не суммируемая цена"
 
 #: reports/models.py:298 reports/models.py:307
-#: reports/templates/reports/price_table_view.html:71
+#: reports/templates/reports/price_table_view.html:75
 msgid "Service"
 msgstr "Сервис"
 
@@ -622,8 +612,6 @@ msgid "items"
 msgstr "отчет(-ов)"
 
 #: reports/views.py:65
-#, fuzzy
-#| msgid "Report templates"
 msgid "Report template is not found"
 msgstr "Шаблон отчета не найден"
 
@@ -643,7 +631,7 @@ msgstr "Администрирование"
 #: templates/admin/index.html:20
 #, python-format
 msgid "Models in the %(name)s application"
-msgstr "Модели в приложении %(name)"
+msgstr "Модели в приложении %(name)s"
 
 #: templates/admin/index.html:31
 msgid "Add"
@@ -683,8 +671,6 @@ msgid "Medical reports"
 msgstr "Медицинские отчеты"
 
 #: templates/base.html:38
-#, fuzzy
-#| msgid "Profile"
 msgid "My profile"
 msgstr "Мой профиль"
 
@@ -1290,7 +1276,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "Enter a valid value."
 msgid "“%(pk)s” is not a valid value."
-msgstr "Введите допустимое значение"
+msgstr ""
 
 #: venv/lib/python3.7/site-packages/django/forms/utils.py:162
 #, python-format
@@ -1894,7 +1880,5 @@ msgstr ""
 #~ msgid "Service price"
 #~ msgstr "Цена сервиса"
 
-#, fuzzy
-#~| msgid "User"
 #~ msgid "User:"
 #~ msgstr "Пользователь:"
