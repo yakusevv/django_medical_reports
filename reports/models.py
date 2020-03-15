@@ -232,7 +232,7 @@ class Report(models.Model):
             )
 
     def __str__(self):
-        return ' '.join((self.ref_number, self.patients_last_name, self.patients_first_name))
+        return ' '.join((self.patients_last_name, self.patients_first_name, self.ref_number))
 
     def get_absolute_url(self):
         return reverse('report_detail_url', kwargs={'pk': self.pk})
