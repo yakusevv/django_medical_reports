@@ -51,9 +51,9 @@ def downloadReportDocx(request, pk, type):
         file = DocReportGeneratorWithoutSaving(report, type)
         if file:
             file_name = "_".join((
-                            report.ref_number,
                             report.patients_last_name,
-                            report.patients_first_name
+                            report.patients_first_name,
+                            report.company_ref_number
                             )) + '.docx'
             file.save(buffer)
             buffer.seek(0)
