@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block admin-panel-content %}
-{% if user.is_staff %}
+{% if perms.blog.add_post %}
 <a class="admin-panel-element btn btn-success" href="{% url 'post_create_url' %}">{% trans "Create post" %}</a>
 {% endif %}
 {% endblock %}

@@ -6,9 +6,13 @@
 {% endblock %}
 
 {% block admin-panel-content %}
-{% if user.is_staff %}
+{% if perms.blog.add_post %}
 <a class="admin-panel-element btn btn-success" href="{% url 'post_create_url' %}">{% trans "Create post" %}</a>
+{% endif %}
+{% if perms.blog.change_post %}
 <a href="{{ admin_obj.get_update_url }}" class="admin-panel-element btn btn-secondary edit">{% trans "Edit post" %}</a>
+{% endif %}
+{% if perms.blog.delete_post %}
 <a href="{{ admin_obj.get_delete_url }}" class="admin-panel-element btn btn-danger delete">{% trans "Delete post" %}</a>
 {% endif %}
 {% endblock %}

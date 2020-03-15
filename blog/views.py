@@ -36,9 +36,9 @@ class PostDetail(LoginRequiredMixin, View):
 
 
 class PostCreate(PermissionRequiredMixin, View):
+    permission_required = 'blog.add_post'
     model_form = PostForm
     template = 'blog/post_create_form.html'
-    permission_required = 'blog.create_post'
 
     def get(self, request):
         form = self.model_form()
@@ -56,10 +56,10 @@ class PostCreate(PermissionRequiredMixin, View):
 
 
 class PostUpdate(PermissionRequiredMixin, View):
+    permission_required = 'blog.change_post'
     model = Post
     model_form = PostForm
     template = 'blog/post_update_form.html'
-    permission_required = 'blog.change_post'
 
     def get(self, request, pk):
         obj = self.model.objects.get(pk=pk)
@@ -85,10 +85,10 @@ class PostUpdate(PermissionRequiredMixin, View):
 
 
 class PostDelete(PermissionRequiredMixin, View):
+    permission_required = 'blog.delete_post'
     model = Post
     template = 'blog/post_delete_form.html'
     redirect_url = 'posts_list_url'
-    permission_required = 'blog.delete_post'
 
     def get(self, request, pk):
         obj = self.model.objects.get(pk=pk)
