@@ -23,8 +23,8 @@ def get_image_path(instance, filename):
                     )
 
 def get_docxtemplate_path(instance, filename):
-    filename = str(instance.company.name) + '_template.docx'
-    return os.path.join('DOC_TEMPLATES', str(instance.country), filename)
+    filename = str(instance.country.name) + '_template.docx'
+    return os.path.join('DOC_TEMPLATES', filename)
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -175,11 +175,11 @@ class Company(models.Model):
 # Every company need to have templates for each country in appropriative language
 class ReportTemplate(models.Model):
     template = models.FileField(upload_to=get_docxtemplate_path, storage=OverwriteStorage(), verbose_name=_("Template"))
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_("Company"))
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name=_("Country"))
+#    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_("Company"))
+    country = models.OneToOneField(Country, on_delete=models.CASCADE, verbose_name=_("Country"))
 
     class Meta:
-        unique_together = (('company', 'country',),)
+#        unique_together = (('company', 'country',),)
         verbose_name = _('Report template')
         verbose_name_plural = _('Report templates')
 

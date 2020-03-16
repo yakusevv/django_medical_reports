@@ -355,7 +355,7 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
                 msg = _('The Price should be numeric type')
                 form.add_error('price', msg)
 
-
+'''
 class ReportTemplateInlineFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         if kwargs['instance'].pk:
@@ -369,3 +369,4 @@ class ReportTemplateInlineFormSet(BaseInlineFormSet):
             country_field.widget.can_add_related = False
             country_field.widget.can_change_related = False
             country_field.disabled =  True
+'''

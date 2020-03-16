@@ -24,7 +24,7 @@ from .models import (
                 VisitTariff,
                 ReportTemplate
                 )
-from .forms import VisitTariffInlineFormSet, ReportTemplateInlineFormSet
+from .forms import VisitTariffInlineFormSet #, ReportTemplateInlineFormSet
 
 
 class EditLinkToInlineObject(object):
@@ -39,9 +39,9 @@ class EditLinkToInlineObject(object):
 
 class ReportTemplateInline(admin.StackedInline):
     model = ReportTemplate
-    formset = ReportTemplateInlineFormSet
+#    formset = ReportTemplateInlineFormSet
     can_delete = True
-
+'''
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
         if resolved.kwargs:
@@ -59,14 +59,15 @@ class ReportTemplateInline(admin.StackedInline):
             max_num = len(Country.objects.all())
             return max_num
         return 0
-
+'''
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    inlines = (ReportTemplateInline, )
+    pass
+#    inlines = (ReportTemplateInline, )
 
-    def response_add(self, request, obj, post_url_continue=None):
-        return redirect('/admin/reports/company/{}/change'.format(obj.id))
+#    def response_add(self, request, obj, post_url_continue=None):
+#        return redirect('/admin/reports/company/{}/change'.format(obj.id))
 
 
 class ServiceInline(admin.StackedInline):
@@ -174,7 +175,7 @@ class RegionInline(EditLinkToInlineObject, admin.StackedInline):
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    inlines = (RegionInline, TypeOfVisitInline, ServiceInline, )
+    inlines = ( ReportTemplateInline, RegionInline, TypeOfVisitInline, ServiceInline)
 
 
 @admin.register(Region)
