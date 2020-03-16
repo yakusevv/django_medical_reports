@@ -1,7 +1,7 @@
 import os
 
 from .secret_data import SECRET_KEY, TIME_ZONE, DEBUG
-from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST#, DB_PORT
+from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST, DB_PORT
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -11,7 +11,7 @@ DEBUG = bool( os.environ.get('DJANGO_DEBUG', DEBUG) )
 
 CSRF_COOKIE_SECURE = True
 
-SESSION_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
@@ -92,7 +92,7 @@ DATABASES = {
         'USER'    : os.environ.get('DB_USER', DB_USER),
         'PASSWORD': os.environ.get('DB_PASSWORD', DB_PASSWORD),
         'HOST'    : os.environ.get('DB_HOST', DB_HOST),
- #       'PORT'    : os.environ.get('DB_PORT', DB_PORT),
+        'PORT'    : os.environ.get('DB_PORT', DB_PORT),
         'OPTIONS' : {
             'autocommit': True,
             'charset': 'utf8',

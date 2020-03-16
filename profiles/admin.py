@@ -46,13 +46,13 @@ class UserDistrictInline(EditLinkToInlineObject, admin.TabularInline):
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):
 
         field = super(UserDistrictInline, self).formfield_for_manytomany(db_field, request, **kwargs)
-        if db_field.name == 'cities':
-            if request._obj_ is not None:
-                field.queryset = field.queryset.filter(
-                    district__region__country = request._obj_.profile.city.district.region.country
-                    )
-            else:
-                field.queryset = field.queryset.none()
+#        if db_field.name == 'cities':
+#            if request._obj_ is not None:
+#                field.queryset = field.queryset.filter(
+#                    district__region__country = request._obj_.profile.city.district.region.country
+#                    )
+#            else:
+#                field.queryset = field.queryset.none()
 
         return field
 

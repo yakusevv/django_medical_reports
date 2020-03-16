@@ -22,12 +22,14 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         profile_country = self.object.city.district.region.country
         user_country = request.user.profile.city.district.region.country
         country_case = profile_country == user_country
-        if request.user.profile.pk == pk or request.user.is_staff and country_case:
+        if country_case and (request.user.profile.pk == pk or request.user.is_staff):
             profile = get_object_or_404(self.model, pk=pk)
-            type_of_visit_set = TypeOfVisit.objects.filter(country=profile.city.district.region.country)
+            type_of_visit_set = TypeOfVisit.objects.filter(country=profile_country)
+            autofill_template_set = self.object.report_templates.filter(country=profile_country)
             context = {
-                      'profile': profile,
-                      'type_of_visit_set': type_of_visit_set
+                      'profile'              : profile,
+                      'type_of_visit_set'    : type_of_visit_set,
+                      'autofill_template_set': autofill_template_set
                     }
             if profile.pk == request.user.profile.pk:
                 context['profile_link_active'] = 'active'
@@ -71,10 +73,9 @@ class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProfileReportAutofillTemplateCreateView, self).get_context_data(**kwargs)
         context['profile_link_active'] = "active"
-        context['diagnosis_template'] = Disease.objects.filter(
+        context['form'].fields['diagnosis_template'].queryset = Disease.objects.filter(
                                     country=self.request.user.profile.city.district.region.country
                                     )
-#        context['form'].fields['doctor'].initial = self.request.user.profile
         return context
 
     def form_valid(self, form):
@@ -91,10 +92,10 @@ class ProfileReportAutofillTemplateUpdateView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        template_country = self.object.doctor.city.district.region.country
+        template_country = self.object.country
         user_country = request.user.profile.city.district.region.country
         country_case = template_country == user_country
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             return self.render_to_response(self.get_context_data())
         else:
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')
@@ -108,7 +109,7 @@ class ProfileReportAutofillTemplateUpdateView(LoginRequiredMixin, UpdateView):
             context['profile_link_active'] = "active"
         else:
             context['doctors_list_link_active'] = "active"
-        context['diagnosis_template'] = Disease.objects.filter(
+        context['form'].fields['diagnosis_template'].queryset = Disease.objects.filter(
                                             country=self.request.user.profile.city.district.region.country
                                             )
         return context

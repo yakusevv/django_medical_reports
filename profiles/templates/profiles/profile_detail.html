@@ -57,6 +57,7 @@
     </td>
     {% endfor %}
     {% for district in profile.user.userdistrict_set.all %}
+    {% if district.country == profile.city.district.region.country %}
     <tr>
         <td>
 
@@ -77,18 +78,19 @@
         </td>
     {% endfor %}
   </tr>
+  {% endif %}
   {% endfor %}
   </table>
 
   {% endif %}
 
-  {% if profile.report_templates.all %}
+  {% if autofill_template_set %}
   <div class="row mb-2 mt-4">
       <div class="col-3">
         <b>{% trans "Autofill templates:" %}</b>
       </div>
   </div>
-  {% for template in profile.report_templates.all %}
+  {% for template in autofill_template_set %}
   <div class="row">
       <div class="col">
         <a href="{{ template.get_update_url }}">{{ template.name }}</a>

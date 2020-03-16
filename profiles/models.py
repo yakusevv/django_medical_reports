@@ -33,7 +33,7 @@ class ProfileReportAutofillTemplate(models.Model):
     checkup_template = models.TextField(max_length=1200, blank=True, verbose_name=_("Checkup"))
     additional_checkup_template = models.TextField(max_length=700, blank=True, verbose_name=_("Additional checkup"))
     prescription_template = models.TextField(max_length=700, blank=True, verbose_name=_("Prescription"))
-    diagnosis_template = models.ManyToManyField('reports.Disease', related_name='autofill_template', verbose_name=_("Diagnosis"))
+    diagnosis_template = models.ManyToManyField('reports.Disease', related_name='autofill_template', verbose_name=_("Diagnosis"), blank=True)
 
     class Meta:
         unique_together = (('doctor','name',),)
@@ -48,6 +48,7 @@ class UserDistrict(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("User"))
 #    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_("District"))
     cities = models.ManyToManyField('reports.City', related_name='cities', verbose_name=_("Cities"))
+    country = models.ForeignKey('reports.Country', related_name='user_district', verbose_name=_("Country"), on_delete=models.CASCADE)
 
     class Meta:
 #        unique_together = (('user', 'district'),)
