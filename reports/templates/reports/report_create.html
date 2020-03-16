@@ -293,12 +293,14 @@ $('#images_table tbody tr').formset({
     var check = $("#id_checkup");
     var addit = $("#id_additional_checkup");
     var presc = $("#id_prescription");
+    var diag = $("#id_diagnosis");
     var item = queryset.find(item => item.name === name);
 
     cause.val(item.cause_of_visit_template);
     check.val(item.checkup_template);
     addit.val(item.additional_checkup_template);
     presc.val(item.prescription_template);
-  }
+    diag.val(item.diagnosis_template).trigger('change');
+}
 </script>
 {% endblock %}

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
+from django_select2.forms import Select2MultipleWidget
 
 from .models import Profile, ProfileReportAutofillTemplate, UserDistrict
 from reports.models import TypeOfVisit
@@ -21,7 +22,8 @@ class ProfileReportAutofillTemplateForm(forms.ModelForm):
         model = ProfileReportAutofillTemplate
 #        fields = '__all__'
 #        widgets = {'doctor': forms.HiddenInput(attrs={})}
-        exclude = ('doctor',)
+        exclude = ('doctor', 'country')
+        widgets = { 'diagnosis_template' : Select2MultipleWidget, }
 
     def clean(self):
         cleaned_data = super(ProfileReportAutofillTemplateForm, self).clean()
@@ -69,7 +71,7 @@ class UserDistrictForm(forms.ModelForm):
         model = UserDistrict
         fields = '__all__'
         exclude = ('cities',)
-        
+
 """
     def clean(self):
         cleaned_data = super(UserDistrictForm, self).clean()

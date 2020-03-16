@@ -5,6 +5,11 @@
   {{ block.super }} - {% trans "Update template" %}
 {% endblock %}
 
+{% block extrahead %}
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    {{ form.media }}
+{% endblock %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -21,7 +26,11 @@
       {{ field }}
     {% endif %}
   {% endfor %}
-<button type="submit" name="Create" class="btn btn-primary">{% trans "Update template" %}</button>
-<button type="submit" name="Delete" class="btn btn-danger" value='Delete'>{% trans "Delete template" %}</button>
+  <div class="form-group col-md-12 mb-2 border-top">
+    <div class="form-group col-md-6 mb-0">
+      <button type="submit" name="Create" class="btn btn-primary">{% trans "Update template" %}</button>
+      <button type="submit" name="Delete" class="btn btn-danger" value='Delete'>{% trans "Delete template" %}</button>
+    </div>
+  </div>
 </form>
 {% endblock %}

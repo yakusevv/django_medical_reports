@@ -172,14 +172,19 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ReportCreateView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
-        templates_query = self.request.user.profile.report_templates.all()
-        templates = templates_query.values(
-                                        'name',
-                                        'cause_of_visit_template',
-                                        'checkup_template' ,
-                                        'additional_checkup_template',
-                                        'prescription_template'
-                                        )
+        profile_country = self.request.user.profile.city.district.region.country
+        templates_query = self.request.user.profile.report_templates.filter(country=profile_country)
+        templates = templates_query.values()
+        for template in templates:
+            template['diagnosis_template'] = Disease.objects.filter(
+                                            autofill_template__id=template['id']
+                                            )
+        for template in templates:
+            diagnosis = template['diagnosis_template']
+            if not len(diagnosis):
+                template['diagnosis_template'] = 'Null'
+            else:
+                template['diagnosis_template'] = [diag.pk for diag in diagnosis]
         context['json_templates'] = list(templates)
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST)

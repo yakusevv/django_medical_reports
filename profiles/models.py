@@ -27,11 +27,13 @@ class Profile(models.Model):
 
 class ProfileReportAutofillTemplate(models.Model):
     doctor = models.ForeignKey(Profile, related_name='report_templates', on_delete=models.CASCADE, verbose_name=_("Doctor"))
+    country = models.ForeignKey('reports.Country', related_name='report_templates', on_delete=models.CASCADE, verbose_name=_("Country"))
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     cause_of_visit_template =models.TextField(max_length=700, blank=True, verbose_name=_("Cause of visit"))
     checkup_template = models.TextField(max_length=1200, blank=True, verbose_name=_("Checkup"))
     additional_checkup_template = models.TextField(max_length=700, blank=True, verbose_name=_("Additional checkup"))
     prescription_template = models.TextField(max_length=700, blank=True, verbose_name=_("Prescription"))
+    diagnosis_template = models.ManyToManyField('reports.Disease', related_name='autofill_template', verbose_name=_("Diagnosis"))
 
     class Meta:
         unique_together = (('doctor','name',),)

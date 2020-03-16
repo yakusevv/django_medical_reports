@@ -9,7 +9,7 @@ from django.http import HttpResponseForbidden
 from .forms import ProfileForm, ProfileReportAutofillTemplateForm
 from .models import Profile, ProfileReportAutofillTemplate
 
-from reports.models import TypeOfVisit
+from reports.models import TypeOfVisit, Disease
 from reports.views import  AdminStaffRequiredMixin
 
 
@@ -71,11 +71,15 @@ class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProfileReportAutofillTemplateCreateView, self).get_context_data(**kwargs)
         context['profile_link_active'] = "active"
+        context['diagnosis_template'] = Disease.objects.filter(
+                                    country=self.request.user.profile.city.district.region.country
+                                    )
 #        context['form'].fields['doctor'].initial = self.request.user.profile
         return context
 
     def form_valid(self, form):
         form.instance.doctor = self.request.user.profile
+        form.instance.country = self.request.user.profile.city.district.region.country
         self.object = form.save()
         return super(ProfileReportAutofillTemplateCreateView, self).form_valid(form)
 
@@ -104,6 +108,9 @@ class ProfileReportAutofillTemplateUpdateView(LoginRequiredMixin, UpdateView):
             context['profile_link_active'] = "active"
         else:
             context['doctors_list_link_active'] = "active"
+        context['diagnosis_template'] = Disease.objects.filter(
+                                            country=self.request.user.profile.city.district.region.country
+                                            )
         return context
 
     def post(self, request, *args, **kwargs):
