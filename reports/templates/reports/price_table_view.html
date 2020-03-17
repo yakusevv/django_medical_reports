@@ -12,7 +12,7 @@
         {{ object }}
       </th>
   </tr>
-  {% for region in object.region_set.all %}
+  {% for region, district in rows.items %}
   <tr>
     <th class="table-primary"> {{ region }} </th>
     <td class="table-primary"> {% trans "Tariffs" %} </td>
@@ -26,7 +26,7 @@
         {% endfor %}
       </p></td>
     {% endfor %}
-    {% for district in region.district_set.all %}
+    {% for district, type in district.items %}
     <tr>
       <th rowspan="{{ types_of_visit.count }}" style="width: 30%">
         {{ district }}
@@ -43,7 +43,7 @@
           {% endfor %}
         </p>
       </th>
-        {% for type_of_visit in types_of_visit %}
+        {% for type_of_visit, prices in type.items %}
           <td style="width: 20%">
             {% if type_of_visit.short_name %}
                 {{ type_of_visit.short_name }}
@@ -51,21 +51,15 @@
                 {{ type_of_visit.name }}
             {% endif %}
           </td>
-          {% for price_group in price_groups %}
+          {% for price in prices %}
             <td>
-            {% for tariff in district.tariff_set.all %}
-              {% if tariff.price_group == price_group %}
-                {% for visit_price in tariff.visittariff_set.all %}
-                  {% if visit_price.type_of_visit == type_of_visit %}
-                    <p class="mb-0" style="color:green">{{ visit_price.price }} &#8364; </p>
-                  {% endif %}
-                {% endfor %}
+              {% if price %}
+                <p class="mb-0" style="color:green"> {{ price }} &#8364; </p>
               {% endif %}
-            {% endfor %}
-          {% endfor %}
             </td>
-    </tr>
-        {% endfor %}
+          {% endfor %}
+      </tr>
+      {% endfor %}
     {% endfor %}
   {% endfor %}
 
@@ -76,14 +70,12 @@
     <th> {% trans "Price" %} </th>
   </tr>
   {% for service in object.services.all %}
-    {% if not service.type_of_visit %}
     <tr>
       <td>{{ service.name }}</td>
       <td>
         <p class="mb-0" style="color:green">{{ service.price }} &#8364;</p>
         <p class="mb-0">{{ service.price_doctor }} &#8364;</p></td>
     </tr>
-    {% endif %}
   {% endfor %}
 </table>
 

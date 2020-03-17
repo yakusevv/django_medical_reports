@@ -425,7 +425,26 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         country = kwargs['object']
-        context['price_groups'] = PriceGroup.objects.all().order_by('pk')
-        context['types_of_visit'] = TypeOfVisit.objects.filter(country=country)
+        price_groups = PriceGroup.objects.all().order_by('pk')
+        types_of_visit = TypeOfVisit.objects.filter(country=country)
+
+        context['price_groups'] = price_groups
+        context['types_of_visit'] = types_of_visit
         context['price_table_link_active'] = "active"
+        rows = {}
+        for region in country.region_set.all():
+            rows[region] = {}
+            for district in region.district_set.all():
+                rows[region][district] = {}
+                for type in types_of_visit:
+                    rows[region][district][type] = []
+                    for group in price_groups:
+                        try:
+                            rows[region][district][type].append(VisitTariff.objects.get(
+                                tariff__district=district,
+                                tariff__price_group=group,
+                                type_of_visit=type).price)
+                        except VisitTariff.DoesNotExist:
+                            rows[region][district][type].append('')
+        context['rows'] = rows
         return context

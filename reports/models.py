@@ -140,6 +140,7 @@ class Tariff(models.Model):
         unique_together = (('district', 'price_group',),)
         verbose_name = _('Tariff')
         verbose_name_plural = _('Tariffs')
+        ordering = ('price_group',)
 
     def __str__(self):
         return ' - '.join((str(self.district), str(self.price_group)))
@@ -172,7 +173,7 @@ class Company(models.Model):
         return self.name
 
 
-# Every company need to have templates for each country in appropriative language
+# Every country need to have template in appropriative language
 class ReportTemplate(models.Model):
     template = models.FileField(upload_to=get_docxtemplate_path, storage=OverwriteStorage(), verbose_name=_("Template"))
 #    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_("Company"))
@@ -305,8 +306,6 @@ class Service(models.Model):
 class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE, verbose_name=_("Report"))
     service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT, verbose_name=_("Service"))
-#    service_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price"))
-#    service_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Service price for the doctor"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("Quantity"))
     cost = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     cost_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0)
@@ -321,15 +320,6 @@ class ServiceItem(models.Model):
         if self.quantity > 1:
             return str(self.service.name) + ' [{}]'.format(self.quantity)
         return self.service.name
-
-#    @property
-#    def cost(self):
-#        return self.service_price * self.quantity
-
-#    @property
-#    def cost_doctor(self):
-#        return self.service_price_doctor * self.quantity
-
 
 @receiver(post_delete, sender=Report)
 def submission_delete(sender, instance, **kwargs):
