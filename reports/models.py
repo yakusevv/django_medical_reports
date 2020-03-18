@@ -122,6 +122,7 @@ class TypeOfVisit(models.Model):
     short_name = models.CharField(max_length=50, verbose_name=_("Short name"), blank=True)
     is_second_visit = models.BooleanField(default=False, verbose_name=_("Is second visit"))
     country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
+    initial = models.CharField(max_length=2, verbose_name=_("Initial"), blank=True)
 
     class Meta:
         unique_together = (('name', 'country',))
@@ -164,6 +165,7 @@ class VisitTariff(models.Model):
 class Company(models.Model):
     name = models.CharField(max_length=20, unique=True, verbose_name=_("Name"))
     price_group = models.ForeignKey(PriceGroup, on_delete=models.PROTECT, verbose_name=_("Price group"))
+    initials = models.CharField(max_length=3, verbose_name=_("Initials"), blank=True)
 
     class Meta:
         verbose_name = _('Company')
@@ -186,7 +188,7 @@ class ReportTemplate(models.Model):
 
 
 class Report(models.Model):
-    ref_number = models.CharField(max_length=50, verbose_name=_("Ref. number"))
+    ref_number = models.CharField(max_length=6, verbose_name=_("Ref. number"))
     company_ref_number = models.CharField(max_length=50, verbose_name=_("Company ref. number"))
     company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
     patients_first_name = models.CharField(max_length=50, verbose_name=_("First name"))
@@ -206,34 +208,39 @@ class Report(models.Model):
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
     doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
-#    docx_download_link = models.CharField(max_length=500, blank=True, verbose_name=_("Download link"))
 
     class Meta:
         verbose_name = _('Report')
         verbose_name_plural = _('Reports')
-#        unique_together = (
-#                           (
-#                            'patients_first_name',
-#                            'patients_last_name',
-#                            'ref_number',
-#                            )
 
     def validate_unique(self, *args, **kwargs):
         super(Report, self).validate_unique(*args, **kwargs)
+        current_year = self.date_of_visit.year
+        reports = self.__class__.objects.filter(
+                    city__district__region__country=self.city.district.region.country,
+                    date_of_visit__year=current_year
+                    ).exclude(pk=self.pk)
+        if reports:
+            for report in reports:
+                if report.get_full_ref_number == self.get_full_ref_number:
+                    raise ValidationError(
+                        message=_('Report with this data is already exists.'),
+                        code='unique_together',
+                        )
 
-        if self.__class__.objects.filter(
-                    patients_first_name=self.patients_first_name,
-                    patients_last_name=self.patients_last_name,
-                    ref_number=self.ref_number,
-                    city__district__region__country=self.city.district.region.country
-                    ).exclude(pk=self.pk).exists():
-            raise ValidationError(
-                message=_('Report with this data is already exists.'),
-                code='unique_together',
-            )
+#        if self.__class__.objects.filter(
+#                    patients_first_name=self.patients_first_name,
+#                    patients_last_name=self.patients_last_name,
+#                    ref_number=self.ref_number,
+#                    city__district__region__country=self.city.district.region.country
+#                    ).exclude(pk=self.pk).exists():
+#            raise ValidationError(
+#                message=_('Report with this data is already exists.'),
+#                code='unique_together',
+#            )
 
     def __str__(self):
-        return ' '.join((self.patients_last_name, self.patients_first_name, self.ref_number))
+        return ' '.join((self.patients_last_name, self.patients_first_name, self.get_full_ref_number))
 
     def get_absolute_url(self):
         return reverse('report_detail_url', kwargs={'pk': self.pk})
@@ -272,6 +279,17 @@ class Report(models.Model):
             return total
         return total
 
+    @property
+    def get_full_ref_number(self):
+        ref = str(self.company.initials) + str(self.ref_number)
+        date_of_visit = str(self.date_of_visit.strftime("%d%m"))
+        if not self.doctor.is_foreign_doctor:
+            info = self.doctor.initials + self.type_of_visit.initial
+        else:
+            info = self.doctor.initials
+        return '-'.join((ref, date_of_visit, info))
+
+    get_full_ref_number.fget.short_description = _('Full ref. number')
     get_total_price.fget.short_description = _('Total price')
     get_total_price_doctor.fget.short_description = _('Total price for the doctor')
 

@@ -77,26 +77,26 @@ class ReportForm(forms.ModelForm):
         patients_first_name = cleaned_data.get("patients_first_name").upper()
         patients_last_name = cleaned_data.get("patients_last_name").upper()
         company_ref_number = cleaned_data.get("company_ref_number").upper()
-        same_reports = Report.objects.filter(
-                            ref_number=ref_number
-                        ).filter(
-                            patients_last_name=patients_last_name
-                        ).filter(
-                            patients_first_name=patients_first_name
-                        )
-        if not self.instance.pk:
-            if same_reports.exists():
-                msg = _("Report with this name is already exist")
-                self.add_error('ref_number', msg)
-                self.add_error('patients_first_name', msg)
-                self.add_error('patients_last_name', msg)
-        else:
-            same_reports = same_reports.exclude(pk=self.instance.pk)
-            if len(same_reports) > 0:
-                msg = _("Other report with this name is already exist")
-                self.add_error('ref_number', msg)
-                self.add_error('patients_first_name', msg)
-                self.add_error('patients_last_name', msg)
+#        same_reports = Report.objects.filter(
+#                            ref_number=ref_number
+#                        ).filter(
+#                            patients_last_name=patients_last_name
+#                        ).filter(
+#                            patients_first_name=patients_first_name
+#                        )
+#        if not self.instance.pk:
+#            if same_reports.exists():
+#                msg = _("Report with this name is already exist")
+#                self.add_error('ref_number', msg)
+#                self.add_error('patients_first_name', msg)
+#                self.add_error('patients_last_name', msg)
+#        else:
+#            same_reports = same_reports.exclude(pk=self.instance.pk)
+#            if len(same_reports) > 0:
+#                msg = _("Other report with this name is already exist")
+#                self.add_error('ref_number', msg)
+#                self.add_error('patients_first_name', msg)
+#                self.add_error('patients_last_name', msg)
         cleaned_data['ref_number'] = ref_number
         cleaned_data['patients_last_name'] = patients_last_name
         cleaned_data['patients_first_name'] = patients_first_name

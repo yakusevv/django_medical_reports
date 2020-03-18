@@ -64,18 +64,6 @@
 </div>
 </div>
 
-      {% if request.GET.search %}
-      <h5 class='ml-3'> {% trans "Search results for" %} "{{ request.GET.search }}": </h5>
-      <h5 class='ml-3'>
-        {{ report_list.count }}
-        {% if report_list.count == 1%}
-        {% trans "item" %}
-        {% else %}
-        {% trans "items" %}
-        {% endif %}
-      </h5>
-      {% endif %}
-
       <div class="container">
         <div class="row mb-2 col-md-12">
           <div class="col">

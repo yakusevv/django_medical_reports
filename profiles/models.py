@@ -11,12 +11,34 @@ from reports.models import District, City, TypeOfVisit
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name=_("User"))
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, verbose_name=_("City"))
-    num_col = models.CharField(max_length=9, unique=True, verbose_name=_("Num. col"))
-#    districts = models.ManyToManyField(District, verbose_name=_("District"))
+    num_col = models.CharField(max_length=9, verbose_name=_("Num. col"))
+    is_foreign_doctor = models.BooleanField(default=False, verbose_name=_("Is foreign doctor"))
+    initials = models.CharField(max_length=5, verbose_name=_("Initials"), blank=True)
 
     class Meta:
         verbose_name = _('Profile')
         verbose_name_plural = _('Profiles')
+
+    def validate_unique(self, *args, **kwargs):
+        super(Profile, self).validate_unique(*args, **kwargs)
+
+        if self.__class__.objects.filter(
+                    initials=self.initials,
+                    city__district__region__country=self.city.district.region.country
+                    ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                message=_('Profile with this initials in current country is already exists.'),
+                code='unique_together',
+            )
+
+        if self.__class__.objects.filter(
+                    num_col=self.num_col,
+                    city__district__region__country=self.city.district.region.country
+                    ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                message=_('Profile with this Num. col. in current country is already exists.'),
+                code='unique_together',
+            )
 
     def __str__(self):
         return ' '.join((self.user.last_name, self.user.first_name, self.num_col))

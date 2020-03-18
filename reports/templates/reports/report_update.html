@@ -19,6 +19,13 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="container">
+  {% for error in form.non_field_errors %}
+  <p style="color: red;">  {{ error|escape }} </p>
+  {% endfor %}
+</div>
+
 <form action="{{ report.get_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
   {% for field in form %}
