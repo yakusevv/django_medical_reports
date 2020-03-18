@@ -22,7 +22,7 @@
         {% for company in price_group.company_set.all %}
         {{ company }}
         {% if not forloop.last %}, {% endif %}
-        {% if forloop.counter|divisibleby:4 %}<br>{% endif %}
+        {% if forloop.counter|divisibleby:3 %}<br>{% endif %}
         {% endfor %}
       </p></td>
     {% endfor %}

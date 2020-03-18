@@ -1,5 +1,6 @@
 import json
 import io
+import datetime
 
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -20,8 +21,10 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
+from django import forms
 
 from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
+from tempus_dominus.widgets import DatePicker
 
 from .models import (
                 Report,
@@ -33,12 +36,14 @@ from .models import (
                 VisitTariff,
                 City,
                 Disease,
-                Service
+                Service,
+                Company
                     )
 from .forms import (
                 ReportForm,
                 ServiceItemsFormSet,
-                AdditionalImageFormSet
+                AdditionalImageFormSet,
+                DateFilterForm
                 )
 from .utils import DocReportGeneratorWithoutSaving
 
@@ -83,6 +88,38 @@ class ReportsListView(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(ReportsListView, self).get_context_data()
         context['report_link_active'] = "active"
+        country = self.request.user.profile.city.district.region.country
+        if self.request.user.is_staff:
+            context['doctor_filter'] = Profile.objects.filter(
+                                        city__district__region__country=country,
+                                        user__is_staff=False
+                                        )
+        context['company_filter'] = Company.objects.all()
+        context['date_filter'] = DateFilterForm()
+        filters = self.request.GET
+        date_filter_initial = {}
+        if filters.get('usefilter', ''):
+            filters_number = 0
+            doctor_filter = filters.getlist('doctor_filter', None)
+            if doctor_filter:
+                filters_number += 1
+                context['doctor_filter_selected'] = doctor_filter
+            company_filter = filters.getlist('company_filter', None)
+            if company_filter:
+                filters_number += 1
+                context['company_filter_selected'] = company_filter
+            if filters.get('search_query', ''):
+                filters_number += 1
+                context['search_query_on'] = filters['search_query']
+            if filters.get('date_field_from', ''):
+                filters_number += 1
+                date_filter_initial['date_field_from'] = filters['date_field_from']
+            if filters.get('date_field_to', ''):
+                filters_number += 1
+                date_filter_initial['date_field_to'] = filters['date_field_to']
+            if len(date_filter_initial):
+                context['date_filter'] = DateFilterForm(initial=date_filter_initial)
+            context['filters_number'] = filters_number
         return context
 
     def get_queryset(self):
@@ -92,23 +129,38 @@ class ReportsListView(LoginRequiredMixin, ListView):
             queryset = queryset.filter(
                                 city__district__region__country=doctors_country
                                 )
-        search_query = self.request.GET.get('search', '')
-        if search_query:
-            queryset = queryset.filter(
-                Q(ref_number__icontains=search_query)|
-                Q(company_ref_number__icontains=search_query)|
-                Q(company__name__icontains=search_query)|
-                Q(patients_first_name__icontains=search_query)|
-                Q(patients_last_name__icontains=search_query)|
-                Q(patients_date_of_birth__icontains=search_query)|
-                Q(patients_policy_number__icontains=search_query)|
-                Q(city__name__icontains=search_query)|
-                Q(detailed_location__icontains=search_query)|
-                Q(cause_of_visit__icontains=search_query)|
-                Q(checkup__icontains=search_query)|
-                Q(additional_checkup__icontains=search_query)|
-                Q(prescription__icontains=search_query)
-                )
+        filter_query = self.request.GET.get('usefilter', '')
+        if filter_query:
+            search_query = self.request.GET.get('search_query', '')
+            if search_query:
+                queryset = queryset.filter(
+                    Q(ref_number__icontains=search_query)|
+                    Q(company_ref_number__icontains=search_query)|
+                    Q(patients_first_name__icontains=search_query)|
+                    Q(patients_last_name__icontains=search_query)|
+                    Q(patients_date_of_birth__icontains=search_query)|
+                    Q(patients_policy_number__icontains=search_query)|
+                    Q(city__name__icontains=search_query)|
+                    Q(detailed_location__icontains=search_query)|
+                    Q(cause_of_visit__icontains=search_query)|
+                    Q(checkup__icontains=search_query)|
+                    Q(additional_checkup__icontains=search_query)|
+                    Q(prescription__icontains=search_query)
+                    )
+            company_filter = self.request.GET.getlist('company_filter', None)
+            if company_filter:
+                queryset = queryset.filter(company__in=company_filter)
+            doctor_filter = self.request.GET.getlist('doctor_filter', None)
+            if doctor_filter:
+                queryset = queryset.filter(doctor__in=doctor_filter)
+            date_field_from = self.request.GET.get('date_field_from', '')
+            if date_field_from:
+                date_field_from = datetime.datetime.strptime(date_field_from, "%d.%m.%Y").date()
+                queryset = queryset.filter(date_of_visit__gte=date_field_from)
+            date_field_to = self.request.GET.get('date_field_to', '')
+            if date_field_to:
+                date_field_to = datetime.datetime.strptime(date_field_to, "%d.%m.%Y").date()
+                queryset = queryset.filter(date_of_visit__lte=date_field_to)
         if not self.request.user.is_staff:
             queryset = queryset.filter(doctor=self.request.user.profile.pk)
         return queryset
@@ -440,10 +492,12 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
                     rows[region][district][type] = []
                     for group in price_groups:
                         try:
-                            rows[region][district][type].append(VisitTariff.objects.get(
+                            rows[region][district][type].append(
+                            VisitTariff.objects.get(
                                 tariff__district=district,
                                 tariff__price_group=group,
-                                type_of_visit=type).price)
+                                type_of_visit=type
+                                ).price)
                         except VisitTariff.DoesNotExist:
                             rows[region][district][type].append('')
         context['rows'] = rows

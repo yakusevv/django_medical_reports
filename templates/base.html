@@ -54,13 +54,7 @@
       </li>
       {% endif %}
     </ul>
-
-    <form class="form-inline ml-auto mr-3" action="{% url 'reports_list_url' %}" method="get">
-      <input class="form-control form-control-sm mr-2" name="search" type="search" placeholder='{% trans "Search" %}' aria-label="Search">
-      <button class="btn btn-outline-primary my-2 btn-sm" type="submit">{% trans "Search" %}</button>
-    </form>
-
-    <form action="{% url 'set_language' %}" id="language_form" method="post">
+    <form class="ml-auto" action="{% url 'set_language' %}" id="language_form" method="post">
     {% csrf_token %}
       <select class="form-control-sm" name="language" onchange="changeLanguage()">
         {% get_current_language as LANGUAGE_CODE %}
@@ -72,8 +66,6 @@
         {% endfor %}
       </select>
     </form>
-
-
   </div>
   </nav>
     {% endblock %}

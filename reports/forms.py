@@ -355,18 +355,29 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
                 msg = _('The Price should be numeric type')
                 form.add_error('price', msg)
 
-'''
-class ReportTemplateInlineFormSet(BaseInlineFormSet):
+
+class DateFilterForm(forms.Form):
+    date_field_from = forms.DateField(widget=DatePicker(
+                                        options={
+                                            'useCurrent': True,
+                                            },
+                                        attrs={
+                                            'append': 'fa fa-calendar',
+                                            'icon_toggle': True,
+                                            'size': 'small'
+                                            }
+                                    ),)
+    date_field_to = forms.DateField(widget=DatePicker(
+                                        options={
+                                            'useCurrent': True,
+                                            },
+                                        attrs={
+                                            'append': 'fa fa-calendar',
+                                            'icon_toggle': True,
+                                            'size': 'small'
+                                            }
+                                    ),)
     def __init__(self, *args, **kwargs):
-        if kwargs['instance'].pk:
-            kwargs['initial'] = [
-            {'country': country.id } for country in Country.objects.all()
-        ]
-        super(ReportTemplateInlineFormSet, self).__init__(*args, **kwargs)
-        for form in self.forms:
-            country_field = form.fields['country']
-            country_field.widget.attrs = {'readonly':'readonly'}
-            country_field.widget.can_add_related = False
-            country_field.widget.can_change_related = False
-            country_field.disabled =  True
-'''
+        super(DateFilterForm, self).__init__(*args, **kwargs)
+        self.fields['date_field_from'].required = False
+        self.fields['date_field_to'].required = False

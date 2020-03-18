@@ -5,7 +5,64 @@
   {{ block.super }} - {% trans "Reports" %}
 {% endblock %}
 
+{% block extrahead %}
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+{{ date_filter.media }}
+{% endblock %}
+
 {% block content %}
+<div class="ml-4 mb-4 mt-2 mb-2">
+ <button type="button" class="btn btn-outline-secondary btn-sm ml-2" data-toggle="collapse" data-target="#filters_form">{% trans "Filters" %}{% if filters_number %}({{ filters_number }}){% endif %}</button>
+
+<div class="collapse" id="filters_form">
+  <form action="{% url 'reports_list_url' %}" method="GET" autocomplete='off'>
+  <div class="form-group row">
+    {% if user.is_staff %}
+    <div class="form-group col-md-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="inputDoctor">{% trans "Doctor" %}</label>
+      <select id="inputDoctor" class="form-control form-control-sm" name="doctor_filter" multiple>
+        {% for doctor in doctor_filter %}
+        <option {% if doctor.pk|slugify in doctor_filter_selected %}selected{% endif %} value='{{ doctor.pk }}'>{{ doctor }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+
+    <div class="form-group col-md-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="inputCompany">{% trans "Company" %}</label>
+      <select id="inputCompany" class="form-control form-control-sm" name="company_filter" multiple>
+        {% for company in company_filter %}
+        <option {% if company.pk|slugify in company_filter_selected %}selected{% endif %} value='{{ company.pk }}'>{{ company }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-sm-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="date_field_from">{% trans "From" %}</label>
+      {{ date_filter.date_field_from }}
+    </div>
+    <div class="form-group col-sm-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="date_field_to">{% trans "To" %}</label>
+      {{ date_filter.date_field_to }}
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="form-group col-sm-0 mr-2 ml-4">
+        <input class="form-control form-control-sm" name="search_query" type="search_query" placeholder='{% trans "search query" %}' aria-label="Search" {% if search_query_on %}value={{ search_query_on }}{% endif %}>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="form-group ml-4 mr-2 col-md-0">
+      <button class='btn btn-info btn-sm' type="submit" name="usefilter" value='1'>{% trans "Use filters" %}</button>
+    </div>
+  </form>
+    <div class="form-group ml-2 mr-2 col-md-0">
+      <a class='btn btn-secondary btn-sm' href="{% url 'reports_list_url' %}" name="cleanfilter">{% trans "Clear filters" %}</a>
+    </div>
+  </div>
+</div>
+</div>
 
       {% if request.GET.search %}
       <h5 class='ml-3'> {% trans "Search results for" %} "{{ request.GET.search }}": </h5>
