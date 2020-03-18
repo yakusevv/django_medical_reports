@@ -14,7 +14,7 @@
 <div class="text-center mt-5">
   <img class='mb-2' src={% static "images/logo.jpg" %} width=200 alt="">
 <h4> {% trans "Login" %} </h4>
-<form method="post">
+<form method="post" autocomplete="off">
   {% csrf_token %}
   <div class="row justify-content-md-center">
     <div class="col-lg-4">
