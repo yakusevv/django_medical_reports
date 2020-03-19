@@ -12,7 +12,7 @@
 
 {% block admin-panel-content %}
 <a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
-{% if user.is_staff and perms.can_download_excel %}
+{% if user.is_staff and perms.reports.can_download_excel %}
 <a class="admin-panel-element btn btn-outline-primary" href="{% url 'download_reports_xlsx_url' %}">{% trans "Get Excel" %}</a>
 {% endif %}
 {% endblock %}
