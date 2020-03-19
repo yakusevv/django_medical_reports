@@ -137,7 +137,7 @@
     deleteCssClass: 'delete-row',
     formCssClass: 'dynamic-form',
     extraClasses: [],
-    keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
+    keepFieldValues: ":input[name$='quantity'],:input[name$='cost'],:input[name$='cost_doctor']",
     added: (row)=>{ row.find('.django-select2').djangoSelect2() },
     removed: null
   });

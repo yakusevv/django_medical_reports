@@ -325,8 +325,8 @@ class ServiceItem(models.Model):
     report = models.ForeignKey(Report, related_name='service_items', on_delete=models.CASCADE, verbose_name=_("Report"))
     service = models.ForeignKey(Service, related_name='items', on_delete=models.PROTECT, verbose_name=_("Service"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("Quantity"))
-    cost = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    cost_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    cost = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Cost"))
+    cost_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Cost doctor"))
 
 
     class Meta:

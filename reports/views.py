@@ -160,7 +160,9 @@ class ReportsListView(LoginRequiredMixin, ListView):
             date_field_to = self.request.GET.get('date_field_to', '')
             if date_field_to:
                 date_field_to = datetime.datetime.strptime(date_field_to, "%d.%m.%Y").date()
-                queryset = queryset.filter(date_of_visit__lte=date_field_to)
+                queryset = queryset.filter(
+                                    date_of_visit__lt=date_field_to + datetime.timedelta(days=1)
+                                    )
         if not self.request.user.is_staff:
             queryset = queryset.filter(doctor=self.request.user.profile.pk)
         return queryset

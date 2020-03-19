@@ -51,6 +51,7 @@ class ReportForm(forms.ModelForm):
                    'date_of_visit'     : DateTimePicker(
                                         options={
                                             'useCurrent': True,
+                                            'maxDate': 'now'
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -60,8 +61,9 @@ class ReportForm(forms.ModelForm):
                                     ),
                    'patients_date_of_birth': DatePicker(
                                         options={
-                                            'useCurrent': True,
-                                            'viewMode': 'years'
+                                            'useCurrent': False,
+                                            'viewMode': 'years',
+                                            'maxDate': 'now'
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -119,8 +121,6 @@ class ReportForm(forms.ModelForm):
         }
         changed_data_set = set(self.changed_data)
         change_condition = bool(decisive_fields & changed_data_set)
-#        print(self.changed_data)
-#        print(change_condition)
 
         if not self.cleaned_data.get('visit_price', False) and change_condition:
             try:
@@ -149,14 +149,10 @@ class ServiceItemForm(forms.ModelForm):
         fields = [
             'service',
             'quantity',
-#            'service_price',
-#            'service_price_doctor',
             'cost_doctor',
             'cost'
             ]
         widgets = {
-#                   'service_price': forms.HiddenInput(attrs={}),
-#                   'service_price_doctor': forms.HiddenInput(attrs={}),
                    'service'      : Select2Widget,
                    }
 
@@ -249,7 +245,6 @@ class AdditionalImageForm(forms.ModelForm):
     class Meta:
         model = AdditionalImage
         fields = ('image','x', 'y', 'w', 'h', 'orient')
-#        fields = ('image','x', 'y', 'w', 'h')
     def clean(self):
         cleaned_data = super(AdditionalImageForm, self).clean()
         if cleaned_data['DELETE'] and self.instance.pk:
@@ -281,7 +276,6 @@ class AdditionalImageForm(forms.ModelForm):
             instance.position = 0
             coords = (x,y,w,h)
             if any(coords) and not None in coords:
-#                print(orient)
                 if orient == 1:
                     rotated_image = Image.open(image).rotate(0, expand=True)
                 elif orient == 6:
@@ -290,7 +284,6 @@ class AdditionalImageForm(forms.ModelForm):
                     rotated_image = Image.open(image).rotate(180, expand=True)
                 elif orient == 8:
                     rotated_image = Image.open(image).rotate(90, expand=True)
-#                cropped_image = Image.open(image).crop((x, y, w, h))
                 cropped_image = rotated_image.crop((x, y, w, h))
                 thumb_io = io.BytesIO()
                 cropped_image.save(thumb_io, image.content_type.split('/')[-1].upper())
@@ -360,6 +353,8 @@ class DateFilterForm(forms.Form):
     date_field_from = forms.DateField(widget=DatePicker(
                                         options={
                                             'useCurrent': True,
+                                            'data-date-end-date': "0d",
+                                            'maxDate': 'now'
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -370,11 +365,12 @@ class DateFilterForm(forms.Form):
     date_field_to = forms.DateField(widget=DatePicker(
                                         options={
                                             'useCurrent': True,
+                                            'maxDate': 'now'
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
                                             'icon_toggle': True,
-                                            'size': 'small'
+                                            'size': 'small',
                                             }
                                     ),)
     def __init__(self, *args, **kwargs):

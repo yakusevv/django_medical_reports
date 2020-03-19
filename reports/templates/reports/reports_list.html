@@ -16,7 +16,7 @@
 
 <div class="collapse" id="filters_form">
   <form action="{% url 'reports_list_url' %}" method="GET" autocomplete='off'>
-  <div class="form-group row">
+  <div class="form-group row mt-2">
     {% if user.is_staff %}
     <div class="form-group col-md-0 mr-2 ml-4">
       <label class="col-sm-2 col-form-label col-form-label-sm" for="inputDoctor">{% trans "Doctor" %}</label>

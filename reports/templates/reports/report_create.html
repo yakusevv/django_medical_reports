@@ -249,7 +249,7 @@ function addImageCrop(id){
     deleteCssClass: 'delete-row',
     formCssClass: 'dynamic-formset1',
     extraClasses: [],
-    keepFieldValues: ":input[name$='service_price'],:input[name$='quantity']",
+    keepFieldValues: ":input[name$='quantity'],:input[name$='cost'],:input[name$='cost_doctor']",
     added: (row)=>{ row.find('select[name*="service_items"]').djangoSelect2() },
     removed: null
   });
