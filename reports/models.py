@@ -212,6 +212,9 @@ class Report(models.Model):
     class Meta:
         verbose_name = _('Report')
         verbose_name_plural = _('Reports')
+        permissions = (
+            ("can_download_excel", _("Can download excel")),
+            )
 
     def validate_unique(self, *args, **kwargs):
         super(Report, self).validate_unique(*args, **kwargs)

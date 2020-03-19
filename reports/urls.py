@@ -10,7 +10,8 @@ from .views import (
                 ReportDeleteView,
                 ReportAdditionalImagesUpdateView,
                 PriceTableView,
-                downloadReportDocx
+                downloadReportDocx,
+                downloadReportsExcel
                 )
 
 
@@ -25,5 +26,6 @@ urlpatterns = [
         path('<int:pk>/view/', ReportDetailView.as_view(), name='report_detail_url'),
         path('price_table/<int:pk>/', PriceTableView.as_view(), name='price_table_url'),
         path('<int:pk>/delete/', ReportDeleteView.as_view(), name='report_delete_url'),
-        re_path('(?P<pk>\d+)/view/download/(?P<type>[a,d])', downloadReportDocx, name='download_report_docx_url')
+        re_path('(?P<pk>\d+)/view/download/(?P<type>[a,d]/)', downloadReportDocx, name='download_report_docx_url'),
+        path('download_xlsx/', downloadReportsExcel, name='download_reports_xlsx_url'),
          ]

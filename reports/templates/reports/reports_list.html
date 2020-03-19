@@ -10,10 +10,17 @@
 {{ date_filter.media }}
 {% endblock %}
 
+{% block admin-panel-content %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
+{% if user.is_staff and perms.can_download_excel %}
+<a class="admin-panel-element btn btn-outline-primary" href="{% url 'download_reports_xlsx_url' %}">{% trans "Get Excel" %}</a>
+{% endif %}
+{% endblock %}
+
+
 {% block content %}
 <div class="ml-4 mb-4 mt-2 mb-2">
  <button type="button" class="btn btn-outline-secondary btn-sm ml-2" data-toggle="collapse" data-target="#filters_form">{% trans "Filters" %}{% if filters_number %}({{ filters_number }}){% endif %}</button>
-
 <div class="collapse" id="filters_form">
   <form action="{% url 'reports_list_url' %}" method="GET" autocomplete='off'>
   <div class="form-group row mt-2">

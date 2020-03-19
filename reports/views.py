@@ -17,10 +17,11 @@ from django.views.generic import (
                                 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpRequest
 from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django import forms
 
 from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
@@ -45,7 +46,7 @@ from .forms import (
                 AdditionalImageFormSet,
                 DateFilterForm
                 )
-from .utils import DocReportGeneratorWithoutSaving
+from .utils import DocReportGeneratorWithoutSaving, ReportsXlsxGenerator
 
 
 @login_required
@@ -71,6 +72,29 @@ def downloadReportDocx(request, pk, type):
     else:
         return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
+
+@login_required
+@staff_member_required
+@permission_required('reports.can_download_excel')
+def downloadReportsExcel(request):
+    current_country = request.user.profile.city.district.region.country
+    queryset = request.session.get('filtered')
+    if queryset:
+        reports = Report.objects.filter(pk__in=queryset).order_by('-date_of_visit')
+    else:
+        reports = Report.objects.filter(
+                                    city__district__region__country=current_country
+                                    ).order_by('-date_of_visit')
+    buffer = io.BytesIO()
+    file = ReportsXlsxGenerator(reports)
+    if file:
+        file_name = datetime.datetime.now().strftime('%d-%m-%Y') + '.xlsx'
+        file.save(buffer)
+        buffer.seek(0)
+        response = HttpResponse(buffer.read())
+        response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+        return response
 
 
 class AdminStaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -165,6 +189,7 @@ class ReportsListView(LoginRequiredMixin, ListView):
                                     )
         if not self.request.user.is_staff:
             queryset = queryset.filter(doctor=self.request.user.profile.pk)
+        self.request.session['filtered'] = [report.pk for report in queryset]
         return queryset
 
 
