@@ -143,6 +143,10 @@ class ReportsListView(LoginRequiredMixin, ListView):
                 date_filter_initial['date_field_to'] = filters['date_field_to']
             if len(date_filter_initial):
                 context['date_filter'] = DateFilterForm(initial=date_filter_initial)
+            queries_without_page = self.request.GET.copy()
+            if queries_without_page.get('page', ''):
+                del queries_without_page['page']
+            context['queries'] = queries_without_page
             context['filters_number'] = filters_number
         return context
 

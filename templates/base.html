@@ -82,18 +82,18 @@
           <nav aria-label="...">
             <ul class="pagination mt-3">
               <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
-                <a class="page-link" href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% endif %}">{% trans "Previous" %}</a>
+                <a class="page-link" href="{% if page_obj.has_previous %}?{{queries.urlencode}}&amp;page={{ page_obj.previous_page_number }}{% endif %}">{% trans "Previous" %}</a>
                 {% for n in paginator.page_range %}
                 {% if page_obj.number == n %}
                 <li class="page-item active">
-                  <a class="page-link" href="?page={{ n }}">{{ n }}</a></li>
+                  <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a></li>
                   {% elif n > page_obj.number|add:-3 and n < page_obj.number|add:3 %}
                   <li class="page-item {% if page_obj.number == n %}active{% endif %}">
-                    <a class="page-link" href="?page={{ n }}">{{ n }}</a></li>
+                    <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a></li>
                     {% endif %}
                     {% endfor %}
                     <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
-                      <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% endif %}">{% trans "Next" %}</a>
+                      <a class="page-link" href="{% if page_obj.has_next %}?{{queries.urlencode}}&amp;page={{ page_obj.next_page_number }}{% endif %}">{% trans "Next" %}</a>
                     </li>
                   </ul>
                 </nav>
