@@ -107,7 +107,7 @@ class ReportsListView(LoginRequiredMixin, ListView):
     model = Report
     template_name = 'reports/reports_list.html'
     ordering = ('checked', '-date_of_visit')
-    paginate_by = 20
+    paginate_by = 30
 
     def get_context_data(self, *args, **kwargs):
         context = super(ReportsListView, self).get_context_data()

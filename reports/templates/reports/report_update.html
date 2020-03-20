@@ -28,23 +28,89 @@
 
 <form action="{{ report.get_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
-  {% for field in form %}
-    {% if not user.is_staff%}
-      {% if not field.name == 'visit_price' and not field.name == 'visit_price_doctor' and not field.name == 'doctor' %}
-    <div class="form-group col-md-12 mb-2 border-top">
-        <div class="form-group col-md-6 mb-0">
-          {{ field|as_crispy_field }}
-        </div>
-      </div>
-      {% endif %}
-    {% else %}
-  <div class="form-group col-md-12 mb-2 border-top">
-      <div class="form-group col-md-6 mb-0">
-        {{ field|as_crispy_field }}
-      </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-2 mb-0">
+      {{ form.company|as_crispy_field }}
     </div>
-    {% endif %}
-  {% endfor %}
+    <div class="form-group col-md-2 mb-0">
+      {{ form.ref_number|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-4 mb-0">
+      {{ form.company_ref_number|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.patients_last_name|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-4 mb-0">
+      {{ form.patients_first_name|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.patients_date_of_birth|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-4 mb-0">
+      {{ form.patients_policy_number|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.date_of_visit|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-4 mb-0">
+      {{ form.type_of_visit|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.city|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-4 mb-0">
+      {{ form.detailed_location|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.diagnosis|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-8 mb-0">
+      {{ form.cause_of_visit|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-8 mb-0">
+      {{ form.checkup|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-8 mb-0">
+      {{ form.additional_checkup|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-8 mb-0">
+      {{ form.prescription|as_crispy_field }}
+    </div>
+  </div>
+  {% if user.is_staff %}
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.doctor|as_crispy_field }}
+    </div>
+  </div>
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.visit_price|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-4 mb-0">
+      {{ form.visit_price_doctor|as_crispy_field }}
+    </div>
+  </div>
+  {% endif %}
 
   <table class="table" id="service_items_table">
     {{ service_items.management_form }}
@@ -97,33 +163,28 @@
     {% endfor %}
   </table>
 
-  <div class="row mb-2 col-md-12 border-top">
-    <div class="col-sm-3 mb-2">
+  <div class="row mb-2 border-top">
+    <div class="col-sm-2 mb-2">
       <b> {% trans "Images:" %} </b>
     </div>
   </div>
-  <div class="row mb-2 col-md-12 border-top">
+  <div class="row mb-2">
     <div class="col">
       {% for image in report.additional_images.get_queryset %}
         <p class='mb-2'><img src="{{ image.image.url }}" alt="" width='80%'></p>
       {% endfor %}
     </div>
-    <div class="row mb-2 ml-2 col-md-12">
-      <a href="{{ report.get_images_update_url }}" class="btn btn-secondary">{% trans "Edit images" %}</a>
+  </div>
+  <div class="row mb-2">
+    <div class="col">
+    <a href="{{ report.get_images_update_url }}" class="btn btn-secondary">{% trans "Edit images" %}</a>
     </div>
   </div>
-  {% comment %}
-  {% for image in report.additional_images.get_queryset %}
-  <div class="row mb-2">
-        <p class='mb-1'>
-          <img src="{{ image.image.url }}" alt="" width='100%'>
-        </p>
-  </div>
-  {% endfor %}
-  {% endcomment %}
-  <div class="form-group col-md-12 mb-2">
-    <button type="submit" name="Update" class="btn btn-primary">{% trans "Update report" %}</button>
-    <a href="{{ report.get_absolute_url }}" class="btn btn-danger">{% trans "Cancel"%}</a>
+  <div class="row mb-4">
+    <div class="col">
+      <button type="submit" name="Update" class="btn btn-primary">{% trans "Update report" %}</button>
+      <a href="{{ report.get_absolute_url }}" class="btn btn-danger">{% trans "Cancel"%}</a>
+    </div>
   </div>
 </form>
   <script src="{% static 'js/formset/jquery.formset.js' %}"></script>
