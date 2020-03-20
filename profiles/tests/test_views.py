@@ -53,13 +53,21 @@ class AccessRequiredViewTest(TestCase):
         test_user21.save()
         test_profile21.save()
 
-        test_template11 = ProfileReportAutofillTemplate.objects.create(doctor=test_profile11)
+        test_template11 = ProfileReportAutofillTemplate.objects.create(
+                                                        doctor=test_profile11,
+                                                        country=test_country1
+                                                        )
         test_template11.save()
 
-        test_template12 = ProfileReportAutofillTemplate.objects.create(doctor=test_profile12)
+        test_template12 = ProfileReportAutofillTemplate.objects.create(
+                                                        doctor=test_profile12,
+                                                        country=test_country1
+                                                        )
         test_template12.save()
 
-        test_template21 = ProfileReportAutofillTemplate.objects.create(doctor=test_profile21)
+        test_template21 = ProfileReportAutofillTemplate.objects.create(
+                                                        doctor=test_profile21,
+                                                        country=test_country2)
         test_template21.save()
 
 #profile detail view

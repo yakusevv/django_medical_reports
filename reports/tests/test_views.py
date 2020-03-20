@@ -176,7 +176,6 @@ class AccessRequiredViewTest(TestCase):
 
         for report in resp.context['report_list']:
             self.assertEqual(resp.context['user'].profile, report.doctor)
-            self.assertEqual(resp.context['user'].profile.city.district.region.country, report.city.district.region.country)
 
         self.assertEqual(resp.status_code, 200)
 
