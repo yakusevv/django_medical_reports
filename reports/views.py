@@ -24,6 +24,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django import forms
 
+from rest_framework import viewsets
+from rest_framework.response import Response
+
 from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
 from tempus_dominus.widgets import DatePicker
 
@@ -38,8 +41,10 @@ from .models import (
                 City,
                 Disease,
                 Service,
-                Company
+                Company,
+                ReportRequest
                     )
+
 from .forms import (
                 ReportForm,
                 ServiceItemsFormSet,
@@ -47,6 +52,7 @@ from .forms import (
                 DateFilterForm
                 )
 from .utils import DocReportGeneratorWithoutSaving, ReportsXlsxGenerator
+from .serializers import ReportRequestSerializer
 
 
 @login_required
@@ -533,3 +539,17 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
                             rows[region][district][type].append('')
         context['rows'] = rows
         return context
+
+
+class ReportRequestViewSet(viewsets.ModelViewSet):
+    queryset = ReportRequest.objects.all()
+    serializer_class = ReportRequestSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(date_time=datetime.datetime.now())
+
+    def retrieve(self, request, pk=None):
+        queryset = ReportRequest.objects.all()
+        request_obj = get_object_or_404(queryset, pk=pk)
+        serializer = ReportRequestSerializer(request_obj)
+        return Response(serializer.data)

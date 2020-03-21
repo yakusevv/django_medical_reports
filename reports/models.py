@@ -342,6 +342,15 @@ class ServiceItem(models.Model):
             return str(self.service.name) + ' [{}]'.format(self.quantity)
         return self.service.name
 
+
+class ReportRequest(models.Model):
+    doctor = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE, verbose_name=_("Report request"))
+    date_time = models.DateTimeField()
+    company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
+    message = models.TextField(max_length=500, blank=True)
+    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
+
+
 @receiver(post_delete, sender=Report)
 def submission_delete(sender, instance, **kwargs):
     shutil.rmtree(str(os.path.join(
@@ -351,31 +360,6 @@ def submission_delete(sender, instance, **kwargs):
                         )),
                         ignore_errors=True
                     )
-'''
-@receiver(post_save, sender=AdditionalImage)
-@receiver(post_delete, sender=AdditionalImage)
-@receiver(post_save, sender=ServiceItem)
-@receiver(post_delete, sender=ServiceItem)
-@receiver(post_save, sender=Report)
-def report_generating(sender, instance, **kwargs):
-    if isinstance(instance, AdditionalImage):
-        report = instance.report
-    elif isinstance(instance, ServiceItem):
-        report = instance.report
-    elif isinstance(instance, Report):
-        report = instance
-    try:
-        doc_path = ReportTemplate.objects.get(
-                country=report.city.district.region.country,
-                company=report.company
-                ).template
-        report.docx_download_link = DocReportGenerator(doc_path, report)
-        post_save.disconnect(report_generating, sender=Report)
-        report.save()
-        post_save.connect(report_generating, sender=Report)
-    except ReportTemplate.DoesNotExist:
-            pass
-'''
 
 @receiver(pre_save, sender=AdditionalImage)
 def image_update(sender, instance, **kwargs):
@@ -389,7 +373,10 @@ def image_update(sender, instance, **kwargs):
 
 @receiver(post_delete, sender=AdditionalImage)
 def image_delete(sender, instance, **kwargs):
-    os.remove(instance.image.path)
+    try:
+        os.remove(instance.image.path)
+    except FileNotFoundError:
+        pass
 
 
 @receiver(post_delete, sender=ReportTemplate)

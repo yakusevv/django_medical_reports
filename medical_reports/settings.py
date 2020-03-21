@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_select2',
     'tempus_dominus',
     'crispy_forms',
+    'rest_framework'
 ]
 
 #apps settings
@@ -145,7 +146,7 @@ LOCALE_PATHS = (
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 DATE_FORMAT = 'j E Y'
 
