@@ -225,7 +225,7 @@ class Report(models.Model):
                     ).exclude(pk=self.pk)
         if reports:
             for report in reports:
-                if report.get_full_ref_number == self.get_full_ref_number:
+                if report.company == self.company and report.ref_number == self.ref_number:
                     raise ValidationError(
                         message=_('Report with this data is already exists.'),
                         code='unique_together',

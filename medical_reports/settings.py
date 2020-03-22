@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from .secret_data import SECRET_KEY, TIME_ZONE, DEBUG
 from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST, DB_PORT
@@ -47,6 +48,22 @@ INSTALLED_APPS = [
 ]
 
 #apps settings
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=600),
+}
+
 TEMPUS_DOMINUS_LOCALIZE = True
 #TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
