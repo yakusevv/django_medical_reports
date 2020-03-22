@@ -51,7 +51,9 @@ class ReportForm(forms.ModelForm):
                    'date_of_visit'     : DateTimePicker(
                                         options={
                                             'useCurrent': True,
-                                            'maxDate': 'now'
+                                            'maxDate': 'now',
+                                            'format': "DD.MM.YYYY HH:mm",
+                                            'stepping': 5
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -62,7 +64,7 @@ class ReportForm(forms.ModelForm):
                    'patients_date_of_birth': DatePicker(
                                         options={
                                             'useCurrent': False,
-                                            'viewMode': 'years',
+                                            'viewMode': 'decades',
                                             'maxDate': 'now'
                                             },
                                         attrs={

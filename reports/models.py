@@ -225,22 +225,11 @@ class Report(models.Model):
                     ).exclude(pk=self.pk)
         if reports:
             for report in reports:
-                if report.get_full_ref_number == self.get_full_ref_number:
+                if report.company == self.company and report.ref_number == self.ref_number:
                     raise ValidationError(
                         message=_('Report with this data is already exists.'),
                         code='unique_together',
                         )
-
-#        if self.__class__.objects.filter(
-#                    patients_first_name=self.patients_first_name,
-#                    patients_last_name=self.patients_last_name,
-#                    ref_number=self.ref_number,
-#                    city__district__region__country=self.city.district.region.country
-#                    ).exclude(pk=self.pk).exists():
-#            raise ValidationError(
-#                message=_('Report with this data is already exists.'),
-#                code='unique_together',
-#            )
 
     def __str__(self):
         return ' '.join((self.patients_last_name, self.patients_first_name, self.get_full_ref_number))

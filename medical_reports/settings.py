@@ -145,7 +145,7 @@ LOCALE_PATHS = (
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 DATE_FORMAT = 'j E Y'
 

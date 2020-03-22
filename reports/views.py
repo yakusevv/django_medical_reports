@@ -19,6 +19,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
 from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpRequest
 from django.utils.translation import ugettext as _
+from django.template.defaultfilters import slugify
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -57,9 +58,9 @@ def downloadReportDocx(request, pk, type):
         file = DocReportGeneratorWithoutSaving(report, type)
         if file:
             file_name = "_".join((
-                            report.patients_last_name,
-                            report.patients_first_name,
-                            report.company_ref_number
+                            slugify(report.patients_last_name).upper(),
+                            slugify(report.patients_first_name).upper(),
+                            slugify(report.company_ref_number).upper()
                             )) + '.docx'
             file.save(buffer)
             buffer.seek(0)
