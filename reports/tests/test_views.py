@@ -17,7 +17,7 @@ from reports.models import (
                             PriceGroup,
                         )
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 
 class AccessRequiredViewTest(TestCase):
 
@@ -51,6 +51,12 @@ class AccessRequiredViewTest(TestCase):
         test_user12.save()
         test_profile12 = Profile.objects.create(user=test_user12, num_col='321', city=test_city1)
         test_profile12.save()
+
+        test_user13 = User.objects.create_user(username='testuser13', password='12345', is_staff=True)
+        test_user13.user_permissions.add(Permission.objects.get(name='Can download excel'))
+        test_user13.save()
+        test_profile13 = Profile.objects.create(user=test_user13, num_col='321', city=test_city1)
+        test_profile13.save()
 
         test_user21 = User.objects.create_user(username='testuser21', password='12345', is_staff=False)
         test_profile21 = Profile.objects.create(user=test_user21, num_col='1230', city=test_city2)
@@ -392,8 +398,6 @@ class AccessRequiredViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'reports/report_delete.html')
 
-        Report.objects.get(pk=reportpk).checked=True
-
     def test_forbidden_if_not_country_case_report_delete(self):
         reportpk = Report.objects.get(ref_number='D123', doctor__user__username='testuser11').pk
         login = self.client.login(username='testuser11', password='12345')
@@ -405,3 +409,27 @@ class AccessRequiredViewTest(TestCase):
         resp = self.client.get(reverse('report_delete_url', kwargs={'pk': reportpk}))
 
         self.assertEqual(resp.status_code, 403)
+
+
+#download Excel
+    def test_redirect_if_not_user_has_permission_download_excel(self):
+        login = self.client.login(username='testuser11', password='12345')
+        resp = self.client.get(reverse('download_reports_xlsx_url'))
+
+        self.assertRedirects(resp, '/admin/login/?next=/reports/download_xlsx/')
+
+        login = self.client.login(username='testuser12', password='12345')
+        resp = self.client.get(reverse('download_reports_xlsx_url'))
+
+        self.assertRedirects(resp, '/accounts/login/?next=/reports/download_xlsx/')
+
+        login = self.client.login(username='testuser21', password='12345')
+        resp = self.client.get(reverse('download_reports_xlsx_url'))
+
+        self.assertRedirects(resp, '/admin/login/?next=/reports/download_xlsx/')
+
+    def test_success_if_user_has_permission_download_excel(self):
+        login = self.client.login(username='testuser13', password='12345')
+        resp = self.client.get(reverse('download_reports_xlsx_url'))
+
+        self.assertEqual(resp.status_code, 200)
