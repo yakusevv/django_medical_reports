@@ -1,11 +1,9 @@
-import os
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+from openpyxl.styles import Font, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 
-from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from .models import ReportTemplate

@@ -1,14 +1,11 @@
-import json
 import io
 import datetime
 
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import (
-                                View,
                                 ListView,
                                 DetailView,
                                 CreateView,
@@ -17,24 +14,19 @@ from django.views.generic import (
                                 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
-from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpRequest
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import slugify
-from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django import forms
 
-from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
-from tempus_dominus.widgets import DatePicker
+from profiles.models import Profile
 
 from .models import (
                 Report,
                 Country,
                 PriceGroup,
                 TypeOfVisit,
-                AdditionalImage,
-                Tariff,
                 VisitTariff,
                 City,
                 Disease,

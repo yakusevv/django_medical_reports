@@ -1,9 +1,6 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 from django.urls import resolve
 from django.shortcuts import redirect
-from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.urls import reverse
 

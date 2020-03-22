@@ -1,10 +1,7 @@
-from django.core.files import File
 from django import forms
-from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.base import ContentFile
 
 from tempus_dominus.widgets import DateTimePicker, DatePicker
@@ -14,13 +11,11 @@ import io
 
 from .models import (
                     Report,
-                    Service,
                     ServiceItem,
                     AdditionalImage,
                     TypeOfVisit,
                     VisitTariff,
-                    Tariff,
-                    Country
+                    Tariff
                     )
 from profiles.models import UserDistrict, UserDistrictVisitPrice
 

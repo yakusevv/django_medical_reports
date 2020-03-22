@@ -1,6 +1,4 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import Select2MultipleWidget

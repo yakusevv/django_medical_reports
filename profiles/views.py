@@ -2,11 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, UpdateView, CreateView, ListView
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.shortcuts import redirect
 from django.http import HttpResponseForbidden
 
-from .forms import ProfileForm, ProfileReportAutofillTemplateForm
+from .forms import ProfileReportAutofillTemplateForm
 from .models import Profile, ProfileReportAutofillTemplate
 
 from reports.models import TypeOfVisit, Disease

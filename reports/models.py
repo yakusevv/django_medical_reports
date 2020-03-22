@@ -2,11 +2,10 @@ import os
 import shutil
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.shortcuts import reverse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.db.models.signals import post_delete, post_save, pre_save
+from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _

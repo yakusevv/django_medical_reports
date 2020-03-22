@@ -1,11 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
-from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 
-from reports.models import District, City, TypeOfVisit
+from reports.models import City, TypeOfVisit
 
 
 class Profile(models.Model):
