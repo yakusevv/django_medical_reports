@@ -19,7 +19,8 @@ from .models import (
                 Service,
                 ServiceItem,
                 VisitTariff,
-                ReportTemplate
+                ReportTemplate,
+                ReportRequest
                 )
 from .forms import VisitTariffInlineFormSet #, ReportTemplateInlineFormSet
 
@@ -231,3 +232,7 @@ class TariffAdmin(admin.ModelAdmin):
 
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/reports/tariff/{}/change'.format(obj.id))
+
+@admin.register(ReportRequest)
+class ReportRequest(admin.ModelAdmin):
+    pass

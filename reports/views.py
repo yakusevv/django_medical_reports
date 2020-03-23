@@ -1,11 +1,14 @@
+import json
 import io
 import datetime
 
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import (
+                                View,
                                 ListView,
                                 DetailView,
                                 CreateView,
@@ -14,25 +17,34 @@ from django.views.generic import (
                                 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpRequest
 from django.utils.translation import ugettext as _
-from django.template.defaultfilters import slugify
+from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django import forms
 
-from profiles.models import Profile
+from rest_framework import viewsets
+from rest_framework.response import Response
+
+from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
+from tempus_dominus.widgets import DatePicker
 
 from .models import (
                 Report,
                 Country,
                 PriceGroup,
                 TypeOfVisit,
+                AdditionalImage,
+                Tariff,
                 VisitTariff,
                 City,
                 Disease,
                 Service,
-                Company
+                Company,
+                ReportRequest
                     )
+
 from .forms import (
                 ReportForm,
                 ServiceItemsFormSet,
@@ -40,6 +52,7 @@ from .forms import (
                 DateFilterForm
                 )
 from .utils import DocReportGeneratorWithoutSaving, ReportsXlsxGenerator
+from .serializers import ReportRequestSerializer
 
 
 @login_required
@@ -50,9 +63,9 @@ def downloadReportDocx(request, pk, type):
         file = DocReportGeneratorWithoutSaving(report, type)
         if file:
             file_name = "_".join((
-                            slugify(report.patients_last_name).upper(),
-                            slugify(report.patients_first_name).upper(),
-                            slugify(report.company_ref_number).upper()
+                            report.patients_last_name,
+                            report.patients_first_name,
+                            report.company_ref_number
                             )) + '.docx'
             file.save(buffer)
             buffer.seek(0)
@@ -292,7 +305,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
                 form.fields['service'].queryset = service_set
         return context
 
-    def form_valid(self, form, service_items, images):
+    def form_valid(self, form, service_items, images):    
         with transaction.atomic():
             if not self.request.user.is_staff:
                 form.instance.doctor = self.request.user.profile
@@ -526,3 +539,17 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
                             rows[region][district][type].append('')
         context['rows'] = rows
         return context
+
+
+class ReportRequestViewSet(viewsets.ModelViewSet):
+    queryset = ReportRequest.objects.all()
+    serializer_class = ReportRequestSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(date_time=datetime.datetime.now())
+
+    def retrieve(self, request, pk=None):
+        queryset = ReportRequest.objects.all()
+        request_obj = get_object_or_404(queryset, pk=pk)
+        serializer = ReportRequestSerializer(request_obj)
+        return Response(serializer.data)
