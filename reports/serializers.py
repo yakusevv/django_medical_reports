@@ -5,16 +5,30 @@ from profiles.models import Profile
 
 
 class ReportRequestSerializer(serializers.HyperlinkedModelSerializer):
-    doctor = serializers.SlugRelatedField(
-                                        slug_field='id',
-                                        queryset=Profile.objects.all()
+    doctor = serializers.PrimaryKeyRelatedField(
+                                        queryset=Profile.objects.all(),
                                         )
-    company = serializers.SlugRelatedField(
-                                        slug_field='id',
+    doctor_initials = serializers.CharField(source='doctor.initials', read_only=True)
+    company = serializers.PrimaryKeyRelatedField(
                                         queryset=Company.objects.all()
                                         )
+    company_name = serializers.CharField(source='company.name', read_only=True)
     date_time = serializers.DateTimeField(read_only=True, format='%d-%m-%Y %H:%M:%S')
 
     class Meta:
         model = ReportRequest
-        fields = ['doctor', 'company', 'message', 'date_time']
+        fields = ['doctor', 'doctor_initials', 'company', 'company_name', 'message', 'date_time', 'pk']
+
+
+class CompanyOptionsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Company
+        fields = ['pk', 'name']
+
+
+class DoctorOptionsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ['pk', 'initials']

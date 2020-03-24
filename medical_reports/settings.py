@@ -8,11 +8,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
 
-DEBUG = bool( os.environ.get('DJANGO_DEBUG', DEBUG) )
-
-CSRF_COOKIE_SECURE = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', DEBUG))
 
 if not DEBUG:
+
+    CSRF_COOKIE_SECURE = True
 
     SECURE_SSL_REDIRECT = True
 
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 #apps settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAdminUser',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',

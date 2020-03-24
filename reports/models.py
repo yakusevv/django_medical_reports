@@ -207,6 +207,8 @@ class Report(models.Model):
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
     doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
+    report_request = models.OneToOneField('ReportRequest', on_delete=models.SET_NULL, blank=True, null=True)
+
 
     class Meta:
         verbose_name = _('Report')
@@ -336,7 +338,7 @@ class ReportRequest(models.Model):
     date_time = models.DateTimeField()
     company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
     message = models.TextField(max_length=500, blank=True)
-    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
+#    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
 
 
 @receiver(post_delete, sender=Report)

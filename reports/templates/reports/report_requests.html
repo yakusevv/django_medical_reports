@@ -1,15 +1,116 @@
 {% extends 'reports/base_reports.html' %}
 
+{% block extrahead %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
 
 {% block content %}
+<form method="POST" id="id_request_form">
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="id_doctor">
+            Doctor
+        </label>
+        <div class="col-sm-10">
+            <select class="form-control" name="doctor" id="id_doctor">
+            </select>
+        </div>
+        <label class="col-sm-2 control-label" for="id_company">
+            Company
+        </label>
+        <div class="col-sm-10">
+            <select class="form-control" name="company" id="id_company">
+            </select>
+        </div>
+        <label class="col-sm-2 control-label" for="id_message">
+            Message
+        </label>
+        <div class="col-sm-10">
+            <textarea name="message" class="form-control"  id="id_message"></textarea>
+        </div>
+    </div>
+    <div class="col-sm-10">
+        <button class="btn btn-success" type="submit" id="id_submit_btn">Submit</button>
+    </div>
+</form>
+
+<div class="scrollbar scrollbar-black bordered-black square thin">
+    <div id="id_requests_list" class="overflow-auto mt-4" style="height: 300px; width: 100%;"></div>
+</div>
+
+{% endblock %}
+
+{% block extramedia %}
+<script type="text/javascript">
+    function loadOptions(){
+        $.ajax({
+            url : "{% url 'report_requests_options_api_url' %}",
+            dataType: "json",
+            type: "GET",
+            success : function (data) {
+                data.companies.forEach(el => {
+                    let option = document.createElement("option");
+                    option.value = el.pk;
+                    option.innerHTML = el.name;
+                    $('#id_company').append(option);
+                });
+                data.doctors.forEach(el => {
+                    let option = document.createElement("option");
+                    option.value = el.pk;
+                    option.innerHTML = el.initials;
+                    $('#id_doctor').append(option);
+                });
+            },
+            error : function() {
+                alert("Error while loading select options")
+            }
+        })}
+    function reloadRequests () {
+        $.ajax({
+            url : "{% url 'requests:requests-list' %}",
+            dataType: "json",
+            type: "GET",
+            success : function (data) {
+                $('#id_requests_list').html("");
+                data.forEach(el => {
+                    let div = document.createElement("div");
+                    div.className = 'row border-top';
+                    div.innerHTML = '<div class="col"><div class="row"><div class="col">' + el.doctor_initials +
+                        '</div><div class="col">' + el.company_name + '</div></div><div class="row"><div class="col">' +
+                        el.message.replace(/\n/g, '<br />') + '</div></div></div>';
+                    $('#id_requests_list').append(div);
+                })},
+            error : function() {
+                alert("Error while loading report requests")
+            }
+        });
+    }
+
+    loadOptions();
+    reloadRequests();
+    let timeout = setInterval(reloadRequests, 5000);
 
 
-<app-root>Loading the app...</app-root>
-
-<script type="text/javascript" src="{% static 'front-end/runtime.js' %}"></script>
-<script type="text/javascript" src="{% static 'front-end/polyfills.js' %}"></script>
-<script type="text/javascript" src="{% static 'front-end/styles.js' %}"></script>
-<script type="text/javascript" src="{% static 'front-end/vendor.js' %}"></script>
-<script type="text/javascript" src="{% static 'front-end/main.js' %}"></script>
-
+    $('#id_request_form').submit( function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let post_url = "{% url 'requests:requests-list' %}"
+        let post_data = form.serialize();
+        $.ajax({
+            type: 'POST',
+            url: post_url,
+            data: post_data,
+            success: function () {
+                form.fadeOut(800, function () {
+                    form[0].reset();
+                    form.fadeIn().delay(2000);
+                    reloadRequests();
+                });
+            },
+            error : function() {
+                alert("Error while saving report request")
+            }
+        });
+    });
+</script>
 {% endblock %}

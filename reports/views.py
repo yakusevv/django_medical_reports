@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import (
-                                View,
+                                TemplateView,
                                 ListView,
                                 DetailView,
                                 CreateView,
@@ -24,7 +24,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django import forms
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 
 from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
@@ -51,16 +51,16 @@ from .forms import (
                 AdditionalImageFormSet,
                 DateFilterForm
                 )
-from .utils import DocReportGeneratorWithoutSaving, ReportsXlsxGenerator
-from .serializers import ReportRequestSerializer
+from .utils import docx_report_generator, reports_xlsx_generator
+from .serializers import ReportRequestSerializer, CompanyOptionsSerializer, DoctorOptionsSerializer
 
 
 @login_required
-def downloadReportDocx(request, pk, type):
+def download_report_docx(request, pk, type_of_report):
     buffer = io.BytesIO()
     report = Report.objects.get(pk=pk)
-    if (request.user.profile == report.doctor and type == 'd') or request.user.is_staff:
-        file = DocReportGeneratorWithoutSaving(report, type)
+    if (request.user.profile == report.doctor and type_of_report == 'd') or request.user.is_staff:
+        file = docx_report_generator(report, type_of_report)
         if file:
             file_name = "_".join((
                             report.patients_last_name,
@@ -82,7 +82,7 @@ def downloadReportDocx(request, pk, type):
 @login_required
 @staff_member_required
 @permission_required('reports.can_download_excel')
-def downloadReportsExcel(request):
+def download_reports_excel(request):
     current_country = request.user.profile.city.district.region.country
     queryset = request.session.get('filtered')
     if queryset:
@@ -92,7 +92,7 @@ def downloadReportsExcel(request):
                                     city__district__region__country=current_country
                                     ).order_by('-date_of_visit')
     buffer = io.BytesIO()
-    file = ReportsXlsxGenerator(reports)
+    file = reports_xlsx_generator(reports)
     if file:
         file_name = datetime.datetime.now().strftime('%d-%m-%Y') + '.xlsx'
         file.save(buffer)
@@ -106,7 +106,8 @@ def downloadReportsExcel(request):
 class AdminStaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
 
     def test_func(self):
-        return self.request.user.is_superuser or self.request.user.is_staff
+        user = self.request.user
+        return user.is_superuser or user.is_staff
 
 
 class ReportsListView(LoginRequiredMixin, ListView):
@@ -168,17 +169,17 @@ class ReportsListView(LoginRequiredMixin, ListView):
             search_query = self.request.GET.get('search_query', '')
             if search_query:
                 queryset = queryset.filter(
-                    Q(ref_number__icontains=search_query)|
-                    Q(company_ref_number__icontains=search_query)|
-                    Q(patients_first_name__icontains=search_query)|
-                    Q(patients_last_name__icontains=search_query)|
-                    Q(patients_date_of_birth__icontains=search_query)|
-                    Q(patients_policy_number__icontains=search_query)|
-                    Q(city__name__icontains=search_query)|
-                    Q(detailed_location__icontains=search_query)|
-                    Q(cause_of_visit__icontains=search_query)|
-                    Q(checkup__icontains=search_query)|
-                    Q(additional_checkup__icontains=search_query)|
+                    Q(ref_number__icontains=search_query) |
+                    Q(company_ref_number__icontains=search_query) |
+                    Q(patients_first_name__icontains=search_query) |
+                    Q(patients_last_name__icontains=search_query) |
+                    Q(patients_date_of_birth__icontains=search_query) |
+                    Q(patients_policy_number__icontains=search_query) |
+                    Q(city__name__icontains=search_query) |
+                    Q(detailed_location__icontains=search_query) |
+                    Q(cause_of_visit__icontains=search_query) |
+                    Q(checkup__icontains=search_query) |
+                    Q(additional_checkup__icontains=search_query) |
                     Q(prescription__icontains=search_query)
                     )
             company_filter = self.request.GET.getlist('company_filter', None)
@@ -273,7 +274,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             if not len(diagnosis):
                 template['diagnosis_template'] = 'Null'
             else:
-                template['diagnosis_template'] = [diag.pk for diag in diagnosis]
+                template['diagnosis_template'] = [d.pk for d in diagnosis]
         context['json_templates'] = list(templates)
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST)
@@ -354,11 +355,8 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)
                 service_items = self.get_context_data()['service_items']
-#            images = self.get_context_data()['images']
-#            del_images = [i for i in request.POST.keys() if 'del_image' in i]
-                if form.is_valid() and service_items.is_valid(): # and images.is_valid():
-#                return self.form_valid(form, service_items, images, del_images)
-                    return self.form_valid(form, service_items)#, images)
+                if form.is_valid() and service_items.is_valid():
+                    return self.form_valid(form, service_items)
                 else:
                     return self.form_invalid(form)
             else:
@@ -371,10 +369,8 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         context['report_link_active'] = "active"
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST, instance=self.object)
-#            context['images'] = AdditionalImageForm(self.request.POST, self.request.FILES)
         else:
             context['service_items'] = ServiceItemsFormSet(instance=self.object)
-#            context['images'] = AdditionalImageForm()
         if self.request.user.profile.city:
             current_country   = self.request.user.profile.city.district.region.country.pk
             type_of_visit_set = TypeOfVisit.objects.filter(country__pk=current_country)
@@ -399,7 +395,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
                                     )
         return context
 
-    def form_valid(self, form, service_items): #, images, del_images):
+    def form_valid(self, form, service_items):
         with transaction.atomic():
             if not self.request.user.is_staff:
                 form.instance.doctor = self.request.user.profile
@@ -416,13 +412,11 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
     model = Report
 
     def get(self, request, pk):
-#        obj = self.model.objects.get(pk=pk)
         self.object = self.get_object()
         object_country = self.object.city.district.region.country
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
         if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 return render(request, self.template_name, context={
@@ -432,16 +426,14 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
             else:
                 raise Http404(_("Checked report cannot be deleted"))
         else:
-            return HttpResponseForbidden('403 Frobidden', content_type='text/html')
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
     def post(self, request, pk):
-#        obj = self.model.objects.get(pk=pk)
         self.object = self.get_object()
         object_country = self.object.city.district.region.country
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
         if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 self.object.delete()
@@ -466,7 +458,6 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
         if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
@@ -482,7 +473,6 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
         if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
             if not self.object.checked:
                 form_class = self.get_form_class()
@@ -500,7 +490,6 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         context = super(ReportAdditionalImagesUpdateView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
         return context
-
 
     def get_success_url(self):
         self.object = self.get_object()
@@ -525,18 +514,18 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
             rows[region] = {}
             for district in region.district_set.all():
                 rows[region][district] = {}
-                for type in types_of_visit:
-                    rows[region][district][type] = []
+                for type_of_visit in types_of_visit:
+                    rows[region][district][type_of_visit] = []
                     for group in price_groups:
                         try:
-                            rows[region][district][type].append(
-                            VisitTariff.objects.get(
-                                tariff__district=district,
-                                tariff__price_group=group,
-                                type_of_visit=type
-                                ).price)
+                            rows[region][district][type_of_visit].append(
+                                VisitTariff.objects.get(
+                                    tariff__district=district,
+                                    tariff__price_group=group,
+                                    type_of_visit=type
+                                    ).price)
                         except VisitTariff.DoesNotExist:
-                            rows[region][district][type].append('')
+                            rows[region][district][type_of_visit].append('')
         context['rows'] = rows
         return context
 
@@ -544,6 +533,7 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
 class ReportRequestViewSet(viewsets.ModelViewSet):
     queryset = ReportRequest.objects.all()
     serializer_class = ReportRequestSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
     def perform_create(self, serializer):
         serializer.save(date_time=datetime.datetime.now())
@@ -553,3 +543,20 @@ class ReportRequestViewSet(viewsets.ModelViewSet):
         request_obj = get_object_or_404(queryset, pk=pk)
         serializer = ReportRequestSerializer(request_obj)
         return Response(serializer.data)
+
+
+class RequestOptionsViewSet(viewsets.ViewSet):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def list(self, request):
+        qs = Company.objects.all()
+        country = request.user.profile.city.district.region.country
+        s1 = CompanyOptionsSerializer(qs, many=True)
+        qs = Profile.objects.filter(user__is_staff=False, city__district__region__country=country)
+        s2 = DoctorOptionsSerializer(qs, many=True)
+        return Response({'companies': s1.data, 'doctors': s2.data})
+
+
+class ReportRequestsView(AdminStaffRequiredMixin, TemplateView):
+    template_name = 'reports/report_requests.html'
+

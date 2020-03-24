@@ -8,7 +8,8 @@ from django.utils.translation import ugettext as _
 
 from .models import ReportTemplate
 
-def DocReportGeneratorWithoutSaving(report, type):
+
+def docx_report_generator(report, type_of_report):
     try:
         doc_path = ReportTemplate.objects.get(
             country=report.city.district.region.country
@@ -23,7 +24,7 @@ def DocReportGeneratorWithoutSaving(report, type):
                 'i': images,
                 'd': report.diagnosis.get_queryset(),
                 's': report.service_items.get_queryset(),
-                't': type
+                't': type_of_report
                 }
         doc.render(context)
 
@@ -32,7 +33,7 @@ def DocReportGeneratorWithoutSaving(report, type):
         return None
 
 
-def ReportsXlsxGenerator(reports):
+def reports_xlsx_generator(reports):
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = 'Reports'
