@@ -531,7 +531,7 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
 
 
 class ReportRequestViewSet(viewsets.ModelViewSet):
-    queryset = ReportRequest.objects.all()
+    queryset = ReportRequest.objects.filter(report=None).order_by('-date_time')
     serializer_class = ReportRequestSerializer
     permission_classes = (permissions.IsAdminUser,)
 

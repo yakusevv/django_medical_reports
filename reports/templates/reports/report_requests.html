@@ -2,11 +2,12 @@
 
 {% block extrahead %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% load i18n %}
 {% endblock %}
 
 {% block content %}
 <form method="POST" id="id_request_form">
-    {% csrf_token %}
+    <input type="hidden" id="id_pk" name="custId" value="">
     <div class="form-group">
         <label class="col-sm-2 control-label" for="id_doctor">
             Doctor
@@ -42,6 +43,8 @@
 
 {% block extramedia %}
 <script type="text/javascript">
+    let token = '{{csrf_token}}';
+
     function loadOptions(){
         $.ajax({
             url : "{% url 'report_requests_options_api_url' %}",
@@ -62,9 +65,10 @@
                 });
             },
             error : function() {
-                alert("Error while loading select options")
+                alert("{% trans 'Error while loading select options' %}")
             }
-        })}
+        })};
+
     function reloadRequests () {
         $.ajax({
             url : "{% url 'requests:requests-list' %}",
@@ -74,16 +78,41 @@
                 $('#id_requests_list').html("");
                 data.forEach(el => {
                     let div = document.createElement("div");
-                    div.className = 'row border-top';
-                    div.innerHTML = '<div class="col"><div class="row"><div class="col">' + el.doctor_initials +
-                        '</div><div class="col">' + el.company_name + '</div></div><div class="row"><div class="col">' +
-                        el.message.replace(/\n/g, '<br />') + '</div></div></div>';
+                    div.className = 'card mt-1';
+                    div.innerHTML = '<div class="card-header"><div class="row">' +
+                                    '<div class="col-sm">' + el.doctor_initials +'</div>' +
+                                    '<div class="col-sm">' + el.company_name + '</div>' +
+                                    '<div class="col-sm">' + el.date_time + '</div>' +
+                                    '<button type="button" class="close" name="request_delete" value="' + el.pk +'">\n' +
+                                    '  <span aria-hidden="true">&times;</span>' +
+                                    '<input type="hidden" value="' +
+                                    el.doctor_initials + ' ' + el.company_name + ' ' + el.date_time +
+                                    '" ></button></div></div>' +
+                                    '<div class="card-body">' +
+                                    '<div class="card-text">' + el.message.replace(/\n/g, '<br />') + '</div></div>';
                     $('#id_requests_list').append(div);
                 })},
             error : function() {
-                alert("Error while loading report requests")
+                alert("{% trans 'Error while loading report requests' %}")
             }
         });
+    }
+
+    function deleteRequest(el){
+            $.ajax({
+                headers: { "X-CSRFToken": token },
+                url: "{%  url 'requests:requests-list' %}" + el[0].value + '/',
+                data: {pk: el[0].value,
+                    },
+                type: 'DELETE',
+                contentType: 'application/json',
+                success: function(result) {
+                    alert("{% trans 'Report request has been deleted' %}")
+                },
+                error: function(){
+                    alert("{% trans 'Error while deleting report request' %}")
+                }
+            });
     }
 
     loadOptions();
@@ -97,6 +126,7 @@
         let post_url = "{% url 'requests:requests-list' %}"
         let post_data = form.serialize();
         $.ajax({
+            headers: { "X-CSRFToken": token },
             type: 'POST',
             url: post_url,
             data: post_data,
@@ -108,9 +138,17 @@
                 });
             },
             error : function() {
-                alert("Error while saving report request")
+                alert("{% trans 'Error while saving report request' %}")
             }
         });
     });
+
+    $('#id_requests_list').on('click', 'button[name="request_delete"]', function(event){
+        let r = confirm("{% trans 'Do you really want to delete this request?' %}\n" + $(this)[0].childNodes[2].value);
+        if (r == true) {
+            deleteRequest($(this))
+        };
+    });
+
 </script>
 {% endblock %}
