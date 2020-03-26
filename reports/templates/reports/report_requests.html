@@ -6,20 +6,20 @@
 {% endblock %}
 
 {% block content %}
-<form method="POST" id="id_request_form">
-    <input type="hidden" id="id_pk" name="custId" value="">
-    <div class="form-group">
+<div class="card mt-2">
+    <form method="POST" id="id_request_form">
+    <div class="form-group mt-4">
         <label class="col-sm-2 control-label" for="id_doctor">
             Doctor
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-6">
             <select class="form-control" name="doctor" id="id_doctor">
             </select>
         </div>
         <label class="col-sm-2 control-label" for="id_company">
             Company
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-6">
             <select class="form-control" name="company" id="id_company">
             </select>
         </div>
@@ -30,20 +30,69 @@
             <textarea name="message" class="form-control"  id="id_message"></textarea>
         </div>
     </div>
-    <div class="col-sm-10">
-        <button class="btn btn-success" type="submit" id="id_submit_btn">Submit</button>
+        <div class="col-sm-10 mb-4">
+            <button class="btn btn-success" type="submit" id="id_submit_btn">{% trans 'Submit' %}</button>
+        </div>
+    </form>
+</div>
+
+<!-- model edit -->
+<div class="modal fade" id="id_edit_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="id_data_time_edit"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="id_request_form_edit">
+                    <input type="hidden" id="id_pk_edit" value="">
+                    <div class="form-group mt-2">
+                        <label class="col-sm-2 control-label" for="id_doctor_edit">
+                            Doctor
+                        </label>
+                        <div class="col-sm-6">
+                            <select class="form-control" name="doctor" id="id_doctor_edit">
+                            </select>
+                        </div>
+                        <label class="col-sm-2 control-label" for="id_company_edit">
+                            Company
+                        </label>
+                        <div class="col-sm-6">
+                            <select class="form-control" name="company" id="id_company_edit">
+                            </select>
+                        </div>
+                        <label class="col-sm-2 control-label" for="id_message_edit">
+                            Message
+                        </label>
+                        <div class="col-sm-10">
+                            <textarea name="message" class="form-control"  id="id_message_edit"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="submit" id="id_submit_btn_edit">{% trans 'Submit' %}</button>
+            </div>
+        </div>
     </div>
-</form>
+</div>
+
 
 <div class="scrollbar scrollbar-black bordered-black square thin">
-    <div id="id_requests_list" class="overflow-auto mt-4" style="height: 300px; width: 100%;"></div>
+    <div id="id_requests_list" class="overflow-auto mt-4 mb-4 card" style="height: 700px; width: 100%;"></div>
 </div>
 
 {% endblock %}
 
 {% block extramedia %}
 <script type="text/javascript">
-    let token = '{{csrf_token}}';
+
+    let token = '{{ csrf_token }}';
+    let report_requests = []
 
     function loadOptions(){
         $.ajax({
@@ -55,17 +104,17 @@
                     let option = document.createElement("option");
                     option.value = el.pk;
                     option.innerHTML = el.name;
-                    $('#id_company').append(option);
+                    $('select[name="company"]').append(option);
                 });
                 data.doctors.forEach(el => {
                     let option = document.createElement("option");
                     option.value = el.pk;
                     option.innerHTML = el.initials;
-                    $('#id_doctor').append(option);
+                    $('select[name="doctor"]').append(option);
                 });
             },
-            error : function() {
-                alert("{% trans 'Error while loading select options' %}")
+            error : function(xhr, status, error) {
+                alert("{% trans 'Error while loading select options' %}\n" + xhr.responseText)
             }
         })};
 
@@ -75,50 +124,62 @@
             dataType: "json",
             type: "GET",
             success : function (data) {
+                report_requests = data;
                 $('#id_requests_list').html("");
                 data.forEach(el => {
                     let div = document.createElement("div");
-                    div.className = 'card mt-1';
-                    div.innerHTML = '<div class="card-header"><div class="row">' +
+                    div.className = 'card mt-1 mx-auto';
+                    div.style = 'width: 90%'
+                    div.innerHTML = '<div class="card-header">' +
+                                    '<button type="button" class="close" name="request_delete" value=' + el.pk +' >' +
+                                    '  <span aria-hidden="true">&times;</span></button>' +
+                                    '<div class="row">' +
                                     '<div class="col-sm">' + el.doctor_initials +'</div>' +
                                     '<div class="col-sm">' + el.company_name + '</div>' +
-                                    '<div class="col-sm">' + el.date_time + '</div>' +
-                                    '<button type="button" class="close" name="request_delete" value="' + el.pk +'">\n' +
-                                    '  <span aria-hidden="true">&times;</span>' +
-                                    '<input type="hidden" value="' +
-                                    el.doctor_initials + ' ' + el.company_name + ' ' + el.date_time +
-                                    '" ></button></div></div>' +
+                                    '<div class="col-sm">' + el.date_time + '</div></div>' +
+                                    '</div>' +
                                     '<div class="card-body">' +
-                                    '<div class="card-text">' + el.message.replace(/\n/g, '<br />') + '</div></div>';
+                                    '<div class="card-text">' + el.message.replace(/\n/g, '<br />') +
+                                    '</div><button type="button" class="btn btn-secondary btn-sm float-right"' +
+                                    'data-toggle="modal" data-target="#id_edit_modal" name="request_edit" value=' +
+                                     el.pk +'>{% trans "edit" %}</button></div>';
                     $('#id_requests_list').append(div);
                 })},
-            error : function() {
-                alert("{% trans 'Error while loading report requests' %}")
+            error : function(xhr, status, error) {
+                alert("{% trans 'Error while loading report requests' %}\n" + xhr.responseText)
             }
         });
     }
 
-    function deleteRequest(el){
+    function deleteRequest(pk){
             $.ajax({
                 headers: { "X-CSRFToken": token },
-                url: "{%  url 'requests:requests-list' %}" + el[0].value + '/',
-                data: {pk: el[0].value,
+                url: "{%  url 'requests:requests-list' %}" + pk + '/',
+                data: {pk: pk,
                     },
                 type: 'DELETE',
                 contentType: 'application/json',
                 success: function(result) {
                     alert("{% trans 'Report request has been deleted' %}")
                 },
-                error: function(){
-                    alert("{% trans 'Error while deleting report request' %}")
+                error: function(xhr, status, eror){
+                    alert("{% trans 'Error while deleting report request' %}\n" + xhr.responseText)
                 }
             });
     }
 
+    function getEdit(pk){
+          $('#id_pk_edit').val(pk);
+          $('#id_doctor_edit').val(report_requests.find(x => x.pk === pk).doctor);
+          $('#id_company_edit').val(report_requests.find(x => x.pk === pk).company);
+          $('#id_message_edit').val(report_requests.find(x => x.pk === pk).message);
+          $('#id_data_time_edit').text("{% trans 'Request from ' %}" + report_requests.find(x => x.pk === pk).date_time);
+    }
+
     loadOptions();
     reloadRequests();
-    let timeout = setInterval(reloadRequests, 5000);
 
+    let timeout = setInterval(reloadRequests, 5000);
 
     $('#id_request_form').submit( function(e) {
         e.preventDefault();
@@ -137,17 +198,52 @@
                     reloadRequests();
                 });
             },
-            error : function() {
-                alert("{% trans 'Error while saving report request' %}")
+            error : function(xhr, status, error) {
+                alert("{% trans 'Error while saving report request' %}\n" + xhr.responseText)
+            }
+        });
+    });
+
+    $('#id_submit_btn_edit').click( function(){
+        $('#id_request_form_edit').submit()
+    });
+
+    $('#id_request_form_edit').submit( function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let pk =  form[0][0].value;
+        let post_url = "{% url 'requests:requests-list' %}" + pk + '/';
+        let post_data = form.serialize();
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: 'PUT',
+            url: post_url,
+            data: post_data,
+            success: function () {
+                    $('#id_edit_modal').modal('hide');
+                    reloadRequests();
+            },
+            function(xhr, status, error) {
+                alert("{% trans 'Error while editing report request' %}\n" + xhr.responseText)
             }
         });
     });
 
     $('#id_requests_list').on('click', 'button[name="request_delete"]', function(event){
-        let r = confirm("{% trans 'Do you really want to delete this request?' %}\n" + $(this)[0].childNodes[2].value);
+        let pk = Number($(this)[0].value);
+        let doctor = report_requests.find(x => x.pk === pk).doctor_initials;
+        let company = report_requests.find(x => x.pk === pk).company_name;
+        let date_time = report_requests.find(x => x.pk === pk).date_time;
+        let r = confirm("{% trans 'Do you really want to delete this request?' %}\n" +
+                        doctor + ' ' + company + ' ' + date_time
+                        );
         if (r == true) {
-            deleteRequest($(this))
+            deleteRequest(pk)
         };
+    });
+
+    $('#id_requests_list').on('click', 'button[name="request_edit"]', function(event){
+        getEdit(Number($(this)[0].value))
     });
 
 </script>
