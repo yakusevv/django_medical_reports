@@ -6,6 +6,7 @@ django-croppie==1.3
 django-select2==7.1.1
 django-tempus-dominus==5.1.2.8
 djangorestframework==3.11.0
+djangorestframework-jwt==1.11.0
 docxtpl==0.5.20
 et-xmlfile==1.0.1
 jdcal==1.4.1
@@ -15,6 +16,7 @@ MarkupSafe==1.1.1
 mysqlclient==1.4.2.post1
 openpyxl==3.0.3
 Pillow==6.2.1
+PyJWT==1.7.1
 python-docx==0.8.7
 pytz==2019.1
 six==1.12.0

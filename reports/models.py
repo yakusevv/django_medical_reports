@@ -81,7 +81,7 @@ class City(models.Model):
         verbose_name_plural = _('Cities')
 
     def __str__(self):
-        return ' - '.join((str(self.district.region.country), str(self.name)))
+        return ' - '.join((str(self.name), str(self.district.region.country)))
 
     def validate_unique(self, exclude=None):
         qs = City.objects.filter(district__region__country=self.district.region.country)
