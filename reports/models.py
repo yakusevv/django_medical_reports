@@ -334,11 +334,14 @@ class ServiceItem(models.Model):
 
 
 class ReportRequest(models.Model):
-    doctor = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE, verbose_name=_("Report request"))
-    date_time = models.DateTimeField()
+    doctor = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE, verbose_name=_("Doctor"))
+    date_time = models.DateTimeField(verbose_name=_("Date and time"))
     company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
-    message = models.TextField(max_length=500)
+    message = models.TextField(max_length=500, verbose_name=_("Message"))
 #    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return ' '.join((str(self.date_time.strftime('%d.%m.%Y %H:%M')), str(self.company.name), str(self.doctor.initials)))
 
 
 @receiver(post_delete, sender=Report)

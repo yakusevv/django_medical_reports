@@ -19,6 +19,7 @@ from .models import (
                     )
 from profiles.models import UserDistrict, UserDistrictVisitPrice
 
+
 class ReportForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -30,15 +31,9 @@ class ReportForm(forms.ModelForm):
     class Meta:
         model = Report
         exclude = [
-#            'visit_price',
-#            'visit_price_doctor',
             'checked',
-#            'doctor',
-#            'docx_download_link'
                   ]
         widgets = {
-#                   'visit_price'       : forms.HiddenInput(attrs={}),
-#                   'visit_price_doctor': forms.HiddenInput(attrs={}),
                    'diagnosis'         : Select2MultipleWidget,
                    'city'              : Select2Widget,
                    'company'           : Select2Widget,
@@ -71,7 +66,7 @@ class ReportForm(forms.ModelForm):
                    }
 
     def clean(self):
-        cleaned_data=super(ReportForm, self).clean()
+        cleaned_data = super(ReportForm, self).clean()
         ref_number = cleaned_data.get("ref_number").upper()
         patients_first_name = cleaned_data.get("patients_first_name").upper()
         patients_last_name = cleaned_data.get("patients_last_name").upper()
@@ -102,7 +97,6 @@ class ReportForm(forms.ModelForm):
         cleaned_data['company_ref_number'] = company_ref_number
         return cleaned_data
 
-
     def save(self, commit=True, *args, **kwargs):
         instance = super(ReportForm, self).save(commit=False)
         company = self.cleaned_data['company']
@@ -124,13 +118,15 @@ class ReportForm(forms.ModelForm):
                 tariff = Tariff.objects.get(district=district, price_group=price_group)
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
                 instance.visit_price = visit_tariff.price
-#           form.instance.visit_price_doctor = visit_tariff.price_doctor
             except (Tariff.DoesNotExist, VisitTariff.DoesNotExist):
                 instance.visit_price = 0
         if not self.cleaned_data.get('visit_price_doctor', False) and change_condition:
             try:
                 user_district = UserDistrict.objects.get(cities__in=[city,], user=instance.doctor.user)
-                visit_price = UserDistrictVisitPrice.objects.get(user_district=user_district,   type_of_visit=type_of_visit)
+                visit_price = UserDistrictVisitPrice.objects.get(
+                                                        user_district=user_district,
+                                                        type_of_visit=type_of_visit
+                                                        )
                 instance.visit_price_doctor = visit_price.price
             except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
                 instance.visit_price_doctor = 0
@@ -138,6 +134,7 @@ class ReportForm(forms.ModelForm):
             instance.save()
             self.save_m2m()
         return instance
+
 
 class ServiceItemForm(forms.ModelForm):
 
@@ -150,7 +147,7 @@ class ServiceItemForm(forms.ModelForm):
             'cost'
             ]
         widgets = {
-                   'service'      : Select2Widget,
+                   'service': Select2Widget,
                    }
 
     def __init__(self, *args, **kwargs):
@@ -185,8 +182,6 @@ class ServiceItemForm(forms.ModelForm):
         change_condition = bool(decisive_fields & changed_data_set)
 
         if service:
-#            instance.service_price = Service.objects.get(pk=service.pk).price
-#            instance.service_price_doctor = Service.objects.get(pk=service.pk).price_doctor
             cost = self.cleaned_data.get('cost', False)
             cost_doctor = self.cleaned_data.get('cost_doctor', False)
             if not cost_doctor and change_condition:
@@ -232,7 +227,7 @@ ServiceItemsFormSet = inlineformset_factory(
 
 
 class AdditionalImageForm(forms.ModelForm):
-    image = forms.ImageField(widget=forms.FileInput(attrs={'onchange': 'addImageCrop(id)'}),required=False, )
+    image = forms.ImageField(widget=forms.FileInput(attrs={'onchange': 'addImageCrop(id)'}), required=False, )
     x = forms.FloatField(widget=forms.HiddenInput())
     y = forms.FloatField(widget=forms.HiddenInput())
     w = forms.FloatField(widget=forms.HiddenInput())
@@ -241,7 +236,8 @@ class AdditionalImageForm(forms.ModelForm):
 
     class Meta:
         model = AdditionalImage
-        fields = ('image','x', 'y', 'w', 'h', 'orient')
+        fields = ('image', 'x', 'y', 'w', 'h', 'orient')
+
     def clean(self):
         cleaned_data = super(AdditionalImageForm, self).clean()
         if cleaned_data['DELETE'] and self.instance.pk:
@@ -260,7 +256,6 @@ class AdditionalImageForm(forms.ModelForm):
         self.fields['h'].required = False
         self.fields['orient'].required = False
 
-
     def save(self, commit=True, *args, **kwargs):
         instance = super(AdditionalImageForm, self).save(commit=False)
         image = self.cleaned_data.get('image')
@@ -271,8 +266,9 @@ class AdditionalImageForm(forms.ModelForm):
             h = self.cleaned_data.get('h')
             orient = self.cleaned_data.get('orient')
             instance.position = 0
-            coords = (x,y,w,h)
+            coords = (x, y, w, h)
             if any(coords) and not None in coords:
+                rotated_image = Image.open(image)
                 if orient == 1:
                     rotated_image = Image.open(image).rotate(0, expand=True)
                 elif orient == 6:
@@ -325,10 +321,10 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
         super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
         for form in self.forms:
             type_of_visit_field = form.fields['type_of_visit']
-            type_of_visit_field.widget.attrs = {'readonly':'readonly'}
+            type_of_visit_field.widget.attrs = {'readonly': 'readonly'}
             type_of_visit_field.widget.can_add_related = False
             type_of_visit_field.widget.can_change_related = False
-            type_of_visit_field.disabled =  True
+            type_of_visit_field.disabled = True
 
     def clean(self):
         for form in self.forms:
@@ -370,6 +366,7 @@ class DateFilterForm(forms.Form):
                                             'size': 'small',
                                             }
                                     ),)
+
     def __init__(self, *args, **kwargs):
         super(DateFilterForm, self).__init__(*args, **kwargs)
         self.fields['date_field_from'].required = False

@@ -24,13 +24,13 @@
   {% endfor %}
 </div>
 
-{% if json_templates %}
+  {% if json_templates %}
   <div class="form-group row border-top">
     <div class="form-group col-md-4 mb-0">
       <label for="id_report_template" class="col-form-label">
                 {% trans "Use autocomplete template" %}
       </label>
-      <select name="report_template" class="form-control form-control-sm" id="id_report_template" onchange="selectTemplate()">
+      <select name="report_template" class="form-control form-control-sm" id="id_report_template">
         <option value=""></option>
         {% for template in json_templates %}
         <option value="{{ template.name }}">{{ template.name }}</option>
@@ -38,10 +38,17 @@
       </select>
     </div>
   </div>
-{% endif %}
+  {% endif %}
 
 <form action="{% url 'report_create_url' %}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.report_request|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-8 overflow-auto mb-0 border-left border-right" id="id_request_message">
+    </div>
+  </div>
   <div class="form-group row border-top">
     <div class="form-group col-md-2 mb-0">
       {{ form.company|as_crispy_field }}
@@ -366,6 +373,7 @@ $('#images_table tbody tr').formset({
     var addit = $("#id_additional_checkup");
     var presc = $("#id_prescription");
     var diag = $("#id_diagnosis");
+    if (name){
     var item = queryset.find(item => item.name === name);
 
     cause.val(item.cause_of_visit_template);
@@ -373,6 +381,64 @@ $('#images_table tbody tr').formset({
     addit.val(item.additional_checkup_template);
     presc.val(item.prescription_template);
     diag.val(item.diagnosis_template).trigger('change');
+    }
+    else
+    {
+    cause.val('');
+    check.val('');
+    addit.val('');
+    presc.val('');
+    diag.val('').trigger('change');
+    }
 }
+
+$("#id_report_template").change( function(){
+    selectTemplate()
+});
+
+</script>
+
+<script type="text/javascript">
+  function selectRequest(){
+    {% autoescape off %}
+    var queryset = {{ json_report_requests }}
+    {% endautoescape %}
+    var e = $("#id_report_request");
+    var pk = Number(e[0].value);
+    var message = $("#id_request_message");
+    if (pk){
+    var item = queryset.find(item => item.pk === pk);
+    let el = document.createElement('div');
+    el.class = 'card-body';
+    el.append(item.fields.message);
+    message.html(el);
+    $('#id_company').val(item.fields.company).trigger('change');
+    $('#id_company').prop("disabled", true);
+    $('#id_doctor').val(item.fields.doctor);
+    $('#id_doctor').prop("disabled", true);
+    }
+    else
+    {
+    message.html('');
+    $('#id_company').val('').trigger('change');
+    $('#id_company').prop("disabled", false).trigger('change');
+    $('#id_doctor').val('');
+    $('#id_doctor').prop("disabled", false);
+    }
+}
+
+if ($("#id_report_request").val()){
+    selectRequest()
+};
+
+$("#id_report_request").change( function(){
+    selectRequest()
+});
+
+$('form').submit(function(e) {
+        $('#id_company').removeAttr('disabled');
+        $('#id_doctor').removeAttr('disabled');
+});
+
 </script>
 {% endblock %}

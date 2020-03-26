@@ -20,7 +20,7 @@ def docx_report_generator(report, type_of_report):
             images.append(InlineImage(doc, image.image, width=Mm(130)))
 
         context = {
-                'r': report,
+                'R': report,
                 'i': images,
                 'd': report.diagnosis.get_queryset(),
                 's': report.service_items.get_queryset(),

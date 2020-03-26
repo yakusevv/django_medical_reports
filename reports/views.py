@@ -20,15 +20,14 @@ from django.db import transaction
 from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpRequest
 from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.serializers import serialize
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django import forms
 
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 
-from profiles.models import Profile, UserDistrict, UserDistrictVisitPrice
-from tempus_dominus.widgets import DatePicker
+from profiles.models import Profile
 
 from .models import (
                 Report,
@@ -256,14 +255,18 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         if form.is_valid() and service_items.is_valid() and images.is_valid():
             return self.form_valid(form, service_items, images)
         else:
-            print(form.errors)
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super(ReportCreateView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
-        profile_country = self.request.user.profile.city.district.region.country
-        templates_query = self.request.user.profile.report_templates.filter(country=profile_country)
+        profile = self.request.user.profile
+        profile_country = profile.city.district.region.country
+        templates_query = profile.report_templates.filter(country=profile_country)
+        report_requests_query = ReportRequest.objects.filter(
+                                            doctor__city__district__region__country=profile_country,
+                                            report=None
+                                            ).order_by('-date_time')
         templates = templates_query.values()
         for template in templates:
             template['diagnosis_template'] = Disease.objects.filter(
@@ -296,12 +299,16 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
             if self.request.user.is_staff:
+                report_requests = report_requests_query
                 context['form'].fields['doctor'].required = True
                 context['form'].fields['doctor'].queryset = doctors_set
             else:
+                report_requests = report_requests_query.filter(doctor=profile)
                 context['form'].fields['doctor'].queryset = doctors_set.filter(
                                         pk=self.request.user.profile.pk
                                     )
+            context['form'].fields['report_request'].queryset = report_requests
+            context['json_report_requests'] = serialize('json', report_requests, cls=DjangoJSONEncoder)
             for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
         return context
@@ -367,6 +374,13 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ReportUpdateView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
+        profile = self.request.user.profile
+        profile_country = profile.city.district.region.country
+        report_requests_query = ReportRequest.objects.filter(
+                                            doctor__city__district__region__country=profile_country
+                                            ).filter(
+                                            Q(report=None) | Q(report=self.object)
+                                            ).order_by('-date_time')
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST, instance=self.object)
         else:
@@ -387,12 +401,16 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
             if self.request.user.is_staff:
+                report_requests = report_requests_query
                 context['form'].fields['doctor'].required = True
                 context['form'].fields['doctor'].queryset = doctors_set
             else:
+                report_requests = report_requests_query.filter(doctor=profile)
                 context['form'].fields['doctor'].queryset = doctors_set.filter(
                                         pk=self.request.user.profile.pk
                                     )
+            context['form'].fields['report_request'].queryset = report_requests
+            context['json_report_requests'] = serialize('json', report_requests, cls=DjangoJSONEncoder)
         return context
 
     def form_valid(self, form, service_items):

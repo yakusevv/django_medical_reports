@@ -35,6 +35,17 @@
       </div>
     </div>
   </div>
+  {% if report.report_request %}
+  <div class="row mb-2 col-md-12 border-top">
+    <div class="col-md-4">
+      <b> {% trans "Report request: " %} </b>
+    </div>
+    <div class="col overflow-auto">
+      <p> {{ report.report_request }} </p>
+      <p> {{ report.report_request.message }} </p>
+    </div>
+  </div>
+  {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Company, ref. number:" %} </b>
@@ -150,7 +161,7 @@
     </div>
     {% if request.user.is_staff %}
       <div class="col" {% if report.visit_price == 0 %} style="background: red; font-weight: bold;" {% endif %}>
-        <p class-'mb-0' style='color: green'> {{ report.visit_price }} &#8364; </p>
+        <p class='mb-0' style='color: green'> {{ report.visit_price }} &#8364; </p>
       </div>
     {% endif %}
   </div>
@@ -169,7 +180,7 @@
         </div>
           {% if request.user.is_staff %}
         <div class="col">
-          <p class-'mb-0' style='color: green'> {{ service.cost }} &#8364; </p>
+          <p clas='mb-0' style='color: green'> {{ service.cost }} &#8364; </p>
         </div>
           {% endif %}
         </div>
@@ -211,7 +222,7 @@
 {% if request.user.is_staff %}
 <form action="{{ report.get_absolute_url }}" method="post">
   {% csrf_token %}
-  <input class="btn {% if report.checked %}btn-secondary{% else %}btn-primary{% endif %}" type="submit" name="is_checked" value={% trans "Is checked" %}>
+  <input class="btn {% if report.checked %}btn-secondary{% else %}btn-primary{% endif %}" type="submit" name="is_checked" value='{% trans "Is checked" %}'>
 </form>
 {% endif %}
 {% endblock %}

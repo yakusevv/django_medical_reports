@@ -25,9 +25,15 @@
   <p style="color: red;">  {{ error|escape }} </p>
   {% endfor %}
 </div>
-
 <form action="{{ report.get_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
+   <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      {{ form.report_request|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-8 overflow-auto mb-0 border-left border-right" id="id_request_message">
+    </div>
+  </div>
   <div class="form-group row border-top">
     <div class="form-group col-md-2 mb-0">
       {{ form.company|as_crispy_field }}
@@ -203,4 +209,52 @@
     removed: null
   });
 </script>
+
+<script type="text/javascript">
+
+  function selectRequest(){
+    {% autoescape off %}
+    var queryset = {{ json_report_requests }}
+    {% endautoescape %}
+    var e = $("#id_report_request");
+    var pk = Number(e[0].value);
+    var message = $("#id_request_message");
+    if (pk){
+    var item = queryset.find(item => item.pk === pk);
+    let el = document.createElement('div');
+    el.class = 'card-body';
+    el.append(item.fields.message);
+    message.html(el);
+    $('#id_company').val(item.fields.company).trigger('change');
+    $('#id_company').prop("disabled", true);
+    $('#id_doctor').val(item.fields.doctor);
+    $('#id_doctor').prop("disabled", true);
+    }
+    else
+    {
+    message.html('');
+    $('#id_company').val('').trigger('change');
+    $('#id_company').prop("disabled", false).trigger('change');
+    $('#id_doctor').val('');
+    $('#id_doctor').prop("disabled", false);
+    }
+}
+
+
+if ($("#id_report_request").val()){
+    selectRequest()
+};
+
+
+$("#id_report_request").change( function(){
+    selectRequest()
+});
+
+$('form').submit(function(e) {
+        $('#id_company').removeAttr('disabled');
+        $('#id_doctor').removeAttr('disabled');
+});
+
+</script>
+
 {% endblock %}

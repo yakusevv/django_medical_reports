@@ -170,7 +170,7 @@
                     alert("{% trans 'Report request has been deleted' %}");
                     reloadRequests();
                 },
-                error: function(xhr, status, eror){
+                error: function(xhr, status, error){
                     alert("{% trans 'Error while deleting report request' %}\n" + xhr.responseText)
                 }
             });

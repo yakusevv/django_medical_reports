@@ -18,10 +18,13 @@ def storage_information(request):
             "storage_percent": None
             }
 
+
 def report_requests_count(request):
-    profile = request.user.profile
-    if request.user.is_staff:
-        total = ReportRequest.objects.filter(report=None)
-    else:
-        total = profile.report_request.all()
-    return {"report_requests_count" : len(total)}
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        if request.user.is_staff:
+            total = ReportRequest.objects.filter(report=None)
+        else:
+            total = profile.reportrequest_set.all()
+        return {"report_requests_count": len(total)}
+    return {"report_requests_count": 0 }
