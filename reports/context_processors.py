@@ -1,4 +1,4 @@
-from .models import Country
+from .models import Country, ReportRequest
 import shutil
 
 
@@ -17,3 +17,11 @@ def storage_information(request):
         return {
             "storage_percent": None
             }
+
+def report_requests_count(request):
+    profile = request.user.profile
+    if request.user.is_staff:
+        total = ReportRequest.objects.filter(report=None)
+    else:
+        total = profile.report_request.all()
+    return {"report_requests_count" : len(total)}

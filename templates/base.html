@@ -110,6 +110,10 @@
        <button class="admin-panel-collide" onclick="openPanel()">&#9776;</button>
       <p class="admin-panel-element" style="font-weight: bold"> {{ user.username }}</p>
       <p class="admin-panel-element">{{ user.profile.city.name }}, {{ user.profile.city.district.region.country }}</p>
+         <p class="admin-panel-element" id="id_requests_info"
+            style="color: {% if not report_requests_count %}green;{% else %}red;{% endif %}">
+             {% trans 'Report requests: ' %}<b class="admin-panel-element" id="id_requests_count">{{ report_requests_count }}</b>
+         </p>
      {% endif %}
      {% if request.user.is_authenticated and request.user.is_staff %}
      <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>

@@ -97,7 +97,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'reports.context_processors.list_of_countries',
-                'reports.context_processors.storage_information'
+                'reports.context_processors.storage_information',
+                'reports.context_processors.report_requests_count'
             ],
         },
     },

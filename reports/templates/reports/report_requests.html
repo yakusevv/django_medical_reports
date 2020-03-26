@@ -125,6 +125,13 @@
             type: "GET",
             success : function (data) {
                 report_requests = data;
+                $("#id_requests_count").text(report_requests.length);
+                if (report_requests.length > 0){
+                    $("#id_requests_info").style = 'color: red;'
+                }
+                else {
+                    $("#id_requests_info").style = 'color: green;'
+                };
                 $('#id_requests_list').html("");
                 data.forEach(el => {
                     let div = document.createElement("div");
@@ -160,7 +167,8 @@
                 type: 'DELETE',
                 contentType: 'application/json',
                 success: function(result) {
-                    alert("{% trans 'Report request has been deleted' %}")
+                    alert("{% trans 'Report request has been deleted' %}");
+                    reloadRequests();
                 },
                 error: function(xhr, status, eror){
                     alert("{% trans 'Error while deleting report request' %}\n" + xhr.responseText)

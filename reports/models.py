@@ -337,7 +337,7 @@ class ReportRequest(models.Model):
     doctor = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE, verbose_name=_("Report request"))
     date_time = models.DateTimeField()
     company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
-    message = models.TextField(max_length=500, blank=True)
+    message = models.TextField(max_length=500)
 #    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
 
 

@@ -522,7 +522,7 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
                                 VisitTariff.objects.get(
                                     tariff__district=district,
                                     tariff__price_group=group,
-                                    type_of_visit=type
+                                    type_of_visit=type_of_visit
                                     ).price)
                         except VisitTariff.DoesNotExist:
                             rows[region][district][type_of_visit].append('')
