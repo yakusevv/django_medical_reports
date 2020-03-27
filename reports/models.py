@@ -391,13 +391,13 @@ def report_request_save_change(sender, instance, **kwargs):
             message = "--- New Case for {} ---\n{} - {}\n{}".format(
                 instance.doctor.initials,
                 instance.company,
-                instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                 instance.message
             )
             send_text(viber_id, message)
             prev_message = "--- Canceled ---\n{} - {}".format(
                 instance.company,
-                instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
             )
             send_text(prev_viber_id, prev_message)
 
@@ -405,7 +405,7 @@ def report_request_save_change(sender, instance, **kwargs):
             viber_id = instance.doctor.viber_id
             message = "--- Update ---\n{} - {}\n{}".format(
                 instance.company,
-                instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                 instance.message
             )
             send_text(viber_id, message)
@@ -415,7 +415,7 @@ def report_request_save_change(sender, instance, **kwargs):
         message = "--- New Case for {} ---\n{} - {}\n{}".format(
                                                     instance.doctor.initials,
                                                     instance.company,
-                                                    instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                                                    instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                                                     instance.message
                                                     )
         send_text(viber_id, message)
@@ -426,6 +426,6 @@ def report_request_delete(sender, instance, **kwargs):
     viber_id = instance.doctor.viber_id
     message = "--- Canceled ---\n{} - {}".format(
         instance.company,
-        instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+        instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
     )
     send_text(viber_id, message)

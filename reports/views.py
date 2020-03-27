@@ -61,7 +61,7 @@ def vbr_bot(request):
     if request.method == "POST":
         viber = json.loads(request.body.decode('utf-8'))
         doctors_viber_list = [doctor.viber_id for doctor in Profile.objects.filter(user__is_staff=False)]
-        doctors_pk_list = [str(doctor.pk) for doctor in Profile.objects.filter(
+        doctors_pk_list = ['#id' + str(doctor.pk) for doctor in Profile.objects.filter(
                                                                     user__is_staff=False,
                                                                     ) if not doctor.viber_id
                            ]
@@ -75,7 +75,7 @@ def vbr_bot(request):
                 message = viber['message']['text']
                 send_text(viber['sender']['id'], 'authentication processing...')
                 if message in doctors_pk_list:
-                    doctor = Profile.objects.get(pk=int(message))
+                    doctor = Profile.objects.get(pk=message.split('#id')[-1])
                     doctor.viber_id = viber['sender']['id']
                     doctor.save()
                     send_text(viber['sender']['id'], 'Success')
