@@ -10,9 +10,6 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-#from .utils import DocReportGenerator
-
-
 
 def get_image_path(instance, filename):
     return os.path.join(
@@ -20,6 +17,7 @@ def get_image_path(instance, filename):
                     str(instance.report.pk),
                     filename
                     )
+
 
 def get_docxtemplate_path(instance, filename):
     filename = str(instance.country.name) + '_template.docx'
@@ -375,3 +373,59 @@ def image_delete(sender, instance, **kwargs):
 @receiver(post_delete, sender=ReportTemplate)
 def template_delete(sender, instance, **kwargs):
     os.remove(instance.template.path)
+
+
+#viber messages
+from .utils import send_text   # - to avoid circular import
+
+
+@receiver(pre_save, sender=ReportRequest)
+def report_request_save_change(sender, instance, **kwargs):
+
+    if instance.pk:
+        prev_instance = ReportRequest.objects.get(pk=instance.pk)
+
+        if prev_instance.doctor != instance.doctor:
+            viber_id = instance.doctor.viber_id
+            prev_viber_id = prev_instance.doctor.viber_id
+            message = "--- New Case for {} ---\n{} - {}\n{}".format(
+                instance.doctor.initials,
+                instance.company,
+                instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                instance.message
+            )
+            send_text(viber_id, message)
+            prev_message = "--- Canceled ---\n{} - {}".format(
+                instance.company,
+                instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+            )
+            send_text(prev_viber_id, prev_message)
+
+        elif prev_instance.message != instance.message or prev_instance.company != instance.company:
+            viber_id = instance.doctor.viber_id
+            message = "--- Update ---\n{} - {}\n{}".format(
+                instance.company,
+                instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                instance.message
+            )
+            send_text(viber_id, message)
+
+    else:
+        viber_id = instance.doctor.viber_id
+        message = "--- New Case for {} ---\n{} - {}\n{}".format(
+                                                    instance.doctor.initials,
+                                                    instance.company,
+                                                    instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+                                                    instance.message
+                                                    )
+        send_text(viber_id, message)
+
+
+@receiver(post_delete, sender=ReportRequest)
+def report_request_delete(sender, instance, **kwargs):
+    viber_id = instance.doctor.viber_id
+    message = "--- Canceled ---\n{} - {}".format(
+        instance.company,
+        instance.date_time.strftime("%d.%m.%Y %H:%M:%S"),
+    )
+    send_text(viber_id, message)

@@ -1,3 +1,6 @@
+import requests
+import json
+
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 from openpyxl import Workbook
@@ -5,6 +8,7 @@ from openpyxl.styles import Font, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from .models import ReportTemplate
 
@@ -120,3 +124,19 @@ def reports_xlsx_generator(reports):
             cell.value = cell_value
 
     return workbook
+
+
+#sending wrapper
+def sending(func):
+    url = 'https://chatapi.viber.com/pa/send_message'
+    headers = {'X-Viber-Auth-Token': settings.VIBER_AUTH_TOKEN}
+
+    def wrapped(*args):
+        return requests.post(url, json.dumps(func(*args)), headers=headers)
+    return wrapped
+
+
+@sending
+def send_text(agent, text, track=None):
+    m = dict(receiver=agent, min_api_version=2, tracking_data=track, type="text", text=text)
+    return m

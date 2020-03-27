@@ -13,6 +13,7 @@ class Profile(models.Model):
     num_col = models.CharField(max_length=9, verbose_name=_("Num. col"))
     is_foreign_doctor = models.BooleanField(default=False, verbose_name=_("Is foreign doctor"))
     initials = models.CharField(max_length=5, verbose_name=_("Initials"), blank=True)
+    viber_id = models.CharField(max_length=100, verbose_name=_("Viber id"), blank=True,)
 
     class Meta:
         verbose_name = _('Profile')

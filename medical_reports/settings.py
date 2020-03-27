@@ -2,7 +2,7 @@ import os
 import datetime
 
 from .secret_data import SECRET_KEY, TIME_ZONE, DEBUG
-from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST, DB_PORT
+from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST, DB_PORT, VIBER_AUTH_TOKEN
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -65,9 +65,12 @@ JWT_AUTH = {
 }
 
 TEMPUS_DOMINUS_LOCALIZE = True
-#TEMPUS_DOMINUS_INCLUDE_ASSETS = False
+
+# TEMPUS_DOMINUS_INCLUDE_ASSETS = False
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+VIBER_AUTH_TOKEN = VIBER_AUTH_TOKEN
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

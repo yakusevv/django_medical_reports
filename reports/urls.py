@@ -17,7 +17,8 @@ from .views import (
                 download_reports_excel,
                 ReportRequestViewSet,
                 RequestOptionsViewSet,
-                ReportRequestsView
+                ReportRequestsView,
+                vbr_bot
                 )
 
 
@@ -51,5 +52,6 @@ urlpatterns = [
             name='report_requests_options_api_url'
             ),
         path('report_requests-token-auth/', obtain_jwt_token),
-        path('report_requests-token-refresh/', refresh_jwt_token)
+        path('report_requests-token-refresh/', refresh_jwt_token),
+        path('viber/viber_webhook_27032020/', vbr_bot)
          ]
