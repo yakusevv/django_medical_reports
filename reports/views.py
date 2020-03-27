@@ -57,7 +57,7 @@ from .serializers import ReportRequestSerializer, CompanyOptionsSerializer, Doct
 @csrf_exempt
 def vbr_bot(request):
     if request.method == "GET":
-        return Http404
+        return HttpResponse(status=404)
     if request.method == "POST":
         viber = json.loads(request.body.decode('utf-8'))
         doctors_viber_list = [doctor.viber_id for doctor in Profile.objects.filter(user__is_staff=False)]
@@ -355,7 +355,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
                 form.fields['service'].queryset = service_set
         return context
 
-    def form_valid(self, form, service_items, images):    
+    def form_valid(self, form, service_items, images):
         with transaction.atomic():
             if not self.request.user.is_staff:
                 form.instance.doctor = self.request.user.profile
