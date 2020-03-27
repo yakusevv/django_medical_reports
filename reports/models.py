@@ -394,12 +394,14 @@ def report_request_save_change(sender, instance, **kwargs):
                 instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                 instance.message
             )
-            send_text(viber_id, message)
+            if viber_id:
+                send_text(viber_id, message)
             prev_message = "--- Canceled ---\n{} - {}".format(
                 instance.company,
                 instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
             )
-            send_text(prev_viber_id, prev_message)
+            if prev_viber_id:
+                send_text(prev_viber_id, prev_message)
 
         elif prev_instance.message != instance.message or prev_instance.company != instance.company:
             viber_id = instance.doctor.viber_id
@@ -408,7 +410,8 @@ def report_request_save_change(sender, instance, **kwargs):
                 instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                 instance.message
             )
-            send_text(viber_id, message)
+            if viber_id:
+                send_text(viber_id, message)
 
     else:
         viber_id = instance.doctor.viber_id
@@ -418,7 +421,8 @@ def report_request_save_change(sender, instance, **kwargs):
                                                     instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                                                     instance.message
                                                     )
-        send_text(viber_id, message)
+        if viber_id:
+            send_text(viber_id, message)
 
 
 @receiver(post_delete, sender=ReportRequest)
@@ -428,4 +432,5 @@ def report_request_delete(sender, instance, **kwargs):
         instance.company,
         instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
     )
-    send_text(viber_id, message)
+    if viber_id:
+        send_text(viber_id, message)
