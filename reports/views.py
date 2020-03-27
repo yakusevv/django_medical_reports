@@ -24,6 +24,7 @@ from django.core.serializers import serialize
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.views.decorators import staff_member_required
+from django.template.defaultfilters import slugify
 
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
@@ -35,8 +36,6 @@ from .models import (
                 Country,
                 PriceGroup,
                 TypeOfVisit,
-                AdditionalImage,
-                Tariff,
                 VisitTariff,
                 City,
                 Disease,
@@ -105,9 +104,9 @@ def download_report_docx(request, pk, type_of_report):
         file = docx_report_generator(report, type_of_report)
         if file:
             file_name = "_".join((
-                            report.patients_last_name,
-                            report.patients_first_name,
-                            report.company_ref_number
+                            slugify(report.patients_last_name).upper(),
+                            slugify(report.patients_first_name).upper(),
+                            slugify(report.company_ref_number).upper()
                             )) + '.docx'
             file.save(buffer)
             buffer.seek(0)
