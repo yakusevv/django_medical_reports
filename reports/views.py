@@ -78,8 +78,8 @@ def vbr_bot(request):
                     doctor = Profile.objects.get(pk=message.split('#id')[-1])
                     doctor.viber_id = viber['sender']['id']
                     doctor.save()
-                    send_text(viber.viber_id, 'Success')
-                    send_text(viber.viber_id, 'Welcome, dr. {}!'.format(doctor.user.last_name))
+                    send_text(doctor.viber_id, 'Success')
+                    send_text(doctor.viber_id, 'Welcome, dr. {}!'.format(doctor.user.last_name))
                     return HttpResponse(status=200)
                 else:
                     send_text(viber['sender']['id'], 'Access denied')
@@ -87,7 +87,6 @@ def vbr_bot(request):
             else:
                 doctor = Profile.objects.get(viber_id=viber['sender']['id'])
                 if message.lower() in ('ok', 'ок'):
-                    print(message)
                     for req in doctor.reportrequest_set.filter(seen=False):
                         req.seen = True
                         req.save()

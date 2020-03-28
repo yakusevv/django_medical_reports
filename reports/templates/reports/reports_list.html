@@ -44,11 +44,11 @@
       </select>
     </div>
     <div class="form-group col-sm-0 mr-2 ml-4">
-      <label class="col-sm-2 col-form-label col-form-label-sm" for="date_field_from">{% trans "From" %}</label>
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="id_date_field_from">{% trans "From" %}</label>
       {{ date_filter.date_field_from }}
     </div>
     <div class="form-group col-sm-0 mr-2 ml-4">
-      <label class="col-sm-2 col-form-label col-form-label-sm" for="date_field_to">{% trans "To" %}</label>
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="id_date_field_to">{% trans "To" %}</label>
       {{ date_filter.date_field_to }}
     </div>
   </div>
@@ -63,11 +63,11 @@
     <div class="form-group ml-4 mr-2 col-md-0">
       <button class='btn btn-info btn-sm' type="submit" name="usefilter" value='1'>{% trans "Use filters" %}</button>
     </div>
-  </form>
-    <div class="form-group ml-2 mr-2 col-md-0">
+        <div class="form-group ml-2 mr-2 col-md-0">
       <a class='btn btn-secondary btn-sm' href="{% url 'reports_list_url' %}" name="cleanfilter">{% trans "Clear filters" %}</a>
     </div>
   </div>
+  </form>
 </div>
 </div>
 
@@ -88,7 +88,7 @@
 
         <div class="row mb-1 col-md-12 {% if forloop.last %}border-bottom{% endif %} border-top" style='{% if report.checked %} color: gray {% endif %}'>
           <div class="col">
-            <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
+           <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
           </div>
           <div class="col">
             {{ report.city.name }}
