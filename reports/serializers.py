@@ -4,7 +4,7 @@ from .models import ReportRequest, Company
 from profiles.models import Profile
 
 
-class ReportRequestSerializer(serializers.HyperlinkedModelSerializer):
+class ReportRequestSerializer(serializers.ModelSerializer):
     doctor = serializers.PrimaryKeyRelatedField(
                                         queryset=Profile.objects.all(),
                                         )
@@ -14,10 +14,11 @@ class ReportRequestSerializer(serializers.HyperlinkedModelSerializer):
                                         )
     company_name = serializers.CharField(source='company.name', read_only=True)
     date_time = serializers.DateTimeField(read_only=True, format='%d-%m-%Y %H:%M:%S')
+    seen = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = ReportRequest
-        fields = ['doctor', 'doctor_initials', 'company', 'company_name', 'message', 'date_time', 'pk']
+        fields = ['doctor', 'doctor_initials', 'company', 'company_name', 'message', 'date_time', 'pk', 'seen']
 
 
 class CompanyOptionsSerializer(serializers.ModelSerializer):

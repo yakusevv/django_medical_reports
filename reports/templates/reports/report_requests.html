@@ -136,7 +136,8 @@
                 data.forEach(el => {
                     let div = document.createElement("div");
                     div.className = 'card mt-1 mx-auto';
-                    div.style = 'width: 90%'
+                    if (el.seen){ div.style = 'width: 90%; background-color: #B1FFB7;' }
+                    else { div.style = 'width: 90%;' }
                     div.innerHTML = '<div class="card-header">' +
                                     '<button type="button" class="close" name="request_delete" value=' + el.pk +' >' +
                                     '  <span aria-hidden="true">&times;</span></button>' +

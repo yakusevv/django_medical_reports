@@ -17,7 +17,7 @@ from django.views.generic import (
                                 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
-from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpRequest
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext as _
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.serializers import serialize
@@ -69,27 +69,38 @@ def vbr_bot(request):
             print("Webhook has been installed successfully")
             return HttpResponse(status=200)
         elif viber['event'] == 'message':
-            if not len(doctors_pk_list):
+            message = viber['message']['text']
+            if not len(doctors_pk_list) and not viber['sender']['id'] in doctors_viber_list:
                 send_text(viber['sender']['id'], 'All users are already authenticated')
             elif not viber['sender']['id'] in doctors_viber_list:
-                message = viber['message']['text']
                 send_text(viber['sender']['id'], 'authentication processing...')
                 if message in doctors_pk_list:
                     doctor = Profile.objects.get(pk=message.split('#id')[-1])
                     doctor.viber_id = viber['sender']['id']
                     doctor.save()
-                    send_text(viber['sender']['id'], 'Success')
-                    send_text(viber['sender']['id'], 'Welcome, dr. {}!'.format(doctor.user.last_name))
+                    send_text(viber.viber_id, 'Success')
+                    send_text(viber.viber_id, 'Welcome, dr. {}!'.format(doctor.user.last_name))
                     return HttpResponse(status=200)
                 else:
-                    send_text(viber['sender']['id'], 'error')
+                    send_text(viber['sender']['id'], 'Access denied')
                     return HttpResponse(status=200)
             else:
                 doctor = Profile.objects.get(viber_id=viber['sender']['id'])
-                send_text(
-                    viber['sender']['id'],
-                    'You have been already authenticated as dr. {}'.format(doctor.user.last_name)
+                if message.lower() in ('ok', 'ок'):
+                    print(message)
+                    for req in doctor.reportrequest_set.filter(seen=False):
+                        req.seen = True
+                        req.save()
+                elif message.startswith('#id'):
+                    send_text(
+                        doctor.viber_id,
+                        'You have been already authenticated as dr. {}'.format(doctor.user.last_name)
                         )
+                else:
+                    send_text(
+                        doctor.viber_id,
+                        'Wrong command'
+                    )
                 return HttpResponse(status=200)
         else:
             return HttpResponse(status=500)

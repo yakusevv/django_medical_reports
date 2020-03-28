@@ -336,6 +336,7 @@ class ReportRequest(models.Model):
     date_time = models.DateTimeField(verbose_name=_("Date and time"))
     company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
     message = models.TextField(max_length=500, verbose_name=_("Message"))
+    seen = models.BooleanField(default=False)
 #    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -386,6 +387,7 @@ def report_request_save_change(sender, instance, **kwargs):
         prev_instance = ReportRequest.objects.get(pk=instance.pk)
 
         if prev_instance.doctor != instance.doctor:
+            instance.seen = False
             viber_id = instance.doctor.viber_id
             prev_viber_id = prev_instance.doctor.viber_id
             message = "--- New Case for {} ---\n{} - {}\n{}".format(
