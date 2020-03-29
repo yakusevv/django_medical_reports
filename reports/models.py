@@ -185,9 +185,9 @@ class ReportTemplate(models.Model):
 
 
 class Report(models.Model):
-    ref_number = models.CharField(max_length=6, verbose_name=_("Ref. number"))
+#    ref_number = models.CharField(max_length=6, verbose_name=_("Ref. number"))
     company_ref_number = models.CharField(max_length=50, verbose_name=_("Company ref. number"))
-    company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
+#    company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
     patients_first_name = models.CharField(max_length=50, verbose_name=_("First name"))
     patients_last_name = models.CharField(max_length=50, verbose_name=_("Last name"))
     patients_date_of_birth = models.DateField(verbose_name=_("Date of birth"))
@@ -205,8 +205,7 @@ class Report(models.Model):
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
     doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
-    report_request = models.OneToOneField('ReportRequest', on_delete=models.SET_NULL, blank=True, null=True)
-
+    report_request = models.OneToOneField('ReportRequest', on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = _('Report')
@@ -215,20 +214,21 @@ class Report(models.Model):
             ("can_download_excel", _("Can download excel")),
             )
 
-    def validate_unique(self, *args, **kwargs):
-        super(Report, self).validate_unique(*args, **kwargs)
-        current_year = self.date_of_visit.year
-        reports = self.__class__.objects.filter(
-                    city__district__region__country=self.city.district.region.country,
-                    date_of_visit__year=current_year
-                    ).exclude(pk=self.pk)
-        if reports:
-            for report in reports:
-                if report.company == self.company and report.ref_number == self.ref_number:
-                    raise ValidationError(
-                        message=_('Report with this data is already exists.'),
-                        code='unique_together',
-                        )
+
+#    def validate_unique(self, *args, **kwargs):
+#        super(Report, self).validate_unique(*args, **kwargs)
+#        current_year = self.date_of_visit.year
+#        reports = self.__class__.objects.filter(
+#                    city__district__region__country=self.city.district.region.country,
+#                    date_of_visit__year=current_year
+#                    ).exclude(pk=self.pk)
+#        if reports:
+#            for report in reports:
+#                if report.company == self.company and report.ref_number == self.ref_number:
+#                    raise ValidationError(
+ #                       message=_('Report with this data is already exists.'),
+ #                       code='unique_together',
+ #                       )
 
     def __str__(self):
         return ' '.join((self.patients_last_name, self.patients_first_name, self.get_full_ref_number))
@@ -272,8 +272,8 @@ class Report(models.Model):
 
     @property
     def get_full_ref_number(self):
-        ref = str(self.company.initials) + str(self.ref_number)
-        date_of_visit = str(self.date_of_visit.strftime("%d%m"))
+        ref = str(self.report_request.company.initials) + str(self.report_request.ref_number).zfill(2)
+        date_of_visit = str(self.report_request.date_time.strftime("%d%m"))
         if not self.doctor.is_foreign_doctor:
             info = self.doctor.initials + self.type_of_visit.initial
         else:
@@ -332,26 +332,67 @@ class ServiceItem(models.Model):
 
 
 class ReportRequest(models.Model):
-    doctor = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE, verbose_name=_("Doctor"))
+    STATUS = (
+        ('accepted', _('Is accepted')),
+        ('cancelled_by_company', _('Cancelled by company')),
+        ('wrong_data', _('Wrong request data')),
+        ('failed', _('The visit did not take place')),
+    )
+
+    doctor = models.ForeignKey(
+                                'profiles.Profile',
+                                on_delete=models.PROTECT,
+                                verbose_name=_("Doctor"),
+                                related_name="report_requests",
+                                blank=True
+                                )
     date_time = models.DateTimeField(verbose_name=_("Date and time"))
     company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
     message = models.TextField(max_length=500, verbose_name=_("Message"))
     seen = models.BooleanField(default=False)
-#    report = models.OneToOneField('Report', on_delete=models.SET_NULL, blank=True, null=True)
+    ref_number = models.IntegerField(verbose_name=_("Ref. number"))
+    company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
+    sender = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_('Sender'))
+    status = models.CharField(max_length=20, choices=STATUS, default='accepted')
+
+    class Meta:
+        unique_together = (('doctor', 'ref_number', 'company'),)
+
+    def validate_unique(self, exclude=None):
+        country = self.doctor__city__district__region__country
+        qs = ReportRequest.objects.filter(
+                                            doctor__city__district__region__country=country,
+                                            company=self.company,
+                                            ref_number=self.ref_number,
+                                            date_time__year=self.date_time.year
+                                            ).exclude(pk=self.pk)
+        if qs.filter(company=self.company,
+                     ref_number=self.ref_number,
+                     date_time__year=self.date_time.year
+                     ).exists():
+            raise ValidationError(_("Case is already exists"))
 
     def __str__(self):
-        return ' '.join((str(self.date_time.strftime('%d.%m.%Y %H:%M')), str(self.company.name), str(self.doctor.initials)))
+        return ' '.join((
+                        str(self.company.initials),
+                        str(self.ref_number).zfill(3),
+                        str(' '.join(self.message.split()[:2])),
+                        str(self.date_time.strftime('%d.%m.%Y %H:%M')),
+                        str(self.doctor.initials)
+                        ))
 
 
 @receiver(post_delete, sender=Report)
 def submission_delete(sender, instance, **kwargs):
-    shutil.rmtree(str(os.path.join(
+    shutil.rmtree(
+                str(os.path.join(
                         settings.MEDIA_ROOT,
                         'FILES',
                         str(instance.pk)
-                        )),
-                        ignore_errors=True
-                    )
+                        )
+                    ), ignore_errors=True
+                )
+
 
 @receiver(pre_save, sender=AdditionalImage)
 def image_update(sender, instance, **kwargs):
@@ -367,7 +408,7 @@ def image_update(sender, instance, **kwargs):
 def image_delete(sender, instance, **kwargs):
     try:
         os.remove(instance.image.path)
-    except FileNotFoundError:
+    except OSError:
         pass
 
 
@@ -380,59 +421,95 @@ def template_delete(sender, instance, **kwargs):
 from .utils import send_text   # - to avoid circular import
 
 
+def ref_number_changing(prev, new, largest_number):
+    wrong_data_request = prev
+    wrong_data_request.pk = None
+    wrong_data_request.status = 'wrong_data'
+    wrong_data_request.save()
+    new.ref_number = largest_number
+
+
 @receiver(pre_save, sender=ReportRequest)
 def report_request_save_change(sender, instance, **kwargs):
-
-    if instance.pk:
+    company = instance.company
+    year = instance.date_time.year
+    country = instance.doctor.city.district.region.country
+    largest = ReportRequest.objects.filter(doctor__city__district__region__country=country,
+                                           company=company,
+                                           date_time__year=year
+                                           )
+    if not largest:
+        largest = 0
+    else:
+        largest = largest.order_by('ref_number').last().ref_number + 1
+    if instance.pk and instance.status == 'accepted':
         prev_instance = ReportRequest.objects.get(pk=instance.pk)
-
         if prev_instance.doctor != instance.doctor:
+            if prev_instance.company != instance.company:
+                ref_number_changing(prev_instance, instance, largest)
             instance.seen = False
             viber_id = instance.doctor.viber_id
             prev_viber_id = prev_instance.doctor.viber_id
-            message = "--- New Case for {} ---\n{} - {}\n{}".format(
+            message = "--- New Case for {} ---\n{}{} - {}\n{}".format(
                 instance.doctor.initials,
-                instance.company,
+                instance.company.initials,
+                instance.ref_number,
                 instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                 instance.message
             )
             if viber_id:
                 send_text(viber_id, message)
-            prev_message = "--- Canceled ---\n{} - {}".format(
-                instance.company,
+            prev_message = "--- Cancelled ---\n{}{} - {}".format(
+                instance.company.initials,
+                instance.ref_number,
                 instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
             )
             if prev_viber_id:
                 send_text(prev_viber_id, prev_message)
 
         elif prev_instance.message != instance.message or prev_instance.company != instance.company:
+            if prev_instance.company != instance.company:
+                ref_number_changing(prev_instance, instance, largest)
             viber_id = instance.doctor.viber_id
-            message = "--- Update ---\n{} - {}\n{}".format(
+            message = "--- Updated ---\n{}{} - {}\n{}".format(
                 instance.company,
+                instance.ref_number,
                 instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                 instance.message
             )
             if viber_id:
                 send_text(viber_id, message)
 
-    else:
+    elif instance.status == 'accepted':
+        instance.ref_number = largest
         viber_id = instance.doctor.viber_id
-        message = "--- New Case for {} ---\n{} - {}\n{}".format(
+        message = "--- New Case for {} ---\n{}{} - {}\n{}".format(
                                                     instance.doctor.initials,
-                                                    instance.company,
+                                                    instance.company.initials,
+                                                    instance.ref_number,
                                                     instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
                                                     instance.message
                                                     )
         if viber_id:
             send_text(viber_id, message)
+    elif instance.status == 'cancelled_by_company' and not instance.report:
+        viber_id = instance.doctor.viber_id
+        message = "--- Cancelled ---\n{}{} - {}\n{}".format(
+            instance.company,
+            instance.ref_number,
+            instance.date_time.strftime("%d.%m.%Y - %H:%M:%S")
+        )
+        if viber_id:
+            send_text(viber_id, message)
 
-
+'''
 @receiver(post_delete, sender=ReportRequest)
 def report_request_delete(sender, instance, **kwargs):
     viber_id = instance.doctor.viber_id
-    message = "--- Canceled ---\n{} - {}".format(
+    message = "--- Cancelled ---\n{} - {}".format(
         instance.company,
         instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
     )
     if viber_id:
         send_text(viber_id, message)
+'''

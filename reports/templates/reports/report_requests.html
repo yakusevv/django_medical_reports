@@ -81,7 +81,6 @@
     </div>
 </div>
 
-
 <div class="scrollbar scrollbar-black bordered-black square thin">
     <div id="id_requests_list" class="overflow-auto mt-4 mb-4 card" style="height: 700px; width: 100%;"></div>
 </div>
@@ -138,19 +137,23 @@
                     div.className = 'card mt-1 mx-auto';
                     if (el.seen){ div.style = 'width: 90%; background-color: #B1FFB7;' }
                     else { div.style = 'width: 90%;' }
+                    let ref_number_pad = ('000'+ el.ref_number).slice(-3)
                     div.innerHTML = '<div class="card-header">' +
-                                    '<button type="button" class="close" name="request_delete" value=' + el.pk +' >' +
+                                    '<button type="button" class="close" name="request_cancellation" ' +
+                                    'data-toggle="modal" data-target="#id_cancellation_modal" value=' + el.pk +' >' +
                                     '  <span aria-hidden="true">&times;</span></button>' +
                                     '<div class="row">' +
                                     '<div class="col-sm">' + el.doctor_initials +'</div>' +
-                                    '<div class="col-sm">' + el.company_name + '</div>' +
+                                    '<div class="col-sm">' + el.company_name + ' ' + ref_number_pad +
+                                    '</div>' +
                                     '<div class="col-sm">' + el.date_time + '</div></div>' +
                                     '</div>' +
                                     '<div class="card-body">' +
                                     '<div class="card-text">' + el.message.replace(/\n/g, '<br />') +
                                     '</div><button type="button" class="btn btn-secondary btn-sm float-right"' +
                                     'data-toggle="modal" data-target="#id_edit_modal" name="request_edit" value=' +
-                                     el.pk +'>{% trans "edit" %}</button></div>';
+                                     el.pk +'>{% trans "edit" %}</button></div>' +
+                                    '<div class="card-footer">{% trans "Sender: " %}' + el.sender_initials + '</div>';
                     $('#id_requests_list').append(div);
                 })},
             error : function(xhr, status, error) {
@@ -159,36 +162,36 @@
         });
     }
 
-    function deleteRequest(pk){
+    function closeCase(pk){
             $.ajax({
                 headers: { "X-CSRFToken": token },
                 url: "{%  url 'requests:requests-list' %}" + pk + '/',
-                data: {pk: pk,
-                    },
-                type: 'DELETE',
+                data: JSON.stringify({status: "cancelled_by_company"}),
+                type: 'PATCH',
                 contentType: 'application/json',
                 success: function(result) {
-                    alert("{% trans 'Report request has been deleted' %}");
+                    alert("{% trans 'Case has been closed' %}");
                     reloadRequests();
                 },
                 error: function(xhr, status, error){
-                    alert("{% trans 'Error while deleting report request' %}\n" + xhr.responseText)
+                    alert("{% trans 'Error while closing case' %}\n" + xhr.responseText)
                 }
             });
     }
 
     function getEdit(pk){
           $('#id_pk_edit').val(pk);
-          $('#id_doctor_edit').val(report_requests.find(x => x.pk === pk).doctor);
-          $('#id_company_edit').val(report_requests.find(x => x.pk === pk).company);
-          $('#id_message_edit').val(report_requests.find(x => x.pk === pk).message);
-          $('#id_data_time_edit').text("{% trans 'Request from ' %}" + report_requests.find(x => x.pk === pk).date_time);
+          let r = report_requests.find(x => x.pk === pk)
+          $('#id_doctor_edit').val(r.doctor);
+          $('#id_company_edit').val(r.company);
+          $('#id_message_edit').val(r.message);
+          $('#id_data_time_edit').text("{% trans 'Request from ' %}" + r.date_time);
     }
 
     loadOptions();
     reloadRequests();
 
-    let timeout = setInterval(reloadRequests, 5000);
+    let timeout = setInterval(reloadRequests, 10000);
 
     $('#id_request_form').submit( function(e) {
         e.preventDefault();
@@ -238,16 +241,18 @@
         });
     });
 
-    $('#id_requests_list').on('click', 'button[name="request_delete"]', function(event){
+    $('#id_requests_list').on('click', 'button[name="request_cancellation"]', function(event){
         let pk = Number($(this)[0].value);
-        let doctor = report_requests.find(x => x.pk === pk).doctor_initials;
-        let company = report_requests.find(x => x.pk === pk).company_name;
-        let date_time = report_requests.find(x => x.pk === pk).date_time;
-        let r = confirm("{% trans 'Do you really want to delete this request?' %}\n" +
-                        doctor + ' ' + company + ' ' + date_time
+        r = report_requests.find(x => x.pk === pk)
+        let doctor = r.doctor_initials;
+        let ref_number = ('000'+ r.ref_number).slice(-3)
+        let company = r.company_name;
+        let date_time = r.date_time;
+        let a = confirm("{% trans 'Do you really want to close this case?' %}\n" +
+                        company + ' ' + ref_number + ' ' + date_time + ' ' + doctor
                         );
-        if (r == true) {
-            deleteRequest(pk)
+        if (a == true) {
+            closeCase(pk)
         };
     });
 

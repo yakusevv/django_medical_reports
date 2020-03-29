@@ -107,7 +107,7 @@ class ReportAdmin(admin.ModelAdmin):
     ordering = ('-date_of_visit',)
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
                    'city__district__region',
-                   'company',
+                   'report_request__company',
                    'doctor',
                    'checked')
 
@@ -235,4 +235,5 @@ class TariffAdmin(admin.ModelAdmin):
 
 @admin.register(ReportRequest)
 class ReportRequest(admin.ModelAdmin):
-    pass
+    list_display = ('__str__', 'status',)
+    list_filter = ('status', 'company')

@@ -571,7 +571,7 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
     model = Country
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(PriceTableView).get_context_data(**kwargs)
         country = kwargs['object']
         price_groups = PriceGroup.objects.all().order_by('pk')
         types_of_visit = TypeOfVisit.objects.filter(country=country)
@@ -601,12 +601,18 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
 
 
 class ReportRequestViewSet(viewsets.ModelViewSet):
-    queryset = ReportRequest.objects.filter(report=None).order_by('-date_time')
+    queryset = ReportRequest.objects.filter(
+                                            report=None,
+                                            status='accepted'
+                                            ).order_by('-date_time')
     serializer_class = ReportRequestSerializer
     permission_classes = (permissions.IsAdminUser,)
 
     def perform_create(self, serializer):
-        serializer.save(date_time=datetime.datetime.now())
+        serializer.save(
+                        date_time=datetime.datetime.now(),
+                        sender=self.request.user.profile
+                        )
 
     def retrieve(self, request, pk=None):
         queryset = ReportRequest.objects.all()

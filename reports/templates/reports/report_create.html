@@ -24,22 +24,6 @@
   {% endfor %}
 </div>
 
-  {% if json_templates %}
-  <div class="form-group row border-top">
-    <div class="form-group col-md-4 mb-0">
-      <label for="id_report_template" class="col-form-label">
-                {% trans "Use autocomplete template" %}
-      </label>
-      <select name="report_template" class="form-control form-control-sm" id="id_report_template">
-        <option value=""></option>
-        {% for template in json_templates %}
-        <option value="{{ template.name }}">{{ template.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-  </div>
-  {% endif %}
-
 <form action="{% url 'report_create_url' %}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="form-group row border-top">
@@ -92,6 +76,21 @@
       {{ form.detailed_location|as_crispy_field }}
     </div>
   </div>
+    {% if json_templates %}
+  <div class="form-group row border-top">
+    <div class="form-group col-md-4 mb-0">
+      <label for="id_report_template" class="col-form-label">
+                {% trans "Use autocomplete template" %}
+      </label>
+      <select name="report_template" class="form-control form-control-sm" id="id_report_template">
+        <option value=""></option>
+        {% for template in json_templates %}
+        <option value="{{ template.name }}">{{ template.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  {% endif %}
   <div class="form-group row border-top">
     <div class="form-group col-md-4 mb-0">
       {{ form.diagnosis|as_crispy_field }}
@@ -410,7 +409,7 @@ $("#id_report_template").change( function(){
     var item = queryset.find(item => item.pk === pk);
     let el = document.createElement('div');
     el.class = 'card-body';
-    el.append(item.fields.message);
+    el.innerHTML = "<pre class='mt-2'>" + item.fields.message + "</pre>";
     message.html(el);
     $('#id_company').val(item.fields.company).trigger('change');
     $('#id_company').prop("disabled", true);
