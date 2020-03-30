@@ -87,6 +87,11 @@ class City(models.Model):
             if qs.filter(name=self.name).exists():
                 raise ValidationError(_("City with this name in the current country is already exists"))
 
+    def save(self, *args, **kwargs):
+        self.validate_unique()
+        super(City, self).save(*args, **kwargs)
+
+
 
 # Every disease in reports must have a name in language of country where was visit
 # so property "country" has been added
@@ -205,7 +210,7 @@ class Report(models.Model):
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
     doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
-    report_request = models.OneToOneField('ReportRequest', on_delete=models.PROTECT)
+    report_request = models.OneToOneField('ReportRequest', on_delete=models.PROTECT, related_name='report')
 
     class Meta:
         verbose_name = _('Report')
@@ -319,7 +324,6 @@ class ServiceItem(models.Model):
     cost = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Cost"))
     cost_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Cost doctor"))
 
-
     class Meta:
         unique_together = (('report', 'service',),)
         verbose_name = _('Service item')
@@ -355,22 +359,28 @@ class ReportRequest(models.Model):
     sender = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_('Sender'))
     status = models.CharField(max_length=20, choices=STATUS, default='accepted')
 
-    class Meta:
-        unique_together = (('doctor', 'ref_number', 'company'),)
+ #   class Meta:
+#        unique_together = (('doctor', 'ref_number', 'company'),)
 
     def validate_unique(self, exclude=None):
-        country = self.doctor__city__district__region__country
+        country = self.doctor.city.district.region.country
         qs = ReportRequest.objects.filter(
                                             doctor__city__district__region__country=country,
                                             company=self.company,
                                             ref_number=self.ref_number,
                                             date_time__year=self.date_time.year
-                                            ).exclude(pk=self.pk)
-        if qs.filter(company=self.company,
-                     ref_number=self.ref_number,
-                     date_time__year=self.date_time.year
-                     ).exists():
-            raise ValidationError(_("Case is already exists"))
+                                         )
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+        if qs.exists():
+            raise ValidationError(_("Case {}{} is already exists".format(
+                                                                    self.company.initials,
+                                                                    str(self.ref_number).zfill(3))
+                                ))
+
+    def save(self, *args, **kwargs):
+        self.validate_unique()
+        super(ReportRequest, self).save(*args, **kwargs)
 
     def __str__(self):
         return ' '.join((
@@ -381,6 +391,8 @@ class ReportRequest(models.Model):
                         str(self.doctor.initials)
                         ))
 
+    def has_report(self):
+        return hasattr(self, 'report') and self.report is not None
 
 @receiver(post_delete, sender=Report)
 def submission_delete(sender, instance, **kwargs):
@@ -421,86 +433,58 @@ def template_delete(sender, instance, **kwargs):
 from .utils import send_text   # - to avoid circular import
 
 
-def ref_number_changing(prev, new, largest_number):
-    wrong_data_request = prev
-    wrong_data_request.pk = None
-    wrong_data_request.status = 'wrong_data'
-    wrong_data_request.save()
-    new.ref_number = largest_number
+def send_new_case_message(instance):
+    viber_id = instance.doctor.viber_id
+    message = "--- New Case for {} ---\n{}{} - {}\n{}".format(
+        instance.doctor.initials,
+        instance.company.initials,
+        str(instance.ref_number).zfill(3),
+        instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
+        instance.message
+    )
+    if viber_id:
+        send_text(viber_id, message)
+
+
+def send_update_case_message(instance):
+    viber_id = instance.doctor.viber_id
+    message = "--- Updated ---\n{}{} - {}\n{}".format(
+        instance.company.initials,
+        str(instance.ref_number).zfill(3),
+        instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
+        instance.message
+    )
+    if viber_id:
+        send_text(viber_id, message)
+
+
+def send_cancel_case_message(instance):
+    viber_id = instance.doctor.viber_id
+    message = "--- Cancelled ---\n{}{} - {}".format(
+        instance.company.initials,
+        str(instance.ref_number).zfill(3),
+        instance.date_time.strftime("%d.%m.%Y - %H:%M:%S")
+    )
+    if viber_id:
+        send_text(viber_id, message)
 
 
 @receiver(pre_save, sender=ReportRequest)
 def report_request_save_change(sender, instance, **kwargs):
-    company = instance.company
-    year = instance.date_time.year
-    country = instance.doctor.city.district.region.country
-    largest = ReportRequest.objects.filter(doctor__city__district__region__country=country,
-                                           company=company,
-                                           date_time__year=year
-                                           )
-    if not largest:
-        largest = 0
-    else:
-        largest = largest.order_by('ref_number').last().ref_number + 1
     if instance.pk and instance.status == 'accepted':
         prev_instance = ReportRequest.objects.get(pk=instance.pk)
         if prev_instance.doctor != instance.doctor:
-            if prev_instance.company != instance.company:
-                ref_number_changing(prev_instance, instance, largest)
             instance.seen = False
-            viber_id = instance.doctor.viber_id
-            prev_viber_id = prev_instance.doctor.viber_id
-            message = "--- New Case for {} ---\n{}{} - {}\n{}".format(
-                instance.doctor.initials,
-                instance.company.initials,
-                instance.ref_number,
-                instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
-                instance.message
-            )
-            if viber_id:
-                send_text(viber_id, message)
-            prev_message = "--- Cancelled ---\n{}{} - {}".format(
-                instance.company.initials,
-                instance.ref_number,
-                instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
-            )
-            if prev_viber_id:
-                send_text(prev_viber_id, prev_message)
+            send_new_case_message(instance)
+            send_cancel_case_message(prev_instance)
 
         elif prev_instance.message != instance.message or prev_instance.company != instance.company:
-            if prev_instance.company != instance.company:
-                ref_number_changing(prev_instance, instance, largest)
-            viber_id = instance.doctor.viber_id
-            message = "--- Updated ---\n{}{} - {}\n{}".format(
-                instance.company,
-                instance.ref_number,
-                instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
-                instance.message
-            )
-            if viber_id:
-                send_text(viber_id, message)
+            send_update_case_message(instance)
 
     elif instance.status == 'accepted':
-        instance.ref_number = largest
-        viber_id = instance.doctor.viber_id
-        message = "--- New Case for {} ---\n{}{} - {}\n{}".format(
-                                                    instance.doctor.initials,
-                                                    instance.company.initials,
-                                                    instance.ref_number,
-                                                    instance.date_time.strftime("%d.%m.%Y - %H:%M:%S"),
-                                                    instance.message
-                                                    )
-        if viber_id:
-            send_text(viber_id, message)
-    elif instance.status == 'cancelled_by_company' and not instance.report:
-        viber_id = instance.doctor.viber_id
-        message = "--- Cancelled ---\n{}{} - {}\n{}".format(
-            instance.company,
-            instance.ref_number,
-            instance.date_time.strftime("%d.%m.%Y - %H:%M:%S")
-        )
-        if viber_id:
-            send_text(viber_id, message)
+        send_new_case_message(instance)
+    elif instance.status == 'cancelled_by_company' and not instance.has_report():
+        send_cancel_case_message(instance)
 
 '''
 @receiver(post_delete, sender=ReportRequest)

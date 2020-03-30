@@ -23,7 +23,7 @@ def report_requests_count(request):
     if request.user.is_authenticated:
         profile = request.user.profile
         if request.user.is_staff:
-            total = ReportRequest.objects.filter(report=None)
+            total = ReportRequest.objects.filter(report=None, status='accepted')
         else:
             total = profile.reportrequest_set.all()
         return {"report_requests_count": len(total)}

@@ -87,7 +87,7 @@ def vbr_bot(request):
             else:
                 doctor = Profile.objects.get(viber_id=viber['sender']['id'])
                 if message.lower() in ('ok', 'ок'):
-                    for req in doctor.reportrequest_set.filter(seen=False):
+                    for req in doctor.report_requests.filter(seen=False, status='accepted'):
                         req.seen = True
                         req.save()
                 elif message.startswith('#id'):
@@ -608,17 +608,48 @@ class ReportRequestViewSet(viewsets.ModelViewSet):
     serializer_class = ReportRequestSerializer
     permission_classes = (permissions.IsAdminUser,)
 
-    def perform_create(self, serializer):
-        serializer.save(
-                        date_time=datetime.datetime.now(),
-                        sender=self.request.user.profile
-                        )
+    @staticmethod
+    def ref_number_changing(prev):
+        wrong_data_request = prev
+        wrong_data_request.pk = None
+        wrong_data_request.status = 'wrong_data'
+        wrong_data_request.save()
 
-    def retrieve(self, request, pk=None):
-        queryset = ReportRequest.objects.all()
-        request_obj = get_object_or_404(queryset, pk=pk)
-        serializer = ReportRequestSerializer(request_obj)
-        return Response(serializer.data)
+    @staticmethod
+    def get_largest(serializer, instance=False):
+        if instance:
+            year = instance.date_time.year
+        else:
+            year = serializer.validated_data['date_time'].year
+        company = serializer.validated_data['company']
+        country = serializer.validated_data['doctor'].city.district.region.country
+        largest = ReportRequest.objects.filter(doctor__city__district__region__country=country,
+                                               company=company,
+                                               date_time__year=year
+                                               )
+        if not largest:
+            largest = 1
+        else:
+            largest = largest.order_by('ref_number').last().ref_number + 1
+        return largest
+
+    def perform_create(self, serializer):
+        serializer.validated_data['date_time'] = datetime.datetime.now()
+        serializer.validated_data['sender'] = self.request.user.profile
+        serializer.validated_data['ref_number'] = self.get_largest(serializer)
+        serializer.save()
+
+    def perform_update(self, serializer):
+        if self.request.method == 'PUT':
+            instance = self.get_object()
+            if instance.company != serializer.validated_data['company']:
+                serializer.validated_data['ref_number'] = self.get_largest(serializer, instance=instance)
+                serializer.save()
+                self.ref_number_changing(instance)
+            else:
+                serializer.save()
+        else:
+            serializer.save()
 
 
 class RequestOptionsViewSet(viewsets.ViewSet):

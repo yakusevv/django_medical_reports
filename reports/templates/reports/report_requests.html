@@ -91,7 +91,8 @@
 <script type="text/javascript">
 
     let token = '{{ csrf_token }}';
-    let report_requests = []
+    let report_requests = [];
+    let is_sending = false;
 
     function loadOptions(){
         $.ajax({
@@ -163,7 +164,14 @@
     }
 
     function closeCase(pk){
+                if (is_sending) return false;
             $.ajax({
+                beforeSend: function () {
+                    is_sending = true;
+                },
+                complete: function () {
+                    is_sending = false;
+                },
                 headers: { "X-CSRFToken": token },
                 url: "{%  url 'requests:requests-list' %}" + pk + '/',
                 data: JSON.stringify({status: "cancelled_by_company"}),
@@ -198,7 +206,14 @@
         let form = $(this);
         let post_url = "{% url 'requests:requests-list' %}"
         let post_data = form.serialize();
+        if (is_sending) return false;
         $.ajax({
+            beforeSend: function () {
+                is_sending = true;
+            },
+            complete: function () {
+                is_sending = false;
+            },
             headers: { "X-CSRFToken": token },
             type: 'POST',
             url: post_url,
@@ -226,7 +241,14 @@
         let pk =  form[0][0].value;
         let post_url = "{% url 'requests:requests-list' %}" + pk + '/';
         let post_data = form.serialize();
+        if (is_sending) return false;
         $.ajax({
+            beforeSend: function () {
+                is_sending = true;
+            },
+            complete: function () {
+                is_sending = false;
+            },
             headers: { "X-CSRFToken": token },
             type: 'PUT',
             url: post_url,
