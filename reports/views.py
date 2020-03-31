@@ -220,8 +220,8 @@ class ReportsListView(LoginRequiredMixin, ListView):
             search_query = self.request.GET.get('search_query', '')
             if search_query:
                 queryset = queryset.filter(
-                    Q(ref_number__icontains=search_query) |
-                    Q(company_ref_number__icontains=search_query) |
+                    Q(report_request__ref_number__icontains=search_query) |
+                    Q(report_request__company_ref_number__icontains=search_query) |
                     Q(patients_first_name__icontains=search_query) |
                     Q(patients_last_name__icontains=search_query) |
                     Q(patients_date_of_birth__icontains=search_query) |
@@ -235,10 +235,10 @@ class ReportsListView(LoginRequiredMixin, ListView):
                     )
             company_filter = self.request.GET.getlist('company_filter', None)
             if company_filter:
-                queryset = queryset.filter(company__in=company_filter)
+                queryset = queryset.filter(report_request__company__in=company_filter)
             doctor_filter = self.request.GET.getlist('doctor_filter', None)
             if doctor_filter:
-                queryset = queryset.filter(doctor__in=doctor_filter)
+                queryset = queryset.filter(report_request__doctor__in=doctor_filter)
             date_field_from = self.request.GET.get('date_field_from', '')
             if date_field_from:
                 date_field_from = datetime.datetime.strptime(date_field_from, "%d.%m.%Y").date()
@@ -250,7 +250,8 @@ class ReportsListView(LoginRequiredMixin, ListView):
                                     date_of_visit__lt=date_field_to + datetime.timedelta(days=1)
                                     )
         if not self.request.user.is_staff:
-            queryset = queryset.filter(doctor=self.request.user.profile.pk)
+            queryset = queryset.filter(report_request__doctor__pk=self.request.user.profile.pk)
+        print(queryset)
         self.request.session['filtered'] = [report.pk for report in queryset]
         return queryset
 
@@ -265,7 +266,7 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if request.user.profile == self.object.report_request.doctor or request.user.is_staff and country_case:
             return self.render_to_response(self.get_context_data())
         else:
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')
@@ -279,7 +280,7 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         object_country = self.object.city.district.region.country
         users_country = request.user.profile.city.district.region.country
-        country_case = object_country = object_country == users_country
+        country_case = object_country == users_country
 
         if request.user.is_staff and request.POST.get('is_checked') and country_case:
             report = self.get_object()
@@ -317,7 +318,8 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         templates_query = profile.report_templates.filter(country=profile_country)
         report_requests_query = ReportRequest.objects.filter(
                                             doctor__city__district__region__country=profile_country,
-                                            report=None
+                                            report=None,
+                                            status='accepted'
                                             ).order_by('-date_time')
         templates = templates_query.values()
         for template in templates:
@@ -343,22 +345,22 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
-            doctors_set       = Profile.objects.filter(
-                                city__district__region__country=current_country,
-                                user__is_staff=False
-                                    )
+#            doctors_set       = Profile.objects.filter(
+#                                city__district__region__country=current_country,
+#                                user__is_staff=False
+#                                    )
             context['form'].fields['type_of_visit'].queryset = type_of_visit_set
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
             if self.request.user.is_staff:
                 report_requests = report_requests_query
-                context['form'].fields['doctor'].required = True
-                context['form'].fields['doctor'].queryset = doctors_set
+#                context['form'].fields['doctor'].required = True
+#                context['form'].fields['doctor'].queryset = doctors_set
             else:
                 report_requests = report_requests_query.filter(doctor=profile)
-                context['form'].fields['doctor'].queryset = doctors_set.filter(
-                                        pk=self.request.user.profile.pk
-                                    )
+#                context['form'].fields['doctor'].queryset = doctors_set.filter(
+#                                        pk=self.request.user.profile.pk
+#                                    )
             context['form'].fields['report_request'].queryset = report_requests
             context['json_report_requests'] = serialize('json', report_requests, cls=DjangoJSONEncoder)
             for form in context['service_items'].forms:
@@ -367,8 +369,8 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form, service_items, images):
         with transaction.atomic():
-            if not self.request.user.is_staff:
-                form.instance.doctor = self.request.user.profile
+#            if not self.request.user.is_staff:
+#                form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -395,7 +397,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         country_case = object_country == users_country
 
 #        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
-        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
+        if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
             else:
@@ -409,7 +411,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
+        if request.user.profile == self.object.report_request.doctor or request.user.is_staff and country_case:
             if not self.object.checked:
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)
@@ -429,7 +431,8 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         profile = self.request.user.profile
         profile_country = profile.city.district.region.country
         report_requests_query = ReportRequest.objects.filter(
-                                            doctor__city__district__region__country=profile_country
+                                            doctor__city__district__region__country=profile_country,
+                                            status='accepted'
                                             ).filter(
                                             Q(report=None) | Q(report=self.object)
                                             ).order_by('-date_time')
@@ -443,10 +446,10 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
-            doctors_set       = Profile.objects.filter(
-                                city__district__region__country=current_country,
-                                user__is_staff=False
-                                    )
+#            doctors_set       = Profile.objects.filter(
+#                                city__district__region__country=current_country,
+#                                user__is_staff=False
+#                                    )
             context['form'].fields['type_of_visit'].queryset = type_of_visit_set
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
@@ -454,21 +457,21 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
                 form.fields['service'].queryset = service_set
             if self.request.user.is_staff:
                 report_requests = report_requests_query
-                context['form'].fields['doctor'].required = True
-                context['form'].fields['doctor'].queryset = doctors_set
+#                context['form'].fields['doctor'].required = True
+#                context['form'].fields['doctor'].queryset = doctors_set
             else:
                 report_requests = report_requests_query.filter(doctor=profile)
-                context['form'].fields['doctor'].queryset = doctors_set.filter(
-                                        pk=self.request.user.profile.pk
-                                    )
+#                context['form'].fields['doctor'].queryset = doctors_set.filter(
+#                                        pk=self.request.user.profile.pk
+#                                    )
             context['form'].fields['report_request'].queryset = report_requests
             context['json_report_requests'] = serialize('json', report_requests, cls=DjangoJSONEncoder)
         return context
 
     def form_valid(self, form, service_items):
         with transaction.atomic():
-            if not self.request.user.is_staff:
-                form.instance.doctor = self.request.user.profile
+#            if not self.request.user.is_staff:
+#                form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
@@ -487,7 +490,7 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
+        if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 return render(request, self.template_name, context={
                                                     'report': self.object,
@@ -504,7 +507,7 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
+        if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 self.object.delete()
                 return redirect(reverse(self.redirect_url))
@@ -528,7 +531,7 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
+        if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
             else:
@@ -543,7 +546,7 @@ class ReportAdditionalImagesUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if country_case and (request.user.profile == self.object.doctor or request.user.is_staff):
+        if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)
@@ -571,7 +574,7 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
     model = Country
 
     def get_context_data(self, **kwargs):
-        context = super(PriceTableView).get_context_data(**kwargs)
+        context = super(PriceTableView, self).get_context_data(**kwargs)
         country = kwargs['object']
         price_groups = PriceGroup.objects.all().order_by('pk')
         types_of_visit = TypeOfVisit.objects.filter(country=country)

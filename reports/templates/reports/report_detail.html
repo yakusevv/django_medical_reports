@@ -35,23 +35,21 @@
       </div>
     </div>
   </div>
-  {% if report.report_request %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Report request: " %} </b>
     </div>
     <div class="col overflow-auto">
       <p> {{ report.report_request }} </p>
-      <p> {{ report.report_request.message }} </p>
+      <p> {{ report.report_request.message|linebreaksbr }} </p>
     </div>
   </div>
-  {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Company, ref. number:" %} </b>
     </div>
     <div class="col">
-      {{ report.company }}
+      {{ report.report_request.company }}
       {{ report.company_ref_number }}
     </div>
   </div>
@@ -149,7 +147,7 @@
       <b> {% trans "Doctor:" %} </b>
     </div>
     <div class="col">
-      {{ report.doctor }}
+      {{ report.report_request.doctor }}
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">

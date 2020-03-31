@@ -26,6 +26,7 @@ from .forms import VisitTariffInlineFormSet #, ReportTemplateInlineFormSet
 
 
 class EditLinkToInlineObject(object):
+
     def edit_link(self, instance):
         url = reverse('admin:{}_{}_change'.format(
             instance._meta.app_label,  instance._meta.model_name),  args=[instance.pk] )
@@ -58,6 +59,7 @@ class ReportTemplateInline(admin.StackedInline):
             return max_num
         return 0
 '''
+
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
@@ -108,7 +110,7 @@ class ReportAdmin(admin.ModelAdmin):
     list_filter = (('city__district__region__country', admin.RelatedOnlyFieldListFilter),
                    'city__district__region',
                    'report_request__company',
-                   'doctor',
+                   'report_request__doctor',
                    'checked')
 
     def get_inline_instances(self, request, obj=None):
@@ -128,10 +130,10 @@ class ReportAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.patients_last_name = obj.patients_last_name.upper()
         obj.patients_first_name = obj.patients_first_name.upper()
-        obj.ref_number = obj.ref_number.upper()
-        obj.company_ref_number = obj.company_ref_number.upper()
+#        obj.ref_number = obj.ref_number.upper()
+#        obj.company_ref_number = obj.company_ref_number.upper()
         if not change and obj.visit_price == 0 or obj.visit_price == 0:
-            company = obj.company
+            company = obj.report_request.company
             city = obj.city
             type_of_visit = obj.type_of_visit
 
@@ -233,7 +235,14 @@ class TariffAdmin(admin.ModelAdmin):
     def response_add(self, request, obj, post_url_continue=None):
         return redirect('/admin/reports/tariff/{}/change'.format(obj.id))
 
+
 @admin.register(ReportRequest)
 class ReportRequest(admin.ModelAdmin):
-    list_display = ('__str__', 'status',)
-    list_filter = ('status', 'company')
+    list_display = ('__str__', 'status', 'has_report')
+    list_filter = ('status', 'company', 'doctor')
+    ordering = ('status', '-date_time')
+
+    def has_report(self, obj):
+        return obj.has_report()
+
+    has_report.boolean = True

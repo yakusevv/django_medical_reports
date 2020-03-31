@@ -209,7 +209,7 @@ class Report(models.Model):
     diagnosis = models.ManyToManyField('Disease', related_name='reports', verbose_name=_("Diagnosis"))
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
-    doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
+#    doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
     report_request = models.OneToOneField('ReportRequest', on_delete=models.PROTECT, related_name='report')
 
     class Meta:
@@ -277,12 +277,12 @@ class Report(models.Model):
 
     @property
     def get_full_ref_number(self):
-        ref = str(self.report_request.company.initials) + str(self.report_request.ref_number).zfill(2)
+        ref = str(self.report_request.company.initials) + str(self.report_request.ref_number).zfill(3)
         date_of_visit = str(self.report_request.date_time.strftime("%d%m"))
-        if not self.doctor.is_foreign_doctor:
-            info = self.doctor.initials + self.type_of_visit.initial
+        if not self.report_request.doctor.is_foreign_doctor:
+            info = self.report_request.doctor.initials + self.type_of_visit.initial
         else:
-            info = self.doctor.initials
+            info = self.report_request.doctor.initials
         return '-'.join((ref, date_of_visit, info))
 
     get_full_ref_number.fget.short_description = _('Full ref. number')
@@ -359,9 +359,6 @@ class ReportRequest(models.Model):
     sender = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_('Sender'))
     status = models.CharField(max_length=20, choices=STATUS, default='accepted')
 
- #   class Meta:
-#        unique_together = (('doctor', 'ref_number', 'company'),)
-
     def validate_unique(self, exclude=None):
         country = self.doctor.city.district.region.country
         qs = ReportRequest.objects.filter(
@@ -373,10 +370,12 @@ class ReportRequest(models.Model):
         if self.pk:
             qs = qs.exclude(pk=self.pk)
         if qs.exists():
-            raise ValidationError(_("Case {}{} is already exists".format(
+            raise ValidationError(
+                                _("Case {}{} is already exists".format(
                                                                     self.company.initials,
                                                                     str(self.ref_number).zfill(3))
-                                ))
+                                  )
+                                 )
 
     def save(self, *args, **kwargs):
         self.validate_unique()
@@ -393,6 +392,7 @@ class ReportRequest(models.Model):
 
     def has_report(self):
         return hasattr(self, 'report') and self.report is not None
+
 
 @receiver(post_delete, sender=Report)
 def submission_delete(sender, instance, **kwargs):

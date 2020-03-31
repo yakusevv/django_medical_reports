@@ -21,7 +21,7 @@ class ProfileReportAutofillTemplateForm(forms.ModelForm):
 #        fields = '__all__'
 #        widgets = {'doctor': forms.HiddenInput(attrs={})}
         exclude = ('doctor', 'country')
-        widgets = { 'diagnosis_template' : Select2MultipleWidget, }
+        widgets = {'diagnosis_template': Select2MultipleWidget, }
 
     def clean(self):
         cleaned_data = super(ProfileReportAutofillTemplateForm, self).clean()
@@ -83,6 +83,7 @@ class UserDistrictForm(forms.ModelForm):
         else:
             return cleaned_data
 '''
+
 
 class UserDistrictInlineFormset(BaseInlineFormSet):
 

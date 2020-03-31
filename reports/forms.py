@@ -26,7 +26,7 @@ class ReportForm(forms.ModelForm):
         super(ReportForm, self).__init__(*args, **kwargs)
         self.fields['visit_price'].required = False
         self.fields['visit_price_doctor'].required = False
-        self.fields['doctor'].required = False
+#        self.fields['doctor'].required = False
 
     class Meta:
         model = Report
@@ -36,11 +36,12 @@ class ReportForm(forms.ModelForm):
         widgets = {
                    'diagnosis'         : Select2MultipleWidget,
                    'city'              : Select2Widget,
-                   'company'           : Select2Widget,
+#                   'company'           : Select2Widget,
                    'type_of_visit'     : Select2Widget,
                    'date_of_visit'     : DateTimePicker(
                                         options={
-                                            'useCurrent': True,
+                                         #   'minDate': '-1y',
+                                            'useCurrent': 'hour',
                                             'maxDate': 'now',
                                             'format': "DD.MM.YYYY HH:mm",
                                             'stepping': 5
@@ -67,7 +68,7 @@ class ReportForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ReportForm, self).clean()
-        ref_number = cleaned_data.get("ref_number").upper()
+#        ref_number = cleaned_data.get("ref_number").upper()
         patients_first_name = cleaned_data.get("patients_first_name").upper()
         patients_last_name = cleaned_data.get("patients_last_name").upper()
         company_ref_number = cleaned_data.get("company_ref_number").upper()
@@ -91,7 +92,7 @@ class ReportForm(forms.ModelForm):
 #                self.add_error('ref_number', msg)
 #                self.add_error('patients_first_name', msg)
 #                self.add_error('patients_last_name', msg)
-        cleaned_data['ref_number'] = ref_number
+#        cleaned_data['ref_number'] = ref_number
         cleaned_data['patients_last_name'] = patients_last_name
         cleaned_data['patients_first_name'] = patients_first_name
         cleaned_data['company_ref_number'] = company_ref_number
@@ -99,14 +100,15 @@ class ReportForm(forms.ModelForm):
 
     def save(self, commit=True, *args, **kwargs):
         instance = super(ReportForm, self).save(commit=False)
-        company = self.cleaned_data['company']
+#        company = self.cleaned_data['company']
+        report_request = self.cleaned_data['report_request']
         city = self.cleaned_data['city']
         type_of_visit = self.cleaned_data['type_of_visit']
         district = city.district
-        price_group = company.price_group
+        price_group = report_request.company.price_group
 
         decisive_fields = {
-                            'company',
+                            'report_request',
                             'type_of_visit',
                             'city'
         }
@@ -122,7 +124,7 @@ class ReportForm(forms.ModelForm):
                 instance.visit_price = 0
         if not self.cleaned_data.get('visit_price_doctor', False) and change_condition:
             try:
-                user_district = UserDistrict.objects.get(cities__in=[city,], user=instance.doctor.user)
+                user_district = UserDistrict.objects.get(cities__in=[city,], user=report_request.doctor.user)
                 visit_price = UserDistrictVisitPrice.objects.get(
                                                         user_district=user_district,
                                                         type_of_visit=type_of_visit

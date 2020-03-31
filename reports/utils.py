@@ -114,7 +114,7 @@ def reports_xlsx_generator(reports):
             report.patients_date_of_birth.strftime("%d.%m.%Y"),
             report.city.name,
             report.city.district.region.name,
-            report.doctor.initials,
+            report.report_request.doctor.initials,
             report.get_total_price_doctor,
             report.get_total_price
         ]
