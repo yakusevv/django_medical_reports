@@ -2,7 +2,11 @@ import os
 import datetime
 
 from .secret_data import SECRET_KEY, TIME_ZONE, DEBUG
-from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST, DB_PORT, VIBER_AUTH_TOKEN
+from .secret_data import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, ALLOWED_HOST, DB_PORT
+from .secret_data import VIBER_BOT_NAME, VIBER_AVATAR, VIBER_AUTH_TOKEN
+
+from viberbot import Api as ViberApi
+from viberbot.api.bot_configuration import BotConfiguration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -70,7 +74,12 @@ TEMPUS_DOMINUS_LOCALIZE = True
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-VIBER_AUTH_TOKEN = VIBER_AUTH_TOKEN
+VIBER = ViberApi(BotConfiguration(
+                                name=VIBER_BOT_NAME,
+                                avatar=VIBER_AVATAR,
+                                auth_token=VIBER_AUTH_TOKEN
+                                )
+                )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -1,9 +1,10 @@
-import json
 import io
 import datetime
 
+from viberbot.api.viber_requests import ViberRequest, ViberMessageRequest
+from viberbot.api.messages.text_message import TextMessage
+
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.db.models import Q
 from django.urls import reverse
@@ -25,6 +26,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.defaultfilters import slugify
+from django.conf import settings
 
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
@@ -50,7 +52,7 @@ from .forms import (
                 AdditionalImageFormSet,
                 DateFilterForm
                 )
-from .utils import docx_report_generator, reports_xlsx_generator, send_text
+from .utils import docx_report_generator, reports_xlsx_generator
 from .serializers import ReportRequestSerializer, CompanyOptionsSerializer, DoctorOptionsSerializer
 
 
@@ -59,47 +61,58 @@ def vbr_bot(request):
     if request.method == "GET":
         return HttpResponse(status=404)
     if request.method == "POST":
-        viber = json.loads(request.body.decode('utf-8'))
+        viber = settings.VIBER
+        if not viber.verify_signature(request.body, request.headers.get('X-Viber-Content-Signature')):
+            return Response(status=403)
+        viber_request = viber.parse_request(request.body)
         doctors_viber_list = [doctor.viber_id for doctor in Profile.objects.filter(user__is_staff=False)]
         doctors_pk_list = ['#id' + str(doctor.pk) for doctor in Profile.objects.filter(
                                                                     user__is_staff=False,
                                                                     ) if not doctor.viber_id
                            ]
-        if viber['event'] == 'webhook':
+        if isinstance(viber_request, ViberRequest) and viber_request.event_type == 'webhook':
             print("Webhook has been installed successfully")
             return HttpResponse(status=200)
-        elif viber['event'] == 'message':
-            message = viber['message']['text']
-            if not len(doctors_pk_list) and not viber['sender']['id'] in doctors_viber_list:
-                send_text(viber['sender']['id'], 'All users are already authenticated')
-            elif not viber['sender']['id'] in doctors_viber_list:
-                send_text(viber['sender']['id'], 'authentication processing...')
+        elif isinstance(viber_request, ViberMessageRequest):
+            message = viber_request.message.text
+            if not len(doctors_pk_list) and viber_request.sender.id not in doctors_viber_list:
+                viber.send_messages(viber_request.sender.id, [
+                   TextMessage(text="All users are already authenticated.")
+                ])
+            elif viber_request.sender.id not in doctors_viber_list:
+                viber.send_messages(viber_request.sender.id, [
+                   TextMessage(text="Authentication processing...")
+                ])
                 if message in doctors_pk_list:
                     doctor = Profile.objects.get(pk=message.split('#id')[-1])
-                    doctor.viber_id = viber['sender']['id']
+                    doctor.viber_id = viber_request.sender.id
                     doctor.save()
-                    send_text(doctor.viber_id, 'Success')
-                    send_text(doctor.viber_id, 'Welcome, dr. {}!'.format(doctor.user.last_name))
+                    viber.send_messages(viber_request.sender.id, [
+                        TextMessage(text="Success!")
+                    ])
+                    viber.send_messages(viber_request.sender.id, [
+                        TextMessage(text='Welcome, dr. {}!'.format(doctor.user.last_name))
+                    ])
                     return HttpResponse(status=200)
                 else:
-                    send_text(viber['sender']['id'], 'Access denied')
+                    viber.send_messages(viber_request.sender.id, [
+                        TextMessage(text='Access denied')
+                    ])
                     return HttpResponse(status=200)
             else:
-                doctor = Profile.objects.get(viber_id=viber['sender']['id'])
+                doctor = Profile.objects.get(viber_id=viber_request.sender.id)
                 if message.lower() in ('ok', 'ок'):
                     for req in doctor.report_requests.filter(seen=False, status='accepted'):
                         req.seen = True
                         req.save()
-                elif message.startswith('#id'):
-                    send_text(
-                        doctor.viber_id,
-                        'You have been already authenticated as dr. {}'.format(doctor.user.last_name)
-                        )
+                elif message.lower().startswith('#id'):
+                    viber.send_messages(viber_request.sender.id, [
+                        TextMessage(text='You have been already authenticated as dr. {}'.format(doctor.user.last_name))
+                    ])
                 else:
-                    send_text(
-                        doctor.viber_id,
-                        'Wrong command'
-                    )
+                    viber.send_messages(viber_request.sender.id, [
+                        TextMessage(text='Wrong command')
+                    ])
                 return HttpResponse(status=200)
         else:
             return HttpResponse(status=500)

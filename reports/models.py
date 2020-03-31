@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from viberbot.api.messages.text_message import TextMessage
+
 from django.db import models
 from django.shortcuts import reverse
 from django.conf import settings
@@ -429,10 +431,6 @@ def template_delete(sender, instance, **kwargs):
     os.remove(instance.template.path)
 
 
-#viber messages
-from .utils import send_text   # - to avoid circular import
-
-
 def send_new_case_message(instance):
     viber_id = instance.doctor.viber_id
     message = "--- New Case for {} ---\n{}{} - {}\n{}".format(
@@ -443,7 +441,9 @@ def send_new_case_message(instance):
         instance.message
     )
     if viber_id:
-        send_text(viber_id, message)
+        settings.VIBER.send_messages(viber_id, [
+                   TextMessage(text=message)
+                ])
 
 
 def send_update_case_message(instance):
@@ -455,7 +455,9 @@ def send_update_case_message(instance):
         instance.message
     )
     if viber_id:
-        send_text(viber_id, message)
+        settings.VIBER.send_messages(viber_id, [
+            TextMessage(text=message)
+        ])
 
 
 def send_cancel_case_message(instance):
@@ -466,7 +468,9 @@ def send_cancel_case_message(instance):
         instance.date_time.strftime("%d.%m.%Y - %H:%M:%S")
     )
     if viber_id:
-        send_text(viber_id, message)
+        settings.VIBER.send_messages(viber_id, [
+            TextMessage(text=message)
+        ])
 
 
 @receiver(pre_save, sender=ReportRequest)

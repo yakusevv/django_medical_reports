@@ -11,6 +11,7 @@ djangorestframework==3.11.0
 djangorestframework-jwt==1.11.0
 docxtpl==0.5.20
 et-xmlfile==1.0.1
+future==0.18.2
 idna==2.9
 jdcal==1.4.1
 Jinja2==2.10.1
@@ -26,3 +27,4 @@ requests==2.23.0
 six==1.12.0
 sqlparse==0.3.0
 urllib3==1.25.8
+viberbot==1.0.11

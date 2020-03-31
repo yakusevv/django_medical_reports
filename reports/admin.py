@@ -132,22 +132,22 @@ class ReportAdmin(admin.ModelAdmin):
         obj.patients_first_name = obj.patients_first_name.upper()
 #        obj.ref_number = obj.ref_number.upper()
 #        obj.company_ref_number = obj.company_ref_number.upper()
-        if not change and obj.visit_price == 0 or obj.visit_price == 0:
-            company = obj.report_request.company
-            city = obj.city
-            type_of_visit = obj.type_of_visit
+#        if not change and obj.visit_price == 0 or obj.visit_price == 0:
+#            company = obj.report_request.company
+#            city = obj.city
+#            type_of_visit = obj.type_of_visit
 
-            district = city.district
-            price_group = company.price_group
-            try:
-                tariff = Tariff.objects.get(district=district, price_group=price_group)
-                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
-                obj.visit_price = visit_tariff.price
+#            district = city.district
+#            price_group = company.price_group
+#            try:
+#                tariff = Tariff.objects.get(district=district, price_group=price_group)
+#                visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
+#                obj.visit_price = visit_tariff.price
 #                obj.visit_price_doctor = visit_tariff.price_doctor
-                obj.visit_price_doctor = 0 #temporarily
-            except Tariff.DoesNotExist:
-                obj.visit_price = 0
-                obj.visit_price_doctor = 0
+#                obj.visit_price_doctor = 0 #temporarily
+#            except Tariff.DoesNotExist:
+#                obj.visit_price = 0
+#                obj.visit_price_doctor = 0
         super(ReportAdmin, self).save_model(request, obj, form, change)
 
     def response_add(self, request, obj, post_url_continue=None):
