@@ -255,16 +255,15 @@ class ReportsListView(LoginRequiredMixin, ListView):
             date_field_from = self.request.GET.get('date_field_from', '')
             if date_field_from:
                 date_field_from = datetime.datetime.strptime(date_field_from, "%d.%m.%Y").date()
-                queryset = queryset.filter(date_of_visit__gte=date_field_from)
+                queryset = queryset.filter(report_request__date_time__gte=date_field_from)
             date_field_to = self.request.GET.get('date_field_to', '')
             if date_field_to:
                 date_field_to = datetime.datetime.strptime(date_field_to, "%d.%m.%Y").date()
                 queryset = queryset.filter(
-                                    date_of_visit__lt=date_field_to + datetime.timedelta(days=1)
+                                    report_request__date_time__lt=date_field_to + datetime.timedelta(days=1)
                                     )
         if not self.request.user.is_staff:
             queryset = queryset.filter(report_request__doctor__pk=self.request.user.profile.pk)
-        print(queryset)
         self.request.session['filtered'] = [report.pk for report in queryset]
         return queryset
 
@@ -683,3 +682,102 @@ class RequestOptionsViewSet(viewsets.ViewSet):
 class ReportRequestsView(AdminStaffRequiredMixin, TemplateView):
     template_name = 'reports/report_requests.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(ReportRequestsView, self).get_context_data()
+        context['report_requests_link_active'] = "active"
+        return context
+
+
+class ReportRequestsListView(AdminStaffRequiredMixin, ListView):
+    model = ReportRequest
+    template_name = 'reports/report_requests_list.html'
+    ordering = ('-date_time',)
+    paginate_by = 30
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReportRequestsListView, self).get_context_data()
+        context['report_requests_link_active'] = "active"
+        country = self.request.user.profile.city.district.region.country
+        context['doctor_filter'] = Profile.objects.filter(
+                                        city__district__region__country=country,
+                                        user__is_staff=False
+                                        )
+        context['company_filter'] = Company.objects.all()
+        context['date_filter'] = DateFilterForm()
+        context['status_filter'] = {status[0]: status[1] for status in ReportRequest._meta.get_field('status').choices}
+        context['report_filter'] = {'1': _("Yes"), '2': _("No")}
+        filters = self.request.GET
+        date_filter_initial = {}
+        if filters.get('usefilter', ''):
+            filters_number = 0
+            doctor_filter = filters.getlist('doctor_filter', None)
+            if doctor_filter:
+                filters_number += 1
+                context['doctor_filter_selected'] = doctor_filter
+            company_filter = filters.getlist('company_filter', None)
+            if company_filter:
+                filters_number += 1
+                context['company_filter_selected'] = company_filter
+            status_filter = filters.getlist('status_filter', None)
+            if status_filter:
+                filters_number += 1
+                context['status_filter_selected'] = status_filter
+            report_filter = filters.getlist('report_filter', None)
+            if '' not in report_filter:
+                filters_number += 1
+                context['report_filter_selected'] = report_filter
+            if filters.get('search_query', ''):
+                filters_number += 1
+                context['search_query_on'] = filters['search_query']
+            if filters.get('date_field_from', ''):
+                filters_number += 1
+                date_filter_initial['date_field_from'] = filters['date_field_from']
+            if filters.get('date_field_to', ''):
+                filters_number += 1
+                date_filter_initial['date_field_to'] = filters['date_field_to']
+            if len(date_filter_initial):
+                context['date_filter'] = DateFilterForm(initial=date_filter_initial)
+            queries_without_page = self.request.GET.copy()
+            if queries_without_page.get('page', ''):
+                del queries_without_page['page']
+            context['queries'] = queries_without_page
+            context['filters_number'] = filters_number
+        return context
+
+    def get_queryset(self):
+        queryset = super(ReportRequestsListView, self).get_queryset()
+        doctors_country = self.request.user.profile.city.district.region.country
+        queryset = queryset.filter(
+                                doctor__city__district__region__country=doctors_country
+                                )
+        filter_query = self.request.GET.get('usefilter', '')
+        if filter_query:
+            search_query = self.request.GET.get('search_query', '')
+            if search_query:
+                queryset = queryset.filter(message__icontains=search_query)
+            company_filter = self.request.GET.getlist('company_filter', None)
+            if company_filter:
+                queryset = queryset.filter(company__in=company_filter)
+            doctor_filter = self.request.GET.getlist('doctor_filter', None)
+            if doctor_filter:
+                queryset = queryset.filter(doctor__in=doctor_filter)
+            status_filter = self.request.GET.getlist('status_filter', None)
+            if status_filter:
+                queryset = queryset.filter(status__in=status_filter)
+            report_filter = self.request.GET.getlist('report_filter', None)
+            if report_filter:
+                if '1' in report_filter:
+                    queryset = queryset.exclude(report=None)
+                elif '2' in report_filter:
+                    queryset = queryset.filter(report=None)
+            date_field_from = self.request.GET.get('date_field_from', '')
+            if date_field_from:
+                date_field_from = datetime.datetime.strptime(date_field_from, "%d.%m.%Y").date()
+                queryset = queryset.filter(date_time__gte=date_field_from)
+            date_field_to = self.request.GET.get('date_field_to', '')
+            if date_field_to:
+                date_field_to = datetime.datetime.strptime(date_field_to, "%d.%m.%Y").date()
+                queryset = queryset.filter(
+                                    date_time__lt=date_field_to + datetime.timedelta(days=1)
+                                    )
+        return queryset

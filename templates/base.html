@@ -53,7 +53,7 @@
       </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'report_requests_url' %}">{% trans 'Requests' %}</a>
+        <a class="nav-link {{ report_requests_link_active }}" href="{% url 'report_requests_url' %}">{% trans 'Requests' %}</a>
       </li>
       {% endif %}
     </ul>

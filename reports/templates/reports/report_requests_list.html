@@ -1,0 +1,122 @@
+{% extends 'reports/base_reports.html' %}
+{% load i18n %}
+
+{% block title %}
+  {{ block.super }} - {% trans "Requests history" %}
+{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+{{ date_filter.media }}
+{% endblock %}
+
+{% block admin-panel-content %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
+{% endblock %}
+
+
+{% block content %}
+<div class="ml-4 mb-4 mt-2 mb-2">
+ <button type="button" class="btn btn-outline-secondary btn-sm ml-2" data-toggle="collapse" data-target="#filters_form">{% trans "Filters" %}{% if filters_number %}({{ filters_number }}){% endif %}</button>
+<div class="collapse" id="filters_form">
+  <form action="{% url 'report_requests_list_url' %}" method="GET" autocomplete='off'>
+  <div class="form-group row mt-2">
+    <div class="form-group col-md-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="inputDoctor">{% trans "Doctor" %}</label>
+      <select id="inputDoctor" class="form-control form-control-sm" name="doctor_filter" multiple>
+        {% for doctor in doctor_filter %}
+        <option {% if doctor.pk|slugify in doctor_filter_selected %}selected{% endif %} value='{{ doctor.pk }}'>{{ doctor }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group col-md-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="inputCompany">{% trans "Company" %}</label>
+      <select id="inputCompany" class="form-control form-control-sm" name="company_filter" multiple>
+        {% for company in company_filter %}
+        <option {% if company.pk|slugify in company_filter_selected %}selected{% endif %} value='{{ company.pk }}'>{{ company }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-sm-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="id_date_field_from">{% trans "From" %}</label>
+      {{ date_filter.date_field_from }}
+    </div>
+    <div class="form-group col-sm-0 mr-2 ml-4">
+      <label class="col-sm-2 col-form-label col-form-label-sm" for="id_date_field_to">{% trans "To" %}</label>
+      {{ date_filter.date_field_to }}
+    </div>
+  </div>
+    <div class="form-group row">
+      <div class="form-group col-md-0 mr-2 ml-4">
+        <label class="col-sm-2 col-form-label col-form-label-sm" for="inputStatus">{% trans "Status" %}</label>
+        <select id="inputStatus" class="form-control form-control-sm" name="status_filter" multiple>
+          {% for status_key, status_value in status_filter.items %}
+          <option {% if status_key in status_filter_selected %}selected{% endif %} value='{{ status_key }}'>{{ status_value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-0 mr-2 ml-4">
+        <label class="col-sm-2 col-form-label col-form-label-sm" for="inputHasReport">{% trans "Report" %}</label>
+        <select id="inputHasReport" class="form-control form-control-sm" name="report_filter">
+          <option value=""></option>
+          {% for report_choice_key, report_choice_value in report_filter.items %}
+          <option {% if report_choice_key in report_filter_selected %}selected{% endif %} value='{{ report_choice_key }}'>{{ report_choice_value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+  <div class="form-group row">
+    <div class="form-group col-sm-0 mr-2 ml-4">
+        <input class="form-control form-control-sm" name="search_query" type="search_query" placeholder='{% trans "search query" %}' aria-label="Search" {% if search_query_on %}value={{ search_query_on }}{% endif %}>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="form-group ml-4 mr-2 col-md-0">
+      <button class='btn btn-info btn-sm' type="submit" name="usefilter" value='1'>{% trans "Use filters" %}</button>
+    </div>
+        <div class="form-group ml-2 mr-2 col-md-0">
+      <a class='btn btn-secondary btn-sm' href="{% url 'report_requests_list_url' %}" name="cleanfilter">{% trans "Clear filters" %}</a>
+    </div>
+  </div>
+  </form>
+</div>
+</div>
+
+      <div class="container">
+        <div class="row mb-2 col-md-12">
+          <div class="col col-lg-7">
+            <b>{% trans "Request" %}</b>
+          </div>
+          <div class="col">
+            <b>{% trans "Status" %}</b>
+          </div>
+          <div class="col col-sm" style="text-align: center;">
+            <b>{% trans "Report" %}</b>
+          </div>
+        </div>
+      {% for report_request in reportrequest_list %}
+        <div class="row mb-1 col-md-12 {% if forloop.last %}border-bottom{% endif %} border-top">
+          <div class="col col-lg-7">
+           <a href="{{ report_request.get_absolute_url }}" style='{% if report_request.status != "accepted" %} color: gray {% endif %}'>{{ report_request }}</a>
+          </div>
+          <div class="col">
+            {{ report_request.get_status_display }}
+          </div>
+          <div class="col col-sm"  style="text-align: center;">
+            {% if report_request.has_report %}
+            <b style="color: green">
+              &#10003;
+            </b>
+            {% else %}
+            <b style="color: red">
+              &#10005;
+            </b>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+{% endblock %}
