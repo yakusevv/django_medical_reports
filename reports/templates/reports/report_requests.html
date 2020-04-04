@@ -10,21 +10,21 @@
     <form method="POST" id="id_request_form">
     <div class="form-group mt-4">
         <label class="col-sm-2 control-label" for="id_doctor">
-            Doctor
+           {% trans "Doctor" %}
         </label>
         <div class="col-sm-6">
             <select class="form-control" name="doctor" id="id_doctor">
             </select>
         </div>
         <label class="col-sm-2 control-label" for="id_company">
-            Company
+            {% trans "Company" %}
         </label>
         <div class="col-sm-6">
             <select class="form-control" name="company" id="id_company">
             </select>
         </div>
         <label class="col-sm-2 control-label" for="id_message">
-            Message
+            {% trans "Message" %}
         </label>
         <div class="col-sm-10">
             <textarea name="message" class="form-control"  id="id_message"></textarea>
@@ -56,21 +56,21 @@
                     <input type="hidden" id="id_pk_edit" value="">
                     <div class="form-group mt-2">
                         <label class="col-sm-2 control-label" for="id_doctor_edit">
-                            Doctor
+                            {% trans "Doctor" %}
                         </label>
                         <div class="col-sm-6">
                             <select class="form-control" name="doctor" id="id_doctor_edit">
                             </select>
                         </div>
                         <label class="col-sm-2 control-label" for="id_company_edit">
-                            Company
+                            {% trans Company %}
                         </label>
                         <div class="col-sm-6">
                             <select class="form-control" name="company" id="id_company_edit">
                             </select>
                         </div>
                         <label class="col-sm-2 control-label" for="id_message_edit">
-                            Message
+                            {% trans "Message" %}
                         </label>
                         <div class="col-sm-10">
                             <textarea name="message" class="form-control"  id="id_message_edit"></textarea>
