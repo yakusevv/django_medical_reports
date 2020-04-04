@@ -296,6 +296,7 @@ class AdditionalImage(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
     image = models.ImageField(upload_to=get_image_path, verbose_name=_("Image"))
     position = models.IntegerField(blank=False, verbose_name=_("Position"))
+    expand = models.BooleanField(default=False, verbose_name=_("Expand"))
 
     class Meta:
         verbose_name = _('Additional Image')

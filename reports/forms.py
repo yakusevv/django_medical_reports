@@ -239,7 +239,7 @@ class AdditionalImageForm(forms.ModelForm):
 
     class Meta:
         model = AdditionalImage
-        fields = ('image', 'x', 'y', 'w', 'h', 'orient')
+        fields = ('image', 'expand', 'x', 'y', 'w', 'h', 'orient')
 
     def clean(self):
         cleaned_data = super(AdditionalImageForm, self).clean()
@@ -315,12 +315,12 @@ class VisitTariffInlineFormSet(BaseInlineFormSet):
             current_instances = [inst.type_of_visit.pk for inst in kwargs['instance'].visittariff_set.all()]
             type_of_visit_filtered = TypeOfVisit.objects.filter(
                         country=kwargs['instance'].district.region.country
-        ).exclude(
+                                                                ).exclude(
                         pk__in=current_instances
-                 )
+                        )
             kwargs['initial'] = [
-            {'type_of_visit': type.id, 'price': '-'} for type in type_of_visit_filtered
-        ]
+                {'type_of_visit': type.id, 'price': '-'} for type in type_of_visit_filtered
+            ]
         super(VisitTariffInlineFormSet, self).__init__(*args, **kwargs)
         for form in self.forms:
             type_of_visit_field = form.fields['type_of_visit']

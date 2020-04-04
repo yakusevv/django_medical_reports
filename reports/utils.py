@@ -17,7 +17,10 @@ def docx_report_generator(report, type_of_report):
         doc = DocxTemplate(doc_path)
         images = []
         for image in report.additional_images.get_queryset():
-            images.append(InlineImage(doc, image.image, width=Mm(130)))
+            if image.expand:
+                images.append(InlineImage(doc, image.image, width=Mm(170)))
+            else:
+                images.append(InlineImage(doc, image.image, width=Mm(110)))
 
         context = {
                 'R': report,
