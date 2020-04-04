@@ -124,7 +124,7 @@ def vbr_bot(request):
 def download_report_docx(request, pk, type_of_report):
     buffer = io.BytesIO()
     report = Report.objects.get(pk=pk)
-    if (request.user.profile == report.doctor and type_of_report == 'd') or request.user.is_staff:
+    if (request.user.profile == report.report_request.doctor and type_of_report == 'd') or request.user.is_staff:
         file = docx_report_generator(report, type_of_report)
         if file:
             file_name = "_".join((
