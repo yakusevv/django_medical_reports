@@ -19,6 +19,7 @@ from .views import (
                 RequestOptionsViewSet,
                 ReportRequestsView,
                 ReportRequestsListView,
+                ReportRequestUpdateView,
                 vbr_bot
                 )
 
@@ -53,6 +54,7 @@ urlpatterns = [
             name='report_requests_options_api_url'
             ),
         path('report_requests/history/', ReportRequestsListView.as_view(), name='report_requests_list_url'),
+        path('report_requests/history/<int:pk>/edit/', ReportRequestUpdateView.as_view(), name='report_request_update_url'),
 #        path('report_requests-token-auth/', obtain_jwt_token),
 #        path('report_requests-token-refresh/', refresh_jwt_token),
         path('viber/viber_webhook_27032020/', vbr_bot)

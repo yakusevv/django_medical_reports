@@ -15,7 +15,8 @@ from .models import (
                     AdditionalImage,
                     TypeOfVisit,
                     VisitTariff,
-                    Tariff
+                    Tariff,
+                    ReportRequest,
                     )
 from profiles.models import UserDistrict, UserDistrictVisitPrice
 
@@ -373,3 +374,24 @@ class DateFilterForm(forms.Form):
         super(DateFilterForm, self).__init__(*args, **kwargs)
         self.fields['date_field_from'].required = False
         self.fields['date_field_to'].required = False
+
+
+class ReportRequestForm(forms.ModelForm):
+
+    class Meta:
+        model = ReportRequest
+        fields = ('status', 'date_time',)
+        widgets = {
+            'date_time': DateTimePicker(
+                options={
+                    'maxDate': 'now',
+                    'format': "DD.MM.YYYY HH:mm",
+                    'stepping': 5
+                },
+                attrs={
+                    'append': 'fa fa-calendar',
+                    'icon_toggle': True,
+                    'size': 'small'
+                }
+            ),
+        }

@@ -100,7 +100,7 @@
       {% for report_request in reportrequest_list %}
         <div class="row mb-1 col-md-12 {% if forloop.last %}border-bottom{% endif %} border-top">
           <div class="col col-lg-7">
-           <a href="{{ report_request.get_absolute_url }}" style='{% if report_request.status != "accepted" %} color: gray {% endif %}'>{{ report_request }}</a>
+           <a href="{{ report_request.get_update_url }}" style='{% if report_request.status != "accepted" %} color: gray {% endif %}'>{{ report_request }}</a>
           </div>
           <div class="col">
             {{ report_request.get_status_display }}

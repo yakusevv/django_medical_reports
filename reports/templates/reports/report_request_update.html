@@ -1,0 +1,72 @@
+{% extends 'reports/base_reports.html' %}
+{% load static i18n %}
+
+{% block title %}
+  {{ block.super }} - {% trans "Edit request" %}
+{% endblock %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+  {{ form.media }}
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4 col-md-12">
+        <div class="col offset-md-4">
+            <b> {{ object }} </b>
+        </div>
+    </div>
+    <div class="row mb-4 col-md-12 border-top">
+        <div class="col-md-4">
+            <b> {% trans "Message: " %} </b>
+        </div>
+        <div class="col">
+            <p> {{  object.message }} </p>
+        </div>
+    </div>
+    <div class="row mb-4 col-md-12 border-top">
+        <div class="col-md-4">
+            <b> {% trans "Sender: " %} </b>
+        </div>
+        <div class="col">
+            {{ object.sender }}
+        </div>
+    </div>
+    <div class="row mb-4 col-md-12 border-top">
+        <div class="col-md-4">
+            <b> {% trans "Report: " %} </b>
+        </div>
+        <div class="col">
+            {% if object.report %}
+                <a href="{{ object.report.get_absolute_url }}">{{ object.report }}</a>
+            {% else %}
+                <p>{% trans "None" %}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<form action="{{ object.get_update_url }}" method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    {% if not field.is_hidden %}
+      <div class="form-group col-md-12 mb-2 border-top">
+        <div class="form-group col-md-6 mb-0">
+          {{ field|as_crispy_field }}
+        </div>
+      </div>
+    {% else %}
+      {{ field }}
+    {% endif %}
+  {% endfor %}
+  <div class="form-group col-md-12 mb-2 border-top">
+      <div class="form-group col-md-6 mb-0">
+          <a href="{% url 'report_requests_list_url' %}" name="Back" class="btn btn-danger mt-4 mr-2">{% trans "Back" %}</a>
+          <button type="submit" name="Create" class="btn btn-primary mt-4">{% trans "Edit request" %}</button>
+      </div>
+  </div>
+</form>
+{% endblock %}

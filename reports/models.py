@@ -395,6 +395,9 @@ class ReportRequest(models.Model):
     def has_report(self):
         return hasattr(self, 'report') and self.report is not None
 
+    def get_update_url(self):
+        return reverse('report_request_update_url', kwargs={'pk': self.pk})
+
 
 @receiver(post_delete, sender=Report)
 def submission_delete(sender, instance, **kwargs):

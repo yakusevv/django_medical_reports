@@ -50,7 +50,8 @@ from .forms import (
                 ReportForm,
                 ServiceItemsFormSet,
                 AdditionalImageFormSet,
-                DateFilterForm
+                DateFilterForm,
+                ReportRequestForm,
                 )
 from .utils import docx_report_generator, reports_xlsx_generator
 from .serializers import ReportRequestSerializer, CompanyOptionsSerializer, DoctorOptionsSerializer
@@ -403,12 +404,10 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        self.object = self.get_object()
         object_country = self.object.city.district.region.country
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-#        if request.user.profile == self.object.doctor or request.user.is_staff and country_case:
         if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 return self.render_to_response(self.get_context_data(form=form))
@@ -423,7 +422,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         users_country = request.user.profile.city.district.region.country
         country_case = object_country == users_country
 
-        if request.user.profile == self.object.report_request.doctor or request.user.is_staff and country_case:
+        if country_case and (request.user.profile == self.object.report_request.doctor or request.user.is_staff):
             if not self.object.checked:
                 form_class = self.get_form_class()
                 form = self.get_form(form_class)
@@ -781,3 +780,47 @@ class ReportRequestsListView(AdminStaffRequiredMixin, ListView):
                                     date_time__lt=date_field_to + datetime.timedelta(days=1)
                                     )
         return queryset
+
+
+class ReportRequestUpdateView(AdminStaffRequiredMixin, UpdateView):
+    model = ReportRequest
+    template_name = 'reports/report_request_update.html'
+    form_class = ReportRequestForm
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        object_country = self.object.doctor.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if country_case:
+            return self.render_to_response(self.get_context_data(form=form))
+        else:
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        object_country = self.object.doctor.city.district.region.country
+        users_country = request.user.profile.city.district.region.country
+        country_case = object_country == users_country
+
+        if country_case:
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        else:
+            return HttpResponseForbidden('403 Forbidden', content_type='text/html')
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportRequestUpdateView, self).get_context_data(**kwargs)
+        context['report_requests_link_active'] = "active"
+        return context
+
+    def get_success_url(self, **kwargs):
+        return reverse('report_requests_list_url')
+
