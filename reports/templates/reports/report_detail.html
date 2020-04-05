@@ -7,6 +7,7 @@
 
 {% block admin-panel-content %}
 <a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
+<a class="admin-panel-element btn btn-primary" href="{% url 'report_create_url'%}?prev={{ report.pk }}">{% trans "Create second" %}</a>
 {% if not report.checked %}
 <a class="admin-panel-element btn btn-secondary" href="{{ report.get_update_url }}">{% trans "Edit report" %}</a>
 <a class="admin-panel-element btn btn-danger" href="{{ report.get_delete_url }}">{% trans "Delete report" %}</a>
@@ -212,13 +213,13 @@
   <div class="row mb-2 col-md-12">
     <div class="col">
       {% for image in report.additional_images.get_queryset %}
-        <p class='mb-2'><img src="{{ image.image.url }}" alt="" width='80%'></p>
+        <p class='mb-2' style="text-align: center;"><img src="{{ image.image.url }}" alt="" width='80%'></p>
       {% endfor %}
     </div>
   </div>
 </div>
 {% if request.user.is_staff %}
-<form action="{{ report.get_absolute_url }}" method="post">
+<form class='mb-4' action="{{ report.get_absolute_url }}" method="post">
   {% csrf_token %}
   <input class="btn {% if report.checked %}btn-secondary{% else %}btn-primary{% endif %}" type="submit" name="is_checked" value='{% trans "Is checked" %}'>
 </form>

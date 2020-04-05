@@ -186,22 +186,24 @@ class ReportTemplate(models.Model):
     country = models.OneToOneField(Country, on_delete=models.CASCADE, verbose_name=_("Country"))
 
     class Meta:
-#        unique_together = (('company', 'country',),)
         verbose_name = _('Report template')
         verbose_name_plural = _('Report templates')
 
 
 class Report(models.Model):
-#    ref_number = models.CharField(max_length=6, verbose_name=_("Ref. number"))
     company_ref_number = models.CharField(max_length=50, verbose_name=_("Company ref. number"))
-#    company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
     patients_first_name = models.CharField(max_length=50, verbose_name=_("First name"))
     patients_last_name = models.CharField(max_length=50, verbose_name=_("Last name"))
     patients_date_of_birth = models.DateField(verbose_name=_("Date of birth"))
     patients_policy_number = models.CharField(max_length=100, blank=True, verbose_name=_("Policy number"))
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.PROTECT, verbose_name=_("Type of visit"))
     visit_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Visit price"), default=0)
-    visit_price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Visit price for the doctor"), default=0)
+    visit_price_doctor = models.DecimalField(
+                                            max_digits=8,
+                                            decimal_places=2,
+                                            verbose_name=_("Visit price for the doctor"),
+                                            default=0
+                                            )
     date_of_visit = models.DateTimeField(verbose_name=_("Date of visit"))
     city = models.ForeignKey(City, on_delete=models.PROTECT, verbose_name=_("City"))
     detailed_location = models.CharField(max_length=100, blank=True, verbose_name=_("Detailed location"))
@@ -211,7 +213,6 @@ class Report(models.Model):
     diagnosis = models.ManyToManyField('Disease', related_name='reports', verbose_name=_("Diagnosis"))
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
-#    doctor = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_("Doctor"))
     report_request = models.OneToOneField('ReportRequest', on_delete=models.PROTECT, related_name='report')
 
     class Meta:
@@ -220,22 +221,6 @@ class Report(models.Model):
         permissions = (
             ("can_download_excel", _("Can download excel")),
             )
-
-
-#    def validate_unique(self, *args, **kwargs):
-#        super(Report, self).validate_unique(*args, **kwargs)
-#        current_year = self.date_of_visit.year
-#        reports = self.__class__.objects.filter(
-#                    city__district__region__country=self.city.district.region.country,
-#                    date_of_visit__year=current_year
-#                    ).exclude(pk=self.pk)
-#        if reports:
-#            for report in reports:
-#                if report.company == self.company and report.ref_number == self.ref_number:
-#                    raise ValidationError(
- #                       message=_('Report with this data is already exists.'),
- #                       code='unique_together',
- #                       )
 
     def __str__(self):
         return ' '.join((self.patients_last_name, self.patients_first_name, self.get_full_ref_number))
@@ -360,7 +345,7 @@ class ReportRequest(models.Model):
     ref_number = models.IntegerField(verbose_name=_("Ref. number"))
     company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
     sender = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_('Sender'))
-    status = models.CharField(max_length=20, choices=STATUS, default='accepted')
+    status = models.CharField(max_length=20, choices=STATUS, default='accepted', verbose_name=_('Status'))
 
     def validate_unique(self, exclude=None):
         country = self.doctor.city.district.region.country

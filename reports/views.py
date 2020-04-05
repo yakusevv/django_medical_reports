@@ -318,8 +318,9 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         form = self.get_form(form_class)
         service_items = self.get_context_data()['service_items']
         images = self.get_context_data()['images']
+        prev = self.request.POST.get('previous_report', None)
         if form.is_valid() and service_items.is_valid() and images.is_valid():
-            return self.form_valid(form, service_items, images)
+            return self.form_valid(form, service_items, images, prev)
         else:
             return self.form_invalid(form)
 
@@ -358,37 +359,53 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
-#            doctors_set       = Profile.objects.filter(
-#                                city__district__region__country=current_country,
-#                                user__is_staff=False
-#                                    )
+
             context['form'].fields['type_of_visit'].queryset = type_of_visit_set
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
             if self.request.user.is_staff:
                 report_requests = report_requests_query
-#                context['form'].fields['doctor'].required = True
-#                context['form'].fields['doctor'].queryset = doctors_set
             else:
                 report_requests = report_requests_query.filter(doctor=profile)
-#                context['form'].fields['doctor'].queryset = doctors_set.filter(
-#                                        pk=self.request.user.profile.pk
-#                                    )
             context['form'].fields['report_request'].queryset = report_requests
             context['json_report_requests'] = serialize('json', report_requests, cls=DjangoJSONEncoder)
             for form in context['service_items'].forms:
                 form.fields['service'].queryset = service_set
+        if self.request.GET.get('prev'):
+            report_pk = self.request.GET.get('prev')
+            try:
+                prev_report = Report.objects.get(pk=report_pk)
+            except Report.DoesNotExist:
+                prev_report = None
+            user = self.request.user
+            if prev_report and (prev_report.report_request.doctor == user.profile or user.is_staff):
+                context['form'].fields['company_ref_number'].initial     = prev_report.company_ref_number
+                context['form'].fields['patients_first_name'].initial    = prev_report.patients_first_name
+                context['form'].fields['patients_last_name'].initial     = prev_report.patients_last_name
+                context['form'].fields['patients_date_of_birth'].initial = prev_report.patients_date_of_birth
+                context['form'].fields['patients_policy_number'].initial = prev_report.patients_policy_number
+                context['form'].fields['city'].initial                   = prev_report.city
+                context['form'].fields['detailed_location'].initial      = prev_report.detailed_location
+                context['form'].fields['cause_of_visit'].initial         = prev_report.cause_of_visit
+                context['form'].fields['checkup'].initial                = prev_report.checkup
+                context['form'].fields['additional_checkup'].initial     = prev_report.additional_checkup
+                context['form'].fields['prescription'].initial           = prev_report.prescription
+                context['previous_report']                               = prev_report
         return context
 
-    def form_valid(self, form, service_items, images):
+    def form_valid(self, form, service_items, images, prev):
         with transaction.atomic():
-#            if not self.request.user.is_staff:
-#                form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object
                 service_items.save()
             if images.is_valid():
+                if prev:
+                    prev_report = Report.objects.get(pk=prev)
+                    for image in prev_report.additional_images.all():
+                        image.pk = None
+                        image.report = self.object
+                        image.save()
                 images.instance = self.object
                 images.save()
         return super(ReportCreateView, self).form_valid(form)
@@ -457,10 +474,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             city_set          = City.objects.filter(district__region__country=current_country)
             disease_set       = Disease.objects.filter(country=current_country)
             service_set       = Service.objects.filter(country=current_country)
-#            doctors_set       = Profile.objects.filter(
-#                                city__district__region__country=current_country,
-#                                user__is_staff=False
-#                                    )
+
             context['form'].fields['type_of_visit'].queryset = type_of_visit_set
             context['form'].fields['city'].queryset = city_set
             context['form'].fields['diagnosis'].queryset = disease_set
@@ -468,21 +482,14 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
                 form.fields['service'].queryset = service_set
             if self.request.user.is_staff:
                 report_requests = report_requests_query
-#                context['form'].fields['doctor'].required = True
-#                context['form'].fields['doctor'].queryset = doctors_set
             else:
                 report_requests = report_requests_query.filter(doctor=profile)
-#                context['form'].fields['doctor'].queryset = doctors_set.filter(
-#                                        pk=self.request.user.profile.pk
-#                                    )
             context['form'].fields['report_request'].queryset = report_requests
             context['json_report_requests'] = serialize('json', report_requests, cls=DjangoJSONEncoder)
         return context
 
     def form_valid(self, form, service_items):
         with transaction.atomic():
-#            if not self.request.user.is_staff:
-#                form.instance.doctor = self.request.user.profile
             self.object = form.save()
             if service_items.is_valid():
                 service_items.instance = self.object

@@ -103,8 +103,8 @@ ResizeImage("id_image_crop_{{ forloop.counter0 }}");
   </div>
 
   <div class="form-group col-md-12 mb-2">
-    <button type="submit" name="Update" class="btn btn-primary" id="id_update">{% trans "Update images" %}</button>
     <a href="{{ report.get_update_url }}" class="btn btn-danger">{% trans "Cancel"%}</a>
+    <button type="submit" name="Update" class="btn btn-primary" id="id_update">{% trans "Update images" %}</button>
   </div>
 </form>
 
