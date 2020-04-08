@@ -24,6 +24,12 @@
   {% endfor %}
 </div>
 
+<form action="{% url 'report_create_url' %}" method="post" id="id_visit_failed_form">
+  {% csrf_token %}
+  <input type="hidden" name="visit_failed" value="True">
+  <input type="hidden" name="report_request_failed" value="" id="id_report_request_failed">
+</form>
+
 <form action="{% url 'report_create_url' %}" method="post" autocomplete="off" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="form-group row border-top">
@@ -31,6 +37,10 @@
       {{ form.report_request|as_crispy_field }}
     </div>
     <div class="form-group col-md-8 mt-4 overflow-auto mb-0 border-left border-right border-bottom border-top" id="id_request_message">
+    </div>
+    <div class="row">
+      <div class="col mt-2 ml-2" id="id_visit_failed_button_div">
+      </div>
     </div>
   </div>
   <div class="form-group row border-top">
@@ -395,23 +405,42 @@ $("#id_report_template").change( function(){
 </script>
 
 <script type="text/javascript">
+
   function selectRequest(){
     {% autoescape off %}
     var queryset = {{ json_report_requests }}
     {% endautoescape %}
-    var e = $("#id_report_request");
-    var pk = Number(e[0].value);
-    var message = $("#id_request_message");
+    let e = $("#id_report_request");
+    let pk = Number(e[0].value);
+    let message = $("#id_request_message");
+
     if (pk){
-    var item = queryset.find(item => item.pk === pk);
+    let item = queryset.find(item => item.pk === pk);
     let el = document.createElement('div');
-    el.class = 'card-body';
+    let btn = document.createElement('button');
+
+    el.className = 'card-body';
     el.innerHTML = "<pre class='mt-2'>" + item.fields.message + "</pre>";
+
+    btn.type = 'button';
+    btn.className = 'btn btn-danger btn-sm';
+    btn.innerHTML = "{% trans 'The visit did not take place' %}";
+    btn.onclick = function(){
+                  let a = confirm("{% trans 'Did this visit really not take place?' %}");
+                  if (a == true) {
+                      $("#id_visit_failed_form").submit()
+                      }
+                   };
+
     message.html(el);
+    $("#id_report_request_failed").val(pk);
+    $("#id_visit_failed_button_div").html(btn);
     }
     else
     {
+    $("#id_report_request_failed").val('');
     message.html('');
+    $("#id_visit_failed_button_div").html('');
     }
 }
 
@@ -422,6 +451,5 @@ if ($("#id_report_request").val()){
 $("#id_report_request").change( function(){
     selectRequest()
 });
-
 </script>
 {% endblock %}

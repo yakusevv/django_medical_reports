@@ -6,6 +6,7 @@ from viberbot.api.messages.text_message import TextMessage
 
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import (
@@ -313,6 +314,17 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
+
+        if request.POST.get('visit_failed') == "True":
+            if request.POST.get('report_request_failed'):
+                report_request = get_object_or_404(ReportRequest, pk=request.POST.get('report_request_failed'))
+                if report_request.doctor == request.user.profile or request.user.is_staff:
+                    report_request.status = 'failed'
+                    report_request.save()
+                return redirect(reverse('report_create_url'))
+            else:
+                raise Http404()
+
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
