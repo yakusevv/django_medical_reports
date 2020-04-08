@@ -471,10 +471,9 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
         profile = self.request.user.profile
         profile_country = profile.city.district.region.country
         report_requests_query = ReportRequest.objects.filter(
-                                            doctor__city__district__region__country=profile_country,
-                                            status='accepted'
+                                            doctor__city__district__region__country=profile_country
                                             ).filter(
-                                            Q(report=None) | Q(report=self.object)
+                                            Q(report=None, status='accepted') | Q(report=self.object)
                                             ).order_by('-date_time')
         if self.request.POST:
             context['service_items'] = ServiceItemsFormSet(self.request.POST, instance=self.object)

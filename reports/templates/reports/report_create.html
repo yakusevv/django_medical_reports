@@ -123,10 +123,10 @@
   {% if user.is_staff %}
   <div class="form-group row border-top">
     <div class="form-group col-md-4 mb-0">
-      {{ form.visit_price|as_crispy_field }}
+      {{ form.visit_price_doctor|as_crispy_field }}
     </div>
     <div class="form-group col-md-4 mb-0">
-      {{ form.visit_price_doctor|as_crispy_field }}
+      {{ form.visit_price|as_crispy_field }}
     </div>
   </div>
   {% endif %}

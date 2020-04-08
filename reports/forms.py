@@ -27,7 +27,6 @@ class ReportForm(forms.ModelForm):
         super(ReportForm, self).__init__(*args, **kwargs)
         self.fields['visit_price'].required = False
         self.fields['visit_price_doctor'].required = False
-#        self.fields['doctor'].required = False
 
     class Meta:
         model = Report
@@ -37,7 +36,6 @@ class ReportForm(forms.ModelForm):
         widgets = {
                    'diagnosis'         : Select2MultipleWidget,
                    'city'              : Select2Widget,
-#                   'company'           : Select2Widget,
                    'type_of_visit'     : Select2Widget,
                    'date_of_visit'     : DateTimePicker(
                                         options={
@@ -69,31 +67,9 @@ class ReportForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ReportForm, self).clean()
-#        ref_number = cleaned_data.get("ref_number").upper()
         patients_first_name = cleaned_data.get("patients_first_name").upper()
         patients_last_name = cleaned_data.get("patients_last_name").upper()
         company_ref_number = cleaned_data.get("company_ref_number").upper()
-#        same_reports = Report.objects.filter(
-#                            ref_number=ref_number
-#                        ).filter(
-#                            patients_last_name=patients_last_name
-#                        ).filter(
-#                            patients_first_name=patients_first_name
-#                        )
-#        if not self.instance.pk:
-#            if same_reports.exists():
-#                msg = _("Report with this name is already exist")
-#                self.add_error('ref_number', msg)
-#                self.add_error('patients_first_name', msg)
-#                self.add_error('patients_last_name', msg)
-#        else:
-#            same_reports = same_reports.exclude(pk=self.instance.pk)
-#            if len(same_reports) > 0:
-#                msg = _("Other report with this name is already exist")
-#                self.add_error('ref_number', msg)
-#                self.add_error('patients_first_name', msg)
-#                self.add_error('patients_last_name', msg)
-#        cleaned_data['ref_number'] = ref_number
         cleaned_data['patients_last_name'] = patients_last_name
         cleaned_data['patients_first_name'] = patients_first_name
         cleaned_data['company_ref_number'] = company_ref_number
@@ -101,7 +77,6 @@ class ReportForm(forms.ModelForm):
 
     def save(self, commit=True, *args, **kwargs):
         instance = super(ReportForm, self).save(commit=False)
-#        company = self.cleaned_data['company']
         report_request = self.cleaned_data['report_request']
         city = self.cleaned_data['city']
         type_of_visit = self.cleaned_data['type_of_visit']
@@ -116,7 +91,9 @@ class ReportForm(forms.ModelForm):
         changed_data_set = set(self.changed_data)
         change_condition = bool(decisive_fields & changed_data_set)
 
-        if not self.cleaned_data.get('visit_price', False) and change_condition:
+        if instance.report_request.status == 'cancelled_by_company':
+            instance.visit_price = 0
+        elif not self.cleaned_data.get('visit_price', False) and change_condition:
             try:
                 tariff = Tariff.objects.get(district=district, price_group=price_group)
                 visit_tariff = VisitTariff.objects.get(tariff=tariff, type_of_visit=type_of_visit)
@@ -192,8 +169,10 @@ class ServiceItemForm(forms.ModelForm):
                     instance.cost_doctor = service.price_doctor * instance.quantity
                 else:
                     instance.cost_doctor = service.price_doctor
-            if not cost and change_condition:
-                instance.cost = service.price * instance.quantity
+            if instance.report.report_request.status == 'cancelled_by_company':
+                instance.cost = 0
+            elif not cost and change_condition:
+                    instance.cost = service.price * instance.quantity
             if commit:
                 instance.save()
             return instance
@@ -395,3 +374,17 @@ class ReportRequestForm(forms.ModelForm):
                 }
             ),
         }
+
+    def save(self, commit=True, *args, **kwargs):
+        instance = super(ReportRequestForm, self).save(commit=False)
+
+        if instance.has_report():
+            print('zero')
+            instance.report.visit_price = 0
+            instance.report.save()
+            for item in instance.report.service_items.all():
+                item.cost = 0
+                item.save()
+        if commit:
+            instance.save()
+        return instance
