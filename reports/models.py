@@ -48,6 +48,7 @@ class Country(models.Model):
 class Region(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
+    is_city_state = models.BooleanField(default=False, verbose_name=_("City-state"))
 
     class Meta:
         unique_together = (('name', 'country',),)
@@ -94,9 +95,6 @@ class City(models.Model):
         super(City, self).save(*args, **kwargs)
 
 
-
-# Every disease in reports must have a name in language of country where was visit
-# so property "country" has been added
 class Disease(models.Model):
     name = models.CharField(max_length=80, unique=True, verbose_name=_("Name"))
     country = models.ForeignKey(Country, on_delete=models.PROTECT, verbose_name=_("Country"))
@@ -129,7 +127,7 @@ class TypeOfVisit(models.Model):
     initial = models.CharField(max_length=2, verbose_name=_("Initial"), blank=True)
 
     class Meta:
-        unique_together = (('name', 'country',))
+        unique_together = (('name', 'country',),)
         verbose_name = _('Type of visit')
         verbose_name_plural = _('Types of visits')
 
@@ -155,7 +153,6 @@ class VisitTariff(models.Model):
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, verbose_name=_("Tariff"))
     type_of_visit = models.ForeignKey(TypeOfVisit, on_delete=models.CASCADE, verbose_name=_("Type of visit"))
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
-#    price_doctor = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name=_("Price for the doctor"))
 
     class Meta:
         unique_together = (('tariff', 'type_of_visit',),)
@@ -182,7 +179,6 @@ class Company(models.Model):
 # Every country need to have template in appropriative language
 class ReportTemplate(models.Model):
     template = models.FileField(upload_to=get_docxtemplate_path, storage=OverwriteStorage(), verbose_name=_("Template"))
-#    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_("Company"))
     country = models.OneToOneField(Country, on_delete=models.CASCADE, verbose_name=_("Country"))
 
     class Meta:
@@ -278,7 +274,12 @@ class Report(models.Model):
 
 
 class AdditionalImage(models.Model):
-    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name='additional_images', verbose_name=_("Report"))
+    report = models.ForeignKey(
+                            Report,
+                            on_delete=models.CASCADE,
+                            related_name='additional_images',
+                            verbose_name=_("Report")
+                            )
     image = models.ImageField(upload_to=get_image_path, verbose_name=_("Image"))
     position = models.IntegerField(blank=False, verbose_name=_("Position"))
     expand = models.BooleanField(default=False, verbose_name=_("Expand"))
@@ -291,7 +292,12 @@ class AdditionalImage(models.Model):
 #    Every country has a list of services with prices for each.
 class Service(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
-    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='services', default=1, verbose_name=_("Country"))
+    country = models.ForeignKey(
+                            Country,
+                            on_delete=models.PROTECT,
+                            related_name='services',
+                            verbose_name=_("Country")
+                            )
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price"))
     price_doctor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("Price for the doctor"))
     unsummable_price = models.BooleanField(default=False, verbose_name=_('Unsummable price'))
@@ -339,7 +345,6 @@ class ReportRequest(models.Model):
                                 blank=True
                                 )
     date_time = models.DateTimeField(verbose_name=_("Date and time"))
-    company = models.ForeignKey('Company', on_delete=models.CASCADE, verbose_name=_("Company"))
     message = models.TextField(max_length=500, verbose_name=_("Message"))
     seen = models.BooleanField(default=False)
     ref_number = models.IntegerField(verbose_name=_("Ref. number"))
