@@ -14,6 +14,7 @@ class Profile(models.Model):
     is_foreign_doctor = models.BooleanField(default=False, verbose_name=_("Is foreign doctor"))
     initials = models.CharField(max_length=5, verbose_name=_("Initials"), blank=True)
     viber_id = models.CharField(max_length=100, verbose_name=_("Viber id"), blank=True,)
+    is_owner = models.BooleanField(default=False, verbose_name=_("Owner"))
 
     class Meta:
         verbose_name = _('Profile')
@@ -48,17 +49,32 @@ class Profile(models.Model):
 
 
 class ProfileReportAutofillTemplate(models.Model):
-    doctor = models.ForeignKey(Profile, related_name='report_templates', on_delete=models.CASCADE, verbose_name=_("Doctor"))
-    country = models.ForeignKey('reports.Country', related_name='report_templates', on_delete=models.CASCADE, verbose_name=_("Country"))
+    doctor = models.ForeignKey(
+                            Profile,
+                            related_name='report_templates',
+                            on_delete=models.CASCADE,
+                            verbose_name=_("Doctor")
+                            )
+    country = models.ForeignKey(
+                            'reports.Country',
+                            related_name='report_templates',
+                            on_delete=models.CASCADE,
+                            verbose_name=_("Country")
+                            )
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     cause_of_visit_template =models.TextField(max_length=700, blank=True, verbose_name=_("Cause of visit"))
     checkup_template = models.TextField(max_length=1200, blank=True, verbose_name=_("Checkup"))
     additional_checkup_template = models.TextField(max_length=700, blank=True, verbose_name=_("Additional checkup"))
     prescription_template = models.TextField(max_length=700, blank=True, verbose_name=_("Prescription"))
-    diagnosis_template = models.ManyToManyField('reports.Disease', related_name='autofill_template', verbose_name=_("Diagnosis"), blank=True)
+    diagnosis_template = models.ManyToManyField(
+                                            'reports.Disease',
+                                            related_name='autofill_template',
+                                            verbose_name=_("Diagnosis"),
+                                            blank=True
+                                            )
 
     class Meta:
-        unique_together = (('doctor','name',),)
+        unique_together = (('doctor', 'name',),)
         verbose_name = _('Report autofill template')
         verbose_name_plural = _('Report autofill templates')
 
@@ -68,12 +84,15 @@ class ProfileReportAutofillTemplate(models.Model):
 
 class UserDistrict(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("User"))
-#    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_("District"))
     cities = models.ManyToManyField('reports.City', related_name='cities', verbose_name=_("Cities"))
-    country = models.ForeignKey('reports.Country', related_name='user_district', verbose_name=_("Country"), on_delete=models.CASCADE)
+    country = models.ForeignKey(
+                            'reports.Country',
+                            related_name='user_district',
+                            verbose_name=_("Country"),
+                            on_delete=models.CASCADE
+                            )
 
     class Meta:
-#        unique_together = (('user', 'district'),)
         verbose_name = _('District coverage')
         verbose_name_plural = _('Districts coverage')
 

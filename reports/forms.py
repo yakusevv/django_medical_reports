@@ -101,15 +101,18 @@ class ReportForm(forms.ModelForm):
             except (Tariff.DoesNotExist, VisitTariff.DoesNotExist):
                 instance.visit_price = 0
         if not self.cleaned_data.get('visit_price_doctor', False) and change_condition:
-            try:
-                user_district = UserDistrict.objects.get(cities__in=[city,], user=report_request.doctor.user)
-                visit_price = UserDistrictVisitPrice.objects.get(
-                                                        user_district=user_district,
-                                                        type_of_visit=type_of_visit
-                                                        )
-                instance.visit_price_doctor = visit_price.price
-            except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
-                instance.visit_price_doctor = 0
+            if instance.report_request.doctor.is_owner:
+                instance.visit_price_doctor = instance.visit_price
+            else:
+                try:
+                    user_district = UserDistrict.objects.get(cities__in=[city, ], user=report_request.doctor.user)
+                    visit_price = UserDistrictVisitPrice.objects.get(
+                                                                   user_district=user_district,
+                                                                   type_of_visit=type_of_visit
+                                                                     )
+                    instance.visit_price_doctor = visit_price.price
+                except (UserDistrict.DoesNotExist, UserDistrictVisitPrice.DoesNotExist):
+                    instance.visit_price_doctor = 0
         if commit:
             instance.save()
             self.save_m2m()
@@ -164,15 +167,17 @@ class ServiceItemForm(forms.ModelForm):
         if service:
             cost = self.cleaned_data.get('cost', False)
             cost_doctor = self.cleaned_data.get('cost_doctor', False)
-            if not cost_doctor and change_condition:
-                if not service.unsummable_price:
-                    instance.cost_doctor = service.price_doctor * instance.quantity
-                else:
-                    instance.cost_doctor = service.price_doctor
             if instance.report.report_request.status == 'cancelled_by_company':
                 instance.cost = 0
             elif not cost and change_condition:
-                    instance.cost = service.price * instance.quantity
+                instance.cost = service.price * instance.quantity
+            if not cost_doctor and change_condition:
+                if instance.report.report_request.doctor.is_owner:
+                    instance.cost_doctor = instance.cost
+                elif not service.unsummable_price:
+                    instance.cost_doctor = service.price_doctor * instance.quantity
+                else:
+                    instance.cost_doctor = service.price_doctor
             if commit:
                 instance.save()
             return instance
