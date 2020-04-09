@@ -513,7 +513,7 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
     redirect_url = 'reports_list_url'
     model = Report
 
-    def get(self, request, pk):
+    def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         object_country = self.object.city.district.region.country
         users_country = request.user.profile.city.district.region.country
@@ -530,7 +530,7 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
         else:
             return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
-    def post(self, request, pk):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         object_country = self.object.city.district.region.country
         users_country = request.user.profile.city.district.region.country

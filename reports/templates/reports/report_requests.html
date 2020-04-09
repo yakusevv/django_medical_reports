@@ -207,6 +207,7 @@
     let timeout = setInterval(reloadRequests, 10000);
 
     $('#id_request_form').submit( function(e) {
+        $('#id_submit_btn').attr('disabled','disabled');
         e.preventDefault();
         let form = $(this);
         let post_url = "{% url 'requests:requests-list' %}"
@@ -227,11 +228,13 @@
                 form.fadeOut(800, function () {
                     form[0].reset();
                     form.fadeIn().delay(2000);
+                    $('#id_submit_btn').removeAttr('disabled');
                     reloadRequests();
                 });
             },
             error : function(xhr, status, error) {
                 alert("{% trans 'Error while saving report request' %}\n" + xhr.responseText)
+                $('#id_submit_btn').removeAttr('disabled');
             }
         });
     });

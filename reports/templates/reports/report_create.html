@@ -30,7 +30,7 @@
   <input type="hidden" name="report_request_failed" value="" id="id_report_request_failed">
 </form>
 
-<form action="{% url 'report_create_url' %}" method="post" autocomplete="off" enctype="multipart/form-data">
+<form action="{% url 'report_create_url' %}" method="post" autocomplete="off" enctype="multipart/form-data" id="id_report_form">
   {% csrf_token %}
   <div class="form-group row border-top">
     <div class="form-group col-md-4 mb-0">
@@ -302,7 +302,7 @@ function addImageCrop(id){
   }
 }).appendTo(set);
 
-    $('#id_create').on('click', function () {
+    $('#id_report_form').on('submit', function () {
       if ($('#'+id)[0].value) {
         var cropData = $uploadCrop.croppie('get').points;
         var orient = $uploadCrop.croppie('get').orientation;

@@ -19,7 +19,7 @@
 
 <script src="{% static 'node_modules/croppie/croppie.js' %}"></script>
 
-<form action="{{ report.get_images_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data">
+<form action="{{ report.get_images_update_url }}" method="post" autocomplete="off" enctype="multipart/form-data" id="id_images_update_form">
   {% csrf_token %}
 
   <table class="table" id="images_table">
@@ -180,7 +180,7 @@ function addImageCrop(id){
   }
 }).appendTo(set);
 
-$('#id_update').on('click', function() {
+$('#id_images_update_form').on('submit', function() {
   if ($('#'+id)[0].value) {
     var cropData = $uploadCrop.croppie('get').points;
     var orient = $uploadCrop.croppie('get').orientation;
@@ -217,18 +217,6 @@ $('#images_table tbody tr').formset({
       if ($("#id_image_crop_" + id).length){
         $("#id_image_crop_" + id).remove();
     };
-    /*
-      if (int_id > 0){
-        var crop_divs = $("#id_image_crop_set").children()
-        crop_divs.each(function(){
-          var int_crop_id = parseInt(this.id.replace(/\D/g,''))
-          if (int_crop_id > int_id) {
-            $(this)[0].id = this.id.replace(int_crop_id, (int_crop_id - 1));
-          }
-        });
-
-      }
-    */
   }
 
 });
