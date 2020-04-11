@@ -6,24 +6,97 @@
 {% endblock %}
 
 {% block content %}
+<div class="ml-4 mb-4 mt-2 mb-2">
+ <button type="button" class="btn btn-outline-secondary btn-sm ml-2" data-toggle="collapse" data-target="#id_distribution">{% trans "Distribution" %}</button>
+    <div class="collapse" id="id_distribution">
+        <div class="row mt-4 ml-0" style="overflow-x: auto;">
+            <table class="table pb-2">
+                <tr>
+                    <td class="table-secondary">
+                    </td>
+                    {% for region, doctors in info_table.items %}
+                        <td class="border table-primary" colspan="{{ doctors.count }}">
+                            {{ region }}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr id="id_doctors">
+                    <td class="border">
+                        {% trans "Doctors: " %}
+                    </td>
+                    {% for region, doctors in info_table.items %}
+                        {% if doctors %}
+                        {% for doctor in doctors %}
+                            <td class="border" id="id_doctor_{{ doctor.pk }}">
+                                {{ doctor.initials }}
+                            </td>
+                        {% endfor %}
+                        {% else %}
+                             <td class="border">
+                                 #
+                             </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                <tr id="id_all_requests">
+                    <td class="border">
+                        {% trans "All: " %}
+                    </td>
+                    {% for region, doctors in info_table.items %}
+                        {% if doctors %}
+                        {% for doctor in doctors %}
+                            <td class="border" id="id_all_requests_{{ doctor.pk }}">
+                               0
+                            </td>
+                        {% endfor %}
+                        {% else %}
+                            <td class="border">
+                                #
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                <tr id="id_today_requests">
+                    <td class="border">
+                          {% trans "Today: " %}
+                    </td>
+                    {% for region, doctors in info_table.items %}
+                        {% if doctors %}
+                        {% for doctor in doctors %}
+                            <td class="border" id="id_today_requests_{{ doctor.pk }}">
+                                 0
+                            </td>
+                        {% endfor %}
+                        {% else %}
+                            <td class="border">
+                                #
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div class="card mt-2">
     <form method="POST" id="id_request_form">
     <div class="form-group mt-4">
-        <label class="col-sm-2 control-label" for="id_doctor">
+        <label class="col-sm-4 control-label" for="id_doctor">
            {% trans "Doctor" %}
         </label>
         <div class="col-sm-6">
             <select class="form-control" name="doctor" id="id_doctor">
             </select>
         </div>
-        <label class="col-sm-2 control-label" for="id_company">
+        <label class="col-sm-4 control-label" for="id_company">
             {% trans "Company" %}
         </label>
         <div class="col-sm-6">
             <select class="form-control" name="company" id="id_company">
             </select>
         </div>
-        <label class="col-sm-2 control-label" for="id_message">
+        <label class="col-sm-4 control-label" for="id_message">
             {% trans "Message" %}
         </label>
         <div class="col-sm-10">
@@ -31,10 +104,10 @@
         </div>
     </div>
         <div class="row ml-0">
-        <div class="col-sm-10 mb-4">
+        <div class="col-sm-8 mb-4">
             <a class="btn btn-secondary" href="{% url 'report_requests_list_url' %}" id="id_history">{% trans 'History' %}</a>
         </div>
-        <div class="col-sm-1 mb-4">
+        <div class="col-sm-4 mb-4">
             <button class="btn btn-success" type="submit" id="id_submit_btn">{% trans 'Submit' %}</button>
         </div>
         </div>
@@ -55,21 +128,21 @@
                 <form method="POST" id="id_request_form_edit">
                     <input type="hidden" id="id_pk_edit" value="">
                     <div class="form-group mt-2">
-                        <label class="col-sm-2 control-label" for="id_doctor_edit">
+                        <label class="col-sm-4 control-label" for="id_doctor_edit">
                             {% trans "Doctor" %}
                         </label>
                         <div class="col-sm-6">
                             <select class="form-control" name="doctor" id="id_doctor_edit">
                             </select>
                         </div>
-                        <label class="col-sm-2 control-label" for="id_company_edit">
+                        <label class="col-sm-4 control-label" for="id_company_edit">
                             {% trans Company %}
                         </label>
                         <div class="col-sm-6">
                             <select class="form-control" name="company" id="id_company_edit">
                             </select>
                         </div>
-                        <label class="col-sm-2 control-label" for="id_message_edit">
+                        <label class="col-sm-4 control-label" for="id_message_edit">
                             {% trans "Message" %}
                         </label>
                         <div class="col-sm-10">
@@ -99,6 +172,13 @@
     let report_requests = [];
     let is_sending = false;
 
+    const isToday = (someDate) => {
+        const today = new Date();
+        return someDate.getDate() === today.getDate() &&
+        someDate.getMonth() === today.getMonth() &&
+        someDate.getFullYear() === today.getFullYear()
+    };
+
     function loadOptions(){
         $.ajax({
             url : "{% url 'report_requests_options_api_url' %}",
@@ -121,29 +201,33 @@
             error : function(xhr, status, error) {
                 alert("{% trans 'Error while loading select options' %}\n" + xhr.responseText)
             }
-        })};
+        })}
 
     function reloadRequests () {
+        let doctors = new Set();
+
         $.ajax({
             url : "{% url 'requests:requests-list' %}",
             dataType: "json",
             type: "GET",
             success : function (data) {
                 report_requests = data;
+
                 $("#id_requests_count").text(report_requests.length);
                 if (report_requests.length > 0){
                     $("#id_requests_info").style = 'color: red;'
                 }
                 else {
                     $("#id_requests_info").style = 'color: green;'
-                };
+                }
                 $('#id_requests_list').html("");
                 data.forEach(el => {
                     let div = document.createElement("div");
+                    let ref_number_pad = ('000'+ el.ref_number).slice(-3);
+
                     div.className = 'card mt-1 mx-auto';
                     if (el.seen){ div.style = 'width: 90%; background-color: #B1FFB7;' }
                     else { div.style = 'width: 90%;' }
-                    let ref_number_pad = ('000'+ el.ref_number).slice(-3)
                     div.innerHTML = '<div class="card-header">' +
                                     '<button type="button" class="close" name="request_cancellation" ' +
                                     'data-toggle="modal" data-target="#id_cancellation_modal" value=' + el.pk +' >' +
@@ -161,7 +245,18 @@
                                      el.pk +'>{% trans "edit" %}</button></div>' +
                                     '<div class="card-footer">{% trans "Sender: " %}' + el.sender_initials + '</div>';
                     $('#id_requests_list').append(div);
-                })},
+                    doctors.add(el.doctor);
+                     });
+
+                    doctors.forEach(doctor => {
+                        let all = report_requests.filter(el => el.doctor === doctor);
+                        let today = all.filter(el => isToday(new Date(el.date_time)));
+
+                        $("#id_all_requests_" + doctor).text(all.length);
+                        $("#id_today_requests_" + doctor).text(today.length);
+                    }
+                );
+                },
             error : function(xhr, status, error) {
                 alert("{% trans 'Error while loading report requests' %}\n" + xhr.responseText)
             }
@@ -194,7 +289,7 @@
 
     function getEdit(pk){
           $('#id_pk_edit').val(pk);
-          let r = report_requests.find(x => x.pk === pk)
+          let r = report_requests.find(x => x.pk === pk);
           $('#id_doctor_edit').val(r.doctor);
           $('#id_company_edit').val(r.company);
           $('#id_message_edit').val(r.message);
@@ -210,7 +305,7 @@
         $('#id_submit_btn').attr('disabled','disabled');
         e.preventDefault();
         let form = $(this);
-        let post_url = "{% url 'requests:requests-list' %}"
+        let post_url = "{% url 'requests:requests-list' %}";
         let post_data = form.serialize();
         if (is_sending) return false;
         $.ajax({
@@ -233,7 +328,7 @@
                 });
             },
             error : function(xhr, status, error) {
-                alert("{% trans 'Error while saving report request' %}\n" + xhr.responseText)
+                alert("{% trans 'Error while saving report request' %}\n" + xhr.responseText);
                 $('#id_submit_btn').removeAttr('disabled');
             }
         });
@@ -273,15 +368,15 @@
 
     $('#id_requests_list').on('click', 'button[name="request_cancellation"]', function(event){
         let pk = Number($(this)[0].value);
-        r = report_requests.find(x => x.pk === pk)
+        r = report_requests.find(x => x.pk === pk);
         let doctor = r.doctor_initials;
-        let ref_number = ('000'+ r.ref_number).slice(-3)
+        let ref_number = ('000'+ r.ref_number).slice(-3);
         let company = r.company_name;
         let date_time = r.date_time;
         let a = confirm("{% trans 'Do you really want to close this case?' %}\n" +
                         company + ' ' + ref_number + ' ' + date_time + ' ' + doctor
                         );
-        if (a == true) {
+        if (a === true) {
             closeCase(pk)
         };
     });

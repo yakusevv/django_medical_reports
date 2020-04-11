@@ -20,7 +20,7 @@ class ReportRequestSerializer(serializers.ModelSerializer):
                                         queryset=Company.objects.all()
                                         )
     company_name = serializers.CharField(source='company.name', read_only=True)
-    date_time = serializers.DateTimeField(read_only=True, format='%d-%m-%Y %H:%M:%S')
+    date_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M:%S')
     seen = serializers.BooleanField(read_only=True)
     ref_number = serializers.IntegerField(read_only=True)
     sender_initials = serializers.CharField(source='sender.initials', read_only=True)
@@ -39,7 +39,7 @@ class ReportRequestSerializer(serializers.ModelSerializer):
                   'seen',
                   'ref_number',
                   'sender_initials',
-                  'status'
+                  'status',
         ]
 
 

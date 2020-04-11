@@ -37,6 +37,7 @@ from profiles.models import Profile
 from .models import (
                 Report,
                 Country,
+                Region,
                 PriceGroup,
                 TypeOfVisit,
                 VisitTariff,
@@ -700,8 +701,16 @@ class ReportRequestsView(AdminStaffRequiredMixin, TemplateView):
     template_name = 'reports/report_requests.html'
 
     def get_context_data(self, **kwargs):
+        current_country = self.request.user.profile.city.district.region.country
         context = super(ReportRequestsView, self).get_context_data()
         context['report_requests_link_active'] = "active"
+        regions = Region.objects.filter(country=current_country).order_by('name')
+        context['info_table'] = {}
+        for region in regions:
+            context['info_table'][region] = Profile.objects.filter(
+                                                                user__is_staff=False,
+                                                                city__district__region=region
+                                                                    )
         return context
 
 
