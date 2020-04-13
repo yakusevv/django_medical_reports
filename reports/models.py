@@ -352,6 +352,10 @@ class ReportRequest(models.Model):
     sender = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_('Sender'))
     status = models.CharField(max_length=20, choices=STATUS, default='accepted', verbose_name=_('Status'))
 
+    class Meta:
+        verbose_name = _('Report request')
+        verbose_name_plural = _('Report requests')
+
     def validate_unique(self, exclude=None):
         country = self.doctor.city.district.region.country
         qs = ReportRequest.objects.filter(
