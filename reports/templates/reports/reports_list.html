@@ -88,7 +88,7 @@
       {% for report in report_list %}
         {% if request.user.profile == report.report_request.doctor or request.user.is_staff %}
 
-        <tr class="border-bottom"
+        <tr {% if forloop.last %}class="border-bottom"{% endif %}
             style='{% if report.checked %} color: gray {% endif %}'>
           <td>
            <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
