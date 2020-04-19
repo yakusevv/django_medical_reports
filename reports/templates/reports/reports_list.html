@@ -71,33 +71,46 @@
 </div>
 </div>
 
-      <div class="container">
-        <div class="row mb-2 col-md-12">
-          <div class="col">
+      <table class="table">
+        <thead class="thead-light">
+          <th>
             <b>{% trans "Report" %}</b>
-          </div>
-          <div class="col">
+          </th>
+          <th>
           <b>{% trans "City" %}</b>
-          </div>
-          <div class="col">
+          </th>
+          <th>
             <b>{% trans "Date of visit" %}</b>
-          </div>
-        </div>
+          </th>
+          <th>
+          </th>
+        </thead>
       {% for report in report_list %}
         {% if request.user.profile == report.report_request.doctor or request.user.is_staff %}
 
-        <div class="row mb-1 col-md-12 {% if forloop.last %}border-bottom{% endif %} border-top" style='{% if report.checked %} color: gray {% endif %}'>
-          <div class="col">
+        <tr class="border-bottom"
+            style='{% if report.checked %} color: gray {% endif %}'>
+          <td>
            <a href="{{ report.get_absolute_url }}" style='{% if report.checked %} color: gray {% endif %}'>{{ report }}</a>
-          </div>
-          <div class="col">
+          </td>
+          <td>
             {{ report.city.name }}
-          </div>
-          <div class="col">
+          </td>
+          <td>
             {{ report.date_of_visit }}
-          </div>
-        </div>
+          </td>
+          <td style="text-align: right;">
+            <a class="btn" href="{% url 'download_report_docx_url' report.pk 'd' %}" style='color: blue; width: 45px;' download>
+              <i class="fa fa-download"></i>
+            </a>
+          {% if request.user.is_staff %}
+              <a class="btn" href="{% url 'download_report_docx_url' report.pk 'a' %}" style='color: green; width: 45px;' download>
+                <i class="fa fa-download"></i>
+              </a>
+            </td>
+          {% endif %}
+        </tr>
         {% endif %}
       {% endfor %}
-      </div>
+      </table>
 {% endblock %}

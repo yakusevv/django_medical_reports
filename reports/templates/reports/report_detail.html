@@ -5,6 +5,10 @@
   {{ block.super }} - {{ report.ref_number }} - {% trans "View" %}
 {% endblock %}
 
+{% block extrahead %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
 {% block admin-panel-content %}
 <a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
 <a class="admin-panel-element btn btn-primary" href="{% url 'report_create_url'%}?prev={{ report.pk }}">{% trans "Create second" %}</a>
@@ -17,23 +21,19 @@
 
 {% block content %}
 <div class="container mt-4">
-  <div class="row mb-2">
+  <div class="row mb-4">
     <div class="col offset-md-4">
-      <div class="col mb-3">
-      {% if request.user.is_staff %}
-        <b>
-        <a href="{% url 'download_report_docx_url' report.pk 'a' %}" style='{% if report.checked %} color: gray; {% endif %}' download>
-          {{ report }}
-        </a>
-        </b>
-      {% else %}
-      <b>
-        <a href="{% url 'download_report_docx_url' report.pk 'd' %}" style='{% if report.checked %} color: gray {% endif %}' download>
-          {{ report }}
-        </a>
-      </b>
-      {% endif %}
-      </div>
+          <b style='{% if report.checked %} color: gray; {% endif %}'>
+            {{ report }}
+          <a class="btn ml-2" href="{% url 'download_report_docx_url' report.pk 'd' %}" style='color: blue;' download>
+            <i class="fa fa-download"></i>
+          </a>
+          {% if request.user.is_staff %}
+            <a class="btn" href="{% url 'download_report_docx_url' report.pk 'a' %}" style='color: green;' download>
+              <i class="fa fa-download"></i>
+            </a>
+          {% endif %}
+          </b>
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
