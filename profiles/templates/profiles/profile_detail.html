@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="container mt-4">
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
       <div class="col-md-3">
         <b>{% trans "Last name:" %}</b>
       </div>
@@ -16,7 +16,7 @@
         {{ profile.user.last_name }}
       </div>
   </div>
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
       <div class="col-md-3">
         <b>{% trans "First name:" %}</b>
       </div>
@@ -25,7 +25,7 @@
       </div>
   </div>
   {% if not profile.user.is_staff %}
-  <div class="row mb-2">
+  <div class="row mb-2 border-top">
       <div class="col-md-3">
         <b>{% trans "Num. col.:" %}</b>
       </div>
@@ -34,8 +34,8 @@
       </div>
   </div>
   {% endif %}
-  <div class="row mb-2">
-      <div class="col-md-3">
+  <div class="row mb-2 border-top border-bottom">
+      <div class="col-md-3 mb-2">
         <b>{% trans "Location:" %}</b>
       </div>
       <div class="col">
