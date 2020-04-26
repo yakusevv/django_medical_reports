@@ -669,7 +669,8 @@ class ReportRequestViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.validated_data['date_time'] = datetime.datetime.now()
         serializer.validated_data['sender'] = self.request.user.profile
-        serializer.validated_data['ref_number'] = self.get_largest(serializer)
+        if not serializer.validated_data.get('ref_number'):
+            serializer.validated_data['ref_number'] = self.get_largest(serializer)
         serializer.save()
 
     def perform_update(self, serializer):
@@ -689,11 +690,12 @@ class RequestOptionsViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAdminUser,)
 
     def list(self, request):
-        qs = Company.objects.all()
+        qs_companies = Company.objects.all()
         country = request.user.profile.city.district.region.country
-        s1 = CompanyOptionsSerializer(qs, many=True)
-        qs = Profile.objects.filter(user__is_staff=False, city__district__region__country=country)
-        s2 = DoctorOptionsSerializer(qs, many=True)
+        context = {'user': self.request.user}
+        s1 = CompanyOptionsSerializer(qs_companies, many=True, context=context)
+        qs_doctors = Profile.objects.filter(user__is_staff=False, city__district__region__country=country)
+        s2 = DoctorOptionsSerializer(qs_doctors, many=True)
         return Response({'companies': s1.data, 'doctors': s2.data})
 
 

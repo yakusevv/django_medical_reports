@@ -716,7 +716,7 @@ msgstr "Сообщение: "
 #: reports/templates/reports/report_request_update.html:32
 #: reports/templates/reports/report_requests.html:246
 msgid "Sender: "
-msgstr "Отпаравитель: "
+msgstr "Отправитель: "
 
 #: reports/templates/reports/report_request_update.html:40
 msgid "Report: "

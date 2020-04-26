@@ -85,22 +85,36 @@
         <label class="col-sm-4 control-label" for="id_doctor">
            {% trans "Doctor" %}
         </label>
-        <div class="col-sm-6">
-            <select class="form-control" name="doctor" id="id_doctor">
-            </select>
+        <div class="form-group row ml-0 mr-0">
+            <div class="col-sm-6">
+                <select class="form-control" name="doctor" id="id_doctor">
+                </select>
+            </div>
         </div>
         <label class="col-sm-4 control-label" for="id_company">
             {% trans "Company" %}
         </label>
-        <div class="col-sm-6">
-            <select class="form-control" name="company" id="id_company">
-            </select>
+        <div class="form-group row ml-0 mr-0">
+            <div class="col-sm-6">
+                <select class="form-control" name="company" id="id_company">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input" id="id_set_ref_number">
+                    <label class="form-check-label" for="id_set_ref_number">{% trans "Set ref. number" %}</label>
+                </div>
+            </div>
+            <div class="col-sm-2" id="id_ref_number">
+            </div>
         </div>
         <label class="col-sm-4 control-label" for="id_message">
             {% trans "Message" %}
         </label>
-        <div class="col-sm-10">
-            <textarea name="message" class="form-control"  id="id_message"></textarea>
+        <div class="form-group row ml-0 mr-0">
+            <div class="col-sm-10">
+                <textarea name="message" class="form-control"  id="id_message"></textarea>
+            </div>
         </div>
     </div>
         <div class="row ml-0">
@@ -136,7 +150,7 @@
                             </select>
                         </div>
                         <label class="col-sm-4 control-label" for="id_company_edit">
-                            {% trans Company %}
+                            {% trans "Company" %}
                         </label>
                         <div class="col-sm-6">
                             <select class="form-control" name="company" id="id_company_edit">
@@ -296,6 +310,29 @@
           $('#id_data_time_edit').text("{% trans 'Request from ' %}" + r.date_time);
     }
 
+    function loadNextRefNumber(pk){
+        $.ajax({
+            url : "{% url 'report_requests_options_api_url' %}",
+            dataType: "json",
+            type: "GET",
+            success : function (data) {
+                let company = data.companies.find(x => x.pk == pk);
+                console.log(pk);
+                a = document.createElement("input");
+                a.name = 'ref_number';
+                a.className = 'form-control';
+                a.type = 'number';
+                a.required = 'True';
+                a.min = 1;
+                a.value = company.ref_number_next;
+                $("#id_ref_number").html(a);
+            },
+            error : function(xhr, status, error) {
+                alert("{% trans 'Error while loading select options' %}\n" + xhr.responseText)
+            }
+        })
+    }
+
     loadOptions();
     reloadRequests();
 
@@ -322,6 +359,7 @@
             success: function () {
                 form.fadeOut(800, function () {
                     form[0].reset();
+                    $("#id_ref_number").html('');
                     form.fadeIn().delay(2000);
                     $('#id_submit_btn').removeAttr('disabled');
                     reloadRequests();
@@ -384,6 +422,22 @@
     $('#id_requests_list').on('click', 'button[name="request_edit"]', function(event){
         getEdit(Number($(this)[0].value))
     });
+
+    $("#id_company").change(function(){
+        $("#id_set_ref_number").prop('checked', false);
+        $("#id_ref_number").html('');
+        });
+
+    $("#id_set_ref_number").change(function(){
+        if ($(this).is(":checked")){
+        loadNextRefNumber($("#id_company").val())
+        }
+        else
+        {
+        $("#id_ref_number").html('')
+        }
+      }
+    );
 
 </script>
 {% endblock %}

@@ -347,7 +347,7 @@ class ReportRequest(models.Model):
     date_time = models.DateTimeField(verbose_name=_("Date and time"))
     message = models.TextField(max_length=500, verbose_name=_("Message"))
     seen = models.BooleanField(default=False)
-    ref_number = models.IntegerField(verbose_name=_("Ref. number"))
+    ref_number = models.PositiveIntegerField(verbose_name=_("Ref. number"))
     company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name=_("Company"))
     sender = models.ForeignKey('profiles.Profile', on_delete=models.PROTECT, verbose_name=_('Sender'))
     status = models.CharField(max_length=20, choices=STATUS, default='accepted', verbose_name=_('Status'))
