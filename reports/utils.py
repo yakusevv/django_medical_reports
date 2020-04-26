@@ -81,13 +81,13 @@ def reports_xlsx_generator(reports):
             column_dimensions.width = 35
         elif col_letter == 'E':
             column_dimensions = worksheet.column_dimensions[col_letter]
-            column_dimensions.width = 15
+            column_dimensions.width = 20
         elif col_letter == 'F':
             column_dimensions = worksheet.column_dimensions[col_letter]
-            column_dimensions.width = 10
+            column_dimensions.width = 15
         elif col_letter == 'G':
             column_dimensions = worksheet.column_dimensions[col_letter]
-            column_dimensions.width = 10
+            column_dimensions.width = 15
 
     for index, report in enumerate(reports):
         row_num += 1

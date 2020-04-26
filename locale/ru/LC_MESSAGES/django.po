@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-13 13:36+0200\n"
+"POT-Creation-Date: 2020-04-26 21:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,1047 +20,1070 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: blog/apps.py:7 blog/templates/blog/index.html:5 templates/base.html:33
+#: .\blog\apps.py:7 .\blog\templates\blog\index.html:5 .\templates\base.html:33
 msgid "News"
 msgstr "Новости"
 
-#: blog/models.py:7
+#: .\blog\models.py:7
 msgid "Title"
 msgstr "Титул"
 
-#: blog/models.py:8
+#: .\blog\models.py:8
 msgid "Body"
 msgstr "Содержание"
 
-#: blog/models.py:9
+#: .\blog\models.py:9
 msgid "Date pub."
 msgstr "Дата пуб."
 
-#: blog/models.py:13
+#: .\blog\models.py:13
 msgid "Post"
 msgstr "Пост"
 
-#: blog/models.py:14
+#: .\blog\models.py:14
 msgid "Posts"
 msgstr "Посты"
 
-#: blog/templates/blog/base_blog.html:6
-#: blog/templates/blog/post_create_form.html:5
-#: blog/templates/blog/post_create_form.html:24
-#: blog/templates/blog/post_detail.html:10
+#: .\blog\templates\blog\base_blog.html:6
+#: .\blog\templates\blog\post_create_form.html:5
+#: .\blog\templates\blog\post_create_form.html:24
+#: .\blog\templates\blog\post_detail.html:10
 msgid "Create post"
 msgstr "Создать пост"
 
-#: blog/templates/blog/index.html:17
+#: .\blog\templates\blog\index.html:17
 msgid "Read"
 msgstr "Читать"
 
-#: blog/templates/blog/post_delete_form.html:5
-#: blog/templates/blog/post_detail.html:16
-#: blog/templates/blog/post_update_form.html:12
+#: .\blog\templates\blog\post_delete_form.html:5
+#: .\blog\templates\blog\post_detail.html:16
+#: .\blog\templates\blog\post_update_form.html:12
 msgid "Delete post"
 msgstr "Удалить пост"
 
-#: blog/templates/blog/post_delete_form.html:12
-#: reports/templates/reports/report_delete.html:16
+#: .\blog\templates\blog\post_delete_form.html:12
+#: .\reports\templates\reports\report_delete.html:16
 msgid "Are you sure you want to delete"
 msgstr "Вы уверены, что хотите удалить"
 
-#: blog/templates/blog/post_delete_form.html:12
+#: .\blog\templates\blog\post_delete_form.html:12
 msgid "post?"
 msgstr "пост?"
 
-#: blog/templates/blog/post_delete_form.html:13
-#: reports/templates/reports/report_delete.html:17
-#: reports/templates/reports/report_images_update.html:106
-#: reports/templates/reports/report_update.html:180
+#: .\blog\templates\blog\post_delete_form.html:13
+#: .\reports\templates\reports\report_delete.html:17
+#: .\reports\templates\reports\report_images_update.html:106
+#: .\reports\templates\reports\report_update.html:180
 msgid "Cancel"
 msgstr "Отмена"
 
-#: blog/templates/blog/post_delete_form.html:14
-#: reports/templates/reports/report_delete.html:18
-#: venv/lib/python3.7/site-packages/django/forms/formsets.py:391
+#: .\blog\templates\blog\post_delete_form.html:14
+#: .\reports\templates\reports\report_delete.html:18
+#: .\venv\Lib\site-packages\django\forms\formsets.py:391
 msgid "Delete"
 msgstr "Удалить"
 
-#: blog/templates/blog/post_detail.html:13
-#: blog/templates/blog/post_update_form.html:5
+#: .\blog\templates\blog\post_detail.html:13
+#: .\blog\templates\blog\post_update_form.html:5
 msgid "Edit post"
 msgstr "Редактировать пост"
 
-#: blog/templates/blog/post_update_form.html:26
+#: .\blog\templates\blog\post_update_form.html:26
 msgid "Update Post"
 msgstr "Изменить пост"
 
-#: profiles/apps.py:6 profiles/models.py:21
+#: .\profiles\apps.py:6 .\profiles\models.py:21
 msgid "Profiles"
 msgstr "Профили"
 
-#: profiles/forms.py:58 reports/forms.py:322
+#: .\profiles\forms.py:58 .\reports\forms.py:322
 msgid "The Price can't be less than 0"
 msgstr "Цена не может быть меньше 0"
 
-#: profiles/forms.py:61 reports/forms.py:325
+#: .\profiles\forms.py:61 .\reports\forms.py:325
 msgid "The Price can't be 0"
 msgstr "Цена не может быть равна 0"
 
-#: profiles/forms.py:64 reports/forms.py:328
+#: .\profiles\forms.py:64 .\reports\forms.py:328
 msgid "The Price should be numeric type"
 msgstr "Цена должна иметь числовое значение"
 
-#: profiles/forms.py:99
+#: .\profiles\forms.py:99
 msgid "Cities of the district must belong to the district's country"
 msgstr "Города района должны отоситься к стране района"
 
-#: profiles/forms.py:103
+#: .\profiles\forms.py:103
 msgid "At least one city must be chosen"
 msgstr "Минимум один город должен быть выбран"
 
-#: profiles/forms.py:112
+#: .\profiles\forms.py:112
 msgid "{} - can't be dublicated"
 msgstr "{} - не может/могут повторяться"
 
-#: profiles/models.py:11 profiles/models.py:86
+#: .\profiles\models.py:11 .\profiles\models.py:86
 msgid "User"
 msgstr "Пользователь"
 
-#: profiles/models.py:12 profiles/templates/profiles/profiles_list.html:15
-#: reports/models.py:81 reports/models.py:204
-#: reports/templates/reports/reports_list.html:80 reports/utils.py:51
+#: .\profiles\models.py:12 .\profiles\templates\profiles\profiles_list.html:15
+#: .\reports\models.py:81 .\reports\models.py:204
+#: .\reports\templates\reports\reports_list.html:80 .\reports\utils.py:48
 msgid "City"
 msgstr "Город"
 
-#: profiles/models.py:13
+#: .\profiles\models.py:13
 msgid "Num. col"
 msgstr "Коллегиальный номер"
 
-#: profiles/models.py:14
+#: .\profiles\models.py:14
 msgid "Is foreign doctor"
 msgstr "Доктор вне фирмы"
 
-#: profiles/models.py:15 reports/models.py:169
+#: .\profiles\models.py:15 .\reports\models.py:169
 msgid "Initials"
 msgstr "Инициалы"
 
-#: profiles/models.py:16
+#: .\profiles\models.py:16
 msgid "Viber id"
 msgstr ""
 
-#: profiles/models.py:17
+#: .\profiles\models.py:17
 msgid "Owner"
 msgstr "Владелец"
 
-#: profiles/models.py:20 profiles/templates/profiles/profile_detail.html:5
+#: .\profiles\models.py:20 .\profiles\templates\profiles\profile_detail.html:5
 msgid "Profile"
 msgstr "Профиль"
 
-#: profiles/models.py:31
+#: .\profiles\models.py:31
 msgid "Profile with this initials in current country is already exists."
 msgstr "Профиль с этими иницалами уже существует в данной стране"
 
-#: profiles/models.py:40
+#: .\profiles\models.py:40
 msgid "Profile with this Num. col. in current country is already exists."
 msgstr "Профиль с этим коллегиальным номером уже существует в данной стране"
 
-#: profiles/models.py:56 profiles/templates/profiles/profiles_list.html:12
-#: reports/models.py:343 reports/templates/reports/report_requests.html:86
-#: reports/templates/reports/report_requests.html:132
-#: reports/templates/reports/report_requests_list.html:25
-#: reports/templates/reports/reports_list.html:29 reports/utils.py:53
+#: .\profiles\models.py:56 .\profiles\templates\profiles\profiles_list.html:12
+#: .\reports\models.py:343 .\reports\templates\reports\report_requests.html:86
+#: .\reports\templates\reports\report_requests.html:146
+#: .\reports\templates\reports\report_requests_list.html:25
+#: .\reports\templates\reports\reports_list.html:29
 msgid "Doctor"
 msgstr "Доктор"
 
-#: profiles/models.py:62 profiles/models.py:91 reports/models.py:41
-#: reports/models.py:50 reports/models.py:100 reports/models.py:126
-#: reports/models.py:182 reports/models.py:299
+#: .\profiles\models.py:62 .\profiles\models.py:91 .\reports\models.py:41
+#: .\reports\models.py:50 .\reports\models.py:100 .\reports\models.py:126
+#: .\reports\models.py:182 .\reports\models.py:299
 msgid "Country"
 msgstr "Страна"
 
-#: profiles/models.py:64 reports/models.py:38 reports/models.py:49
-#: reports/models.py:63 reports/models.py:76 reports/models.py:99
-#: reports/models.py:111 reports/models.py:123 reports/models.py:167
-#: reports/models.py:294
+#: .\profiles\models.py:64 .\reports\models.py:38 .\reports\models.py:49
+#: .\reports\models.py:63 .\reports\models.py:76 .\reports\models.py:99
+#: .\reports\models.py:111 .\reports\models.py:123 .\reports\models.py:167
+#: .\reports\models.py:294
 msgid "Name"
 msgstr "Название"
 
-#: profiles/models.py:65 reports/models.py:206
+#: .\profiles\models.py:65 .\reports\models.py:206
 msgid "Cause of visit"
 msgstr "Причина визита"
 
-#: profiles/models.py:66 reports/models.py:207
+#: .\profiles\models.py:66 .\reports\models.py:207
 msgid "Checkup"
 msgstr "Осмотр"
 
-#: profiles/models.py:67 reports/models.py:208
+#: .\profiles\models.py:67 .\reports\models.py:208
 msgid "Additional checkup"
 msgstr "Дополнительный осмотр"
 
-#: profiles/models.py:68 reports/models.py:210
+#: .\profiles\models.py:68 .\reports\models.py:210
 msgid "Prescription"
 msgstr "Лечение и рекомендации"
 
-#: profiles/models.py:72 reports/models.py:209
+#: .\profiles\models.py:72 .\reports\models.py:209
 msgid "Diagnosis"
 msgstr "Диагноз"
 
-#: profiles/models.py:78
+#: .\profiles\models.py:78
 msgid "Report autofill template"
 msgstr "Шаблон автозаполнения"
 
-#: profiles/models.py:79
+#: .\profiles\models.py:79
 msgid "Report autofill templates"
 msgstr "Шаблоны автозаполнения"
 
-#: profiles/models.py:87 reports/models.py:82
+#: .\profiles\models.py:87 .\reports\models.py:82
 msgid "Cities"
 msgstr "Города"
 
-#: profiles/models.py:96
+#: .\profiles\models.py:96
 msgid "District coverage"
 msgstr "Покрытие района:"
 
-#: profiles/models.py:97
+#: .\profiles\models.py:97
 msgid "Districts coverage"
 msgstr "Покрытия районов"
 
-#: profiles/models.py:104 reports/models.py:68 reports/models.py:77
-#: reports/models.py:139
+#: .\profiles\models.py:104 .\reports\models.py:68 .\reports\models.py:77
+#: .\reports\models.py:139
 msgid "District"
 msgstr "Район"
 
-#: profiles/models.py:105 reports/models.py:131 reports/models.py:154
-#: reports/models.py:195
+#: .\profiles\models.py:105 .\reports\models.py:131 .\reports\models.py:154
+#: .\reports\models.py:195
 msgid "Type of visit"
 msgstr "Тип визита"
 
-#: profiles/models.py:106 reports/models.py:155 reports/models.py:301
-#: reports/templates/reports/price_table_view.html:70
+#: .\profiles\models.py:106 .\reports\models.py:155 .\reports\models.py:301
+#: .\reports\templates\reports\price_table_view.html:70
 msgid "Price"
 msgstr "Цена"
 
-#: profiles/models.py:110 reports/models.py:200
+#: .\profiles\models.py:110 .\reports\models.py:200
 msgid "Visit price for the doctor"
 msgstr "Цена для доктора"
 
-#: profiles/models.py:111
+#: .\profiles\models.py:111
 msgid "Visit prices for the doctors"
 msgstr "Цены для докторов"
 
-#: profiles/templates/profiles/profile_detail.html:13
+#: .\profiles\templates\profiles\profile_detail.html:13
 msgid "Last name:"
 msgstr "Фамилия:"
 
-#: profiles/templates/profiles/profile_detail.html:21
+#: .\profiles\templates\profiles\profile_detail.html:21
 msgid "First name:"
 msgstr "Имя:"
 
-#: profiles/templates/profiles/profile_detail.html:30
+#: .\profiles\templates\profiles\profile_detail.html:30
 msgid "Num. col.:"
 msgstr "Кол. номер:"
 
-#: profiles/templates/profiles/profile_detail.html:39
-#: reports/templates/reports/report_detail.html:85
+#: .\profiles\templates\profiles\profile_detail.html:39
+#: .\reports\templates\reports\report_detail.html:85
 msgid "Location:"
 msgstr "Местонахождение:"
 
-#: profiles/templates/profiles/profile_detail.html:48
+#: .\profiles\templates\profiles\profile_detail.html:48
 msgid "Territory coverage:"
 msgstr "Покрытие:"
 
-#: profiles/templates/profiles/profile_detail.html:90
+#: .\profiles\templates\profiles\profile_detail.html:90
 msgid "Autofill templates:"
 msgstr "Шаблоны автозаполнения:"
 
-#: profiles/templates/profiles/profile_detail.html:104
-#: profiles/templates/profiles/profile_template_create.html:5
-#: profiles/templates/profiles/profile_template_create.html:33
+#: .\profiles\templates\profiles\profile_detail.html:104
+#: .\profiles\templates\profiles\profile_template_create.html:5
+#: .\profiles\templates\profiles\profile_template_create.html:33
 msgid "Create template"
 msgstr "Создать шаблон"
 
-#: profiles/templates/profiles/profile_template_update.html:5
-#: profiles/templates/profiles/profile_template_update.html:31
+#: .\profiles\templates\profiles\profile_template_update.html:5
+#: .\profiles\templates\profiles\profile_template_update.html:31
 msgid "Update template"
 msgstr "Изменить шаблон"
 
-#: profiles/templates/profiles/profile_template_update.html:32
+#: .\profiles\templates\profiles\profile_template_update.html:32
 msgid "Delete template"
 msgstr "Удалить шаблон"
 
-#: profiles/templates/profiles/profiles_list.html:5 templates/base.html:43
+#: .\profiles\templates\profiles\profiles_list.html:5 .\templates\base.html:43
 msgid "Doctors"
 msgstr "Доктора"
 
-#: profiles/templates/profiles/profiles_list.html:18 reports/models.py:55
-#: reports/models.py:64 reports/utils.py:52
+#: .\profiles\templates\profiles\profiles_list.html:18 .\reports\models.py:55
+#: .\reports\models.py:64
 msgid "Region"
 msgstr "Регион"
 
-#: reports/apps.py:7 reports/models.py:216
-#: reports/templates/reports/reports_list.html:5 templates/base.html:36
+#: .\reports\apps.py:7 .\reports\models.py:216
+#: .\reports\templates\reports\reports_list.html:5 .\templates\base.html:36
 msgid "Reports"
 msgstr "Отчеты"
 
-#: reports/forms.py:201
+#: .\reports\forms.py:201
 msgid "Duplicate values for \"Service\" are not allowed."
 msgstr "Значения \"Сервис\" не могут дублироваться"
 
-#: reports/forms.py:206
+#: .\reports\forms.py:206
 msgid "Quantity must be equal to or greater than 1"
 msgstr "Количество должно быть больше или равно 1"
 
-#: reports/forms.py:236
+#: .\reports\forms.py:236
 msgid "Images"
 msgstr "Изображения"
 
-#: reports/models.py:42
+#: .\reports\models.py:42
 msgid "Countries"
 msgstr "Страны"
 
-#: reports/models.py:51
+#: .\reports\models.py:51
 msgid "City-state"
 msgstr "Город-государство"
 
-#: reports/models.py:56
+#: .\reports\models.py:56
 msgid "Regions"
 msgstr "Регионы"
 
-#: reports/models.py:69
+#: .\reports\models.py:69
 msgid "Districts"
 msgstr "Районы"
 
-#: reports/models.py:91
+#: .\reports\models.py:91
 msgid "City with this name in the current country is already exists"
 msgstr "Город с этим названием уже существует в данной стране"
 
-#: reports/models.py:103
+#: .\reports\models.py:103
 msgid "Disease"
 msgstr "Заболевание"
 
-#: reports/models.py:104
+#: .\reports\models.py:104
 msgid "Diseases"
 msgstr "Заболевания"
 
-#: reports/models.py:114 reports/models.py:140 reports/models.py:168
+#: .\reports\models.py:114 .\reports\models.py:140 .\reports\models.py:168
 msgid "Price group"
 msgstr "Ценовая группа"
 
-#: reports/models.py:115
+#: .\reports\models.py:115
 msgid "Price groups"
 msgstr "Ценовые группы"
 
-#: reports/models.py:124
+#: .\reports\models.py:124
 msgid "Short name"
 msgstr "Сокращенное название"
 
-#: reports/models.py:125
+#: .\reports\models.py:125
 msgid "Is second visit"
 msgstr "Повторный визит"
 
-#: reports/models.py:127
+#: .\reports\models.py:127
 msgid "Initial"
 msgstr "Инициал"
 
-#: reports/models.py:132
+#: .\reports\models.py:132
 msgid "Types of visits"
 msgstr "Типы визитов"
 
-#: reports/models.py:144 reports/models.py:153
+#: .\reports\models.py:144 .\reports\models.py:153
 msgid "Tariff"
 msgstr "Тариф"
 
-#: reports/models.py:145 reports/templates/reports/price_table_view.html:18
+#: .\reports\models.py:145 .\reports\templates\reports\price_table_view.html:18
 msgid "Tariffs"
 msgstr "Тарифы"
 
-#: reports/models.py:159
+#: .\reports\models.py:159
 msgid "Visit tariff"
 msgstr "Тариф визита"
 
-#: reports/models.py:160
+#: .\reports\models.py:160
 msgid "Visit tariffs"
 msgstr "Тариф визита"
 
-#: reports/models.py:172 reports/models.py:351
-#: reports/templates/reports/report_requests.html:93
-#: reports/templates/reports/report_requests_list.html:34
-#: reports/templates/reports/reports_list.html:39 reports/utils.py:46
+#: .\reports\models.py:172 .\reports\models.py:351
+#: .\reports\templates\reports\report_requests.html:95
+#: .\reports\templates\reports\report_requests.html:153
+#: .\reports\templates\reports\report_requests_list.html:34
+#: .\reports\templates\reports\reports_list.html:39
 msgid "Company"
 msgstr "Компания"
 
-#: reports/models.py:173
+#: .\reports\models.py:173
 msgid "Companies"
 msgstr "Компании"
 
-#: reports/models.py:181
+#: .\reports\models.py:181
 msgid "Template"
 msgstr "Шаблон"
 
-#: reports/models.py:185
+#: .\reports\models.py:185
 msgid "Report template"
 msgstr "Шаблон отчета"
 
-#: reports/models.py:186
+#: .\reports\models.py:186
 msgid "Report templates"
 msgstr "Шаблоны отчетов"
 
-#: reports/models.py:190 reports/utils.py:47
+#: .\reports\models.py:190 .\reports\utils.py:46
 msgid "Company ref. number"
 msgstr "Реф. номер компании"
 
-#: reports/models.py:191 reports/utils.py:49
+#: .\reports\models.py:191
 msgid "First name"
 msgstr "Имя"
 
-#: reports/models.py:192 reports/utils.py:48
+#: .\reports\models.py:192
 msgid "Last name"
 msgstr "Фамилия"
 
-#: reports/models.py:193 reports/utils.py:50
+#: .\reports\models.py:193
 msgid "Date of birth"
 msgstr "Дата рождения"
 
-#: reports/models.py:194
+#: .\reports\models.py:194
 msgid "Policy number"
 msgstr "Номер полиса"
 
-#: reports/models.py:196
+#: .\reports\models.py:196
 msgid "Visit price"
 msgstr "Цена визита"
 
-#: reports/models.py:203 reports/templates/reports/reports_list.html:83
+#: .\reports\models.py:203 .\reports\templates\reports\reports_list.html:83
 msgid "Date of visit"
 msgstr "Дата визита"
 
-#: reports/models.py:205
+#: .\reports\models.py:205
 msgid "Detailed location"
 msgstr "Подробное местонахождение"
 
-#: reports/models.py:211 reports/templates/reports/report_detail.html:224
+#: .\reports\models.py:211 .\reports\templates\reports\report_detail.html:224
 msgid "Is checked"
 msgstr "Проверен"
 
-#: reports/models.py:215 reports/models.py:281 reports/models.py:315
-#: reports/templates/reports/report_requests_list.html:60
-#: reports/templates/reports/report_requests_list.html:97
-#: reports/templates/reports/reports_list.html:77
+#: .\reports\models.py:215 .\reports\models.py:281 .\reports\models.py:315
+#: .\reports\templates\reports\report_requests_list.html:60
+#: .\reports\templates\reports\report_requests_list.html:97
+#: .\reports\templates\reports\reports_list.html:77
 msgid "Report"
 msgstr "Отчет"
 
-#: reports/models.py:218
+#: .\reports\models.py:218
 msgid "Can download excel"
 msgstr "Может скачать excel"
 
-#: reports/models.py:271
+#: .\reports\models.py:271
 msgid "Full ref. number"
 msgstr "Полный реф. номер"
 
-#: reports/models.py:272 reports/utils.py:55
+#: .\reports\models.py:272
 msgid "Total price"
 msgstr "Суммарная цена"
 
-#: reports/models.py:273 reports/utils.py:54
+#: .\reports\models.py:273
 msgid "Total price for the doctor"
 msgstr "Суммарная цена для доктора"
 
-#: reports/models.py:283
-#: venv/lib/python3.7/site-packages/django/db/models/fields/files.py:360
+#: .\reports\models.py:283
+#: .\venv\Lib\site-packages\django\db\models\fields\files.py:360
 msgid "Image"
 msgstr "Изображение"
 
-#: reports/models.py:284
+#: .\reports\models.py:284
 msgid "Position"
 msgstr "Позиция"
 
-#: reports/models.py:285
+#: .\reports\models.py:285
 msgid "Expand"
 msgstr "Растянуть"
 
-#: reports/models.py:288
+#: .\reports\models.py:288
 msgid "Additional Image"
 msgstr "Прикрепленное изображение"
 
-#: reports/models.py:289
+#: .\reports\models.py:289
 msgid "Additional Images"
 msgstr "Прикрепленные зображения"
 
-#: reports/models.py:302
+#: .\reports\models.py:302
 msgid "Price for the doctor"
 msgstr "Цена для доктора"
 
-#: reports/models.py:303
+#: .\reports\models.py:303
 msgid "Unsummable price"
 msgstr "Не суммируемая цена"
 
-#: reports/models.py:307 reports/models.py:316
-#: reports/templates/reports/price_table_view.html:69
+#: .\reports\models.py:307 .\reports\models.py:316
+#: .\reports\templates\reports\price_table_view.html:69
 msgid "Service"
 msgstr "Сервис"
 
-#: reports/models.py:308
+#: .\reports\models.py:308
 msgid "Services"
 msgstr "Сервисы"
 
-#: reports/models.py:317
+#: .\reports\models.py:317
 msgid "Quantity"
 msgstr "Количество"
 
-#: reports/models.py:318
+#: .\reports\models.py:318
 msgid "Cost"
 msgstr "Цена"
 
-#: reports/models.py:319
+#: .\reports\models.py:319
 msgid "Cost doctor"
 msgstr "Цена для доктора"
 
-#: reports/models.py:323
+#: .\reports\models.py:323
 msgid "Service item"
 msgstr "Позиция сервиса"
 
-#: reports/models.py:324
+#: .\reports\models.py:324
 msgid "Service items"
 msgstr "Позиция сервиса"
 
-#: reports/models.py:334
+#: .\reports\models.py:334
 msgid "Is accepted"
 msgstr "Принята"
 
-#: reports/models.py:335 reports/serializers.py:11
+#: .\reports\models.py:335 .\reports\serializers.py:14
 msgid "Cancelled by company"
 msgstr "Отменена компанией"
 
-#: reports/models.py:336 reports/serializers.py:12
+#: .\reports\models.py:336 .\reports\serializers.py:15
 msgid "Wrong request data"
 msgstr "Неверные данные заявки"
 
-#: reports/models.py:337 reports/templates/reports/report_create.html:427
+#: .\reports\models.py:337 .\reports\templates\reports\report_create.html:427
 msgid "The visit did not take place"
 msgstr "Визит не состоялся"
 
-#: reports/models.py:347
+#: .\reports\models.py:347
 msgid "Date and time"
 msgstr "Дата и время"
 
-#: reports/models.py:348 reports/templates/reports/report_requests.html:100
-#: reports/templates/reports/report_requests.html:146
+#: .\reports\models.py:348 .\reports\templates\reports\report_requests.html:112
+#: .\reports\templates\reports\report_requests.html:160
 msgid "Message"
 msgstr "Сообщение"
 
-#: reports/models.py:350
+#: .\reports\models.py:350
 msgid "Ref. number"
 msgstr "Реф. номер"
 
-#: reports/models.py:352
+#: .\reports\models.py:352
 msgid "Sender"
 msgstr "Отправитель"
 
-#: reports/models.py:353 reports/templates/reports/report_requests_list.html:52
-#: reports/templates/reports/report_requests_list.html:94
+#: .\reports\models.py:353
+#: .\reports\templates\reports\report_requests_list.html:52
+#: .\reports\templates\reports\report_requests_list.html:94
 msgid "Status"
 msgstr "Статус"
 
-#: reports/models.py:356
+#: .\reports\models.py:356
 msgid "Report request"
 msgstr "Запрос отчета"
 
-#: reports/models.py:357
+#: .\reports\models.py:357
 msgid "Report requests"
 msgstr "Запросы отчетов"
 
-#: reports/models.py:371
+#: .\reports\models.py:371
 msgid "Case {}{} is already exists"
 msgstr "Кейс {}{} уже существует"
 
-#: reports/templates/reports/base_reports.html:5
-#: reports/templates/reports/report_create.html:5
-#: reports/templates/reports/report_create.html:227
-#: reports/templates/reports/report_detail.html:9
-#: reports/templates/reports/report_requests_list.html:14
-#: reports/templates/reports/reports_list.html:14
+#: .\reports\templates\reports\base_reports.html:5
+#: .\reports\templates\reports\report_create.html:5
+#: .\reports\templates\reports\report_create.html:227
+#: .\reports\templates\reports\report_detail.html:13
+#: .\reports\templates\reports\report_requests_list.html:14
+#: .\reports\templates\reports\reports_list.html:14
 msgid "Create report"
 msgstr "Создать отчет"
 
-#: reports/templates/reports/price_table_view.html:5 templates/base.html:47
+#: .\reports\templates\reports\price_table_view.html:5 .\templates\base.html:47
 msgid "Price table"
 msgstr "Ценовая таблица"
 
-#: reports/templates/reports/report_create.html:87
+#: .\reports\templates\reports\report_create.html:87
 msgid "Use autocomplete template"
 msgstr "Использовать шаблон автозаполнения"
 
-#: reports/templates/reports/report_create.html:325
-#: reports/templates/reports/report_update.html:188
+#: .\reports\templates\reports\report_create.html:325
+#: .\reports\templates\reports\report_update.html:188
 msgid "add service item"
 msgstr "добавить сервис"
 
-#: reports/templates/reports/report_create.html:326
-#: reports/templates/reports/report_create.html:342
-#: reports/templates/reports/report_images_update.html:206
-#: reports/templates/reports/report_update.html:189
+#: .\reports\templates\reports\report_create.html:326
+#: .\reports\templates\reports\report_create.html:342
+#: .\reports\templates\reports\report_images_update.html:206
+#: .\reports\templates\reports\report_update.html:189
 msgid "remove"
 msgstr "удалить"
 
-#: reports/templates/reports/report_create.html:341
-#: reports/templates/reports/report_images_update.html:205
+#: .\reports\templates\reports\report_create.html:341
+#: .\reports\templates\reports\report_images_update.html:205
 msgid "add image"
 msgstr "добавить изображение"
 
-#: reports/templates/reports/report_create.html:429
+#: .\reports\templates\reports\report_create.html:429
 msgid "Did this visit really not take place?"
 msgstr "Этот визит действительно не состоялся?"
 
-#: reports/templates/reports/report_delete.html:8
-#: reports/templates/reports/report_detail.html:13
-#: reports/templates/reports/report_update.html:17
+#: .\reports\templates\reports\report_delete.html:8
+#: .\reports\templates\reports\report_detail.html:17
+#: .\reports\templates\reports\report_update.html:17
 msgid "Delete report"
 msgstr "Удалить отчет"
 
-#: reports/templates/reports/report_delete.html:16
+#: .\reports\templates\reports\report_delete.html:16
 msgid "report?"
 msgstr "отчет?"
 
-#: reports/templates/reports/report_detail.html:5 templates/admin/index.html:38
+#: .\reports\templates\reports\report_detail.html:5
+#: .\templates\admin\index.html:38
 msgid "View"
 msgstr "Просмотр"
 
-#: reports/templates/reports/report_detail.html:10
+#: .\reports\templates\reports\report_detail.html:14
 msgid "Create second"
 msgstr "Создать повторный"
 
-#: reports/templates/reports/report_detail.html:12
+#: .\reports\templates\reports\report_detail.html:16
 msgid "Edit report"
 msgstr "Редактировать отчет"
 
-#: reports/templates/reports/report_detail.html:41
+#: .\reports\templates\reports\report_detail.html:41
 msgid "Report request: "
 msgstr "Запрос отчета: "
 
-#: reports/templates/reports/report_detail.html:50
+#: .\reports\templates\reports\report_detail.html:50
 msgid "Company, ref. number:"
 msgstr "Компания, реф. номер:"
 
-#: reports/templates/reports/report_detail.html:59
+#: .\reports\templates\reports\report_detail.html:59
 msgid "Date of birth:"
 msgstr "Дата рождения:"
 
-#: reports/templates/reports/report_detail.html:68
+#: .\reports\templates\reports\report_detail.html:68
 msgid "Policy:"
 msgstr "Полис:"
 
-#: reports/templates/reports/report_detail.html:77
+#: .\reports\templates\reports\report_detail.html:77
 msgid "Date of visit:"
 msgstr "Дата визита:"
 
-#: reports/templates/reports/report_detail.html:96
+#: .\reports\templates\reports\report_detail.html:96
 msgid "Type of visit:"
 msgstr "Тип визита:"
 
-#: reports/templates/reports/report_detail.html:104
+#: .\reports\templates\reports\report_detail.html:104
 msgid "Cause of visit:"
 msgstr "Причина визита:"
 
-#: reports/templates/reports/report_detail.html:112
+#: .\reports\templates\reports\report_detail.html:112
 msgid "Checkup:"
 msgstr "Осмотр:"
 
-#: reports/templates/reports/report_detail.html:121
+#: .\reports\templates\reports\report_detail.html:121
 msgid "Additional checkup:"
 msgstr "Дополнительный осмотр:"
 
-#: reports/templates/reports/report_detail.html:130
+#: .\reports\templates\reports\report_detail.html:130
 msgid "Diagnosis:"
 msgstr "Диагноз:"
 
-#: reports/templates/reports/report_detail.html:140
+#: .\reports\templates\reports\report_detail.html:140
 msgid "Prescription:"
 msgstr "Лечение и рекомендации:"
 
-#: reports/templates/reports/report_detail.html:148
+#: .\reports\templates\reports\report_detail.html:148
 msgid "Doctor:"
 msgstr "Доктор:"
 
-#: reports/templates/reports/report_detail.html:156
+#: .\reports\templates\reports\report_detail.html:156
 msgid "Visit price:"
 msgstr "Цена визита:"
 
-#: reports/templates/reports/report_detail.html:169
+#: .\reports\templates\reports\report_detail.html:169
 msgid "Service items:"
 msgstr "Сервисы:"
 
-#: reports/templates/reports/report_detail.html:191
+#: .\reports\templates\reports\report_detail.html:191
 msgid "Total price:"
 msgstr "Суммарная цена:"
 
-#: reports/templates/reports/report_detail.html:205
-#: reports/templates/reports/report_update.html:163
+#: .\reports\templates\reports\report_detail.html:205
+#: .\reports\templates\reports\report_update.html:163
 msgid "Images:"
 msgstr "Изображения:"
 
-#: reports/templates/reports/report_images_update.html:5
-#: reports/templates/reports/report_update.html:175
+#: .\reports\templates\reports\report_images_update.html:5
+#: .\reports\templates\reports\report_update.html:175
 msgid "Edit images"
 msgstr "Редактировать изображения"
 
-#: reports/templates/reports/report_images_update.html:107
+#: .\reports\templates\reports\report_images_update.html:107
 msgid "Update images"
 msgstr "Обновить изображения"
 
-#: reports/templates/reports/report_request_update.html:5
-#: reports/templates/reports/report_request_update.html:68
+#: .\reports\templates\reports\report_request_update.html:5
+#: .\reports\templates\reports\report_request_update.html:68
 msgid "Edit request"
 msgstr "Редактировать заявку"
 
-#: reports/templates/reports/report_request_update.html:24
+#: .\reports\templates\reports\report_request_update.html:24
 msgid "Message: "
 msgstr "Сообщение: "
 
-#: reports/templates/reports/report_request_update.html:32
-#: reports/templates/reports/report_requests.html:246
+#: .\reports\templates\reports\report_request_update.html:32
+#: .\reports\templates\reports\report_requests.html:260
 msgid "Sender: "
 msgstr "Отправитель: "
 
-#: reports/templates/reports/report_request_update.html:40
+#: .\reports\templates\reports\report_request_update.html:40
 msgid "Report: "
 msgstr "Отчет: "
 
-#: reports/templates/reports/report_request_update.html:46
+#: .\reports\templates\reports\report_request_update.html:46
 msgid "None"
 msgstr "Отсутствует"
 
-#: reports/templates/reports/report_request_update.html:67
+#: .\reports\templates\reports\report_request_update.html:67
 msgid "Back"
 msgstr "Назад"
 
-#: reports/templates/reports/report_requests.html:10
+#: .\reports\templates\reports\report_requests.html:10
 msgid "Distribution"
 msgstr "Распределение"
 
-#: reports/templates/reports/report_requests.html:25
+#: .\reports\templates\reports\report_requests.html:25
 msgid "Doctors: "
 msgstr "Доктора: "
 
-#: reports/templates/reports/report_requests.html:43
+#: .\reports\templates\reports\report_requests.html:43
 msgid "All: "
 msgstr "Все: "
 
-#: reports/templates/reports/report_requests.html:61
+#: .\reports\templates\reports\report_requests.html:61
 msgid "Today: "
 msgstr "Сегодня: "
 
-#: reports/templates/reports/report_requests.html:108
+#: .\reports\templates\reports\report_requests.html:105
+msgid "Set ref. number"
+msgstr "Задать реф. номер"
+
+#: .\reports\templates\reports\report_requests.html:122
 msgid "History"
 msgstr "История"
 
-#: reports/templates/reports/report_requests.html:111
-#: reports/templates/reports/report_requests.html:156
+#: .\reports\templates\reports\report_requests.html:125
+#: .\reports\templates\reports\report_requests.html:170
 msgid "Submit"
 msgstr "Отправить"
 
-#: reports/templates/reports/report_requests.html:155
+#: .\reports\templates\reports\report_requests.html:169
 msgid "Close"
 msgstr "Закрыть"
 
-#: reports/templates/reports/report_requests.html:202
+#: .\reports\templates\reports\report_requests.html:216
+#: .\reports\templates\reports\report_requests.html:331
 msgid "Error while loading select options"
 msgstr "Ошибка при загрузке опций выбора"
 
-#: reports/templates/reports/report_requests.html:245
+#: .\reports\templates\reports\report_requests.html:259
 msgid "edit"
 msgstr "редакт."
 
-#: reports/templates/reports/report_requests.html:261
+#: .\reports\templates\reports\report_requests.html:275
 msgid "Error while loading report requests"
 msgstr "Ошибка при загрузке заявок"
 
-#: reports/templates/reports/report_requests.html:281
+#: .\reports\templates\reports\report_requests.html:295
 msgid "Case has been closed"
 msgstr "Заявка отменена"
 
-#: reports/templates/reports/report_requests.html:285
+#: .\reports\templates\reports\report_requests.html:299
 msgid "Error while closing case"
 msgstr "Ошибка при отмене заявки"
 
-#: reports/templates/reports/report_requests.html:296
+#: .\reports\templates\reports\report_requests.html:310
 msgid "Request from "
 msgstr "Дата заявки "
 
-#: reports/templates/reports/report_requests.html:331
+#: .\reports\templates\reports\report_requests.html:369
 msgid "Error while saving report request"
 msgstr "Ошибка при сохранении заявки"
 
-#: reports/templates/reports/report_requests.html:364
+#: .\reports\templates\reports\report_requests.html:402
 msgid "Error while editing report request"
 msgstr "Ошибка при редактировании заявки"
 
-#: reports/templates/reports/report_requests.html:376
+#: .\reports\templates\reports\report_requests.html:414
 msgid "Do you really want to close this case?"
 msgstr "Вы уверены, что хотите отменить эту заявку?"
 
-#: reports/templates/reports/report_requests_list.html:5
+#: .\reports\templates\reports\report_requests_list.html:5
 msgid "Requests history"
 msgstr "История заявок"
 
-#: reports/templates/reports/report_requests_list.html:20
-#: reports/templates/reports/reports_list.html:23
+#: .\reports\templates\reports\report_requests_list.html:20
+#: .\reports\templates\reports\reports_list.html:23
 msgid "Filters"
 msgstr "Фильтры"
 
-#: reports/templates/reports/report_requests_list.html:42
-#: reports/templates/reports/reports_list.html:47
+#: .\reports\templates\reports\report_requests_list.html:42
+#: .\reports\templates\reports\reports_list.html:47
 msgid "From"
 msgstr "От"
 
-#: reports/templates/reports/report_requests_list.html:46
-#: reports/templates/reports/reports_list.html:51
+#: .\reports\templates\reports\report_requests_list.html:46
+#: .\reports\templates\reports\reports_list.html:51
 msgid "To"
 msgstr "До"
 
-#: reports/templates/reports/report_requests_list.html:72
-#: reports/templates/reports/reports_list.html:58
+#: .\reports\templates\reports\report_requests_list.html:72
+#: .\reports\templates\reports\reports_list.html:58
 msgid "search query"
 msgstr "поисковой запрос"
 
-#: reports/templates/reports/report_requests_list.html:78
-#: reports/templates/reports/reports_list.html:64
+#: .\reports\templates\reports\report_requests_list.html:78
+#: .\reports\templates\reports\reports_list.html:64
 msgid "Use filters"
 msgstr "Использовать фильтры"
 
-#: reports/templates/reports/report_requests_list.html:81
-#: reports/templates/reports/reports_list.html:67
+#: .\reports\templates\reports\report_requests_list.html:81
+#: .\reports\templates\reports\reports_list.html:67
 msgid "Clear filters"
 msgstr "Очистить фильтры"
 
-#: reports/templates/reports/report_requests_list.html:91
+#: .\reports\templates\reports\report_requests_list.html:91
 msgid "Request"
 msgstr "Заявка"
 
-#: reports/templates/reports/report_update.html:5
+#: .\reports\templates\reports\report_update.html:5
 msgid "Edit"
 msgstr "Редактировать"
 
-#: reports/templates/reports/report_update.html:181
+#: .\reports\templates\reports\report_update.html:181
 msgid "Update report"
 msgstr "Обновить отчет"
 
-#: reports/templates/reports/reports_list.html:16
+#: .\reports\templates\reports\reports_list.html:16
 msgid "Get Excel"
 msgstr "Скачать Excel"
 
-#: reports/utils.py:45
+#: .\reports\utils.py:45
 msgid "ref. number"
 msgstr "Реф. номер"
 
-#: reports/views.py:144
+#: .\reports\utils.py:47
+msgid "Full name, date of birth"
+msgstr "Имя, дата рождения"
+
+#: .\reports\utils.py:49
+msgid ""
+"Total price\n"
+"for the doctor"
+msgstr "Стоимость\n для доктора"
+
+#: .\reports\utils.py:50
+msgid ""
+"Total\n"
+"price"
+msgstr "Стоимость"
+
+#: .\reports\views.py:144
 msgid "Report template is not found"
 msgstr "Шаблон отчета не найден"
 
-#: reports/views.py:445 reports/views.py:465 reports/views.py:568
-#: reports/views.py:588
+#: .\reports\views.py:445 .\reports\views.py:465 .\reports\views.py:568
+#: .\reports\views.py:588
 msgid "Checked report cannot be edited"
 msgstr "Проверенный отчет не может быть редактирован"
 
-#: reports/views.py:530 reports/views.py:545
+#: .\reports\views.py:530 .\reports\views.py:545
 msgid "Checked report cannot be deleted"
 msgstr "Проверенный отчет не может быть удален"
 
-#: reports/views.py:734
-#: venv/lib/python3.7/site-packages/django/forms/widgets.py:710
+#: .\reports\views.py:736 .\venv\Lib\site-packages\django\forms\widgets.py:710
 msgid "Yes"
 msgstr "Да"
 
-#: reports/views.py:734
-#: venv/lib/python3.7/site-packages/django/forms/widgets.py:711
+#: .\reports\views.py:736 .\venv\Lib\site-packages\django\forms\widgets.py:711
 msgid "No"
 msgstr "Нет"
 
-#: templates/admin/base_site.html:7
+#: .\templates\admin\base_site.html:7
 msgid "Reports administration"
 msgstr "Администрирование"
 
-#: templates/admin/index.html:20
+#: .\templates\admin\index.html:20
 #, python-format
 msgid "Models in the %(name)s application"
 msgstr "Модели в приложении %(name)s"
 
-#: templates/admin/index.html:31
+#: .\templates\admin\index.html:31
 msgid "Add"
 msgstr "Добавить"
 
-#: templates/admin/index.html:40
-#: venv/lib/python3.7/site-packages/django/forms/widgets.py:397
+#: .\templates\admin\index.html:40
+#: .\venv\Lib\site-packages\django\forms\widgets.py:397
 msgid "Change"
 msgstr "Изменить"
 
-#: templates/admin/index.html:51
+#: .\templates\admin\index.html:51
 msgid "You don't have permission to view or edit anything."
 msgstr "У вас нет прав для просмотра или редактирования чего-либо"
 
-#: templates/admin/index.html:53
+#: .\templates\admin\index.html:53
 msgid "Used storage space:"
 msgstr "Использованное пространство диска"
 
-#: templates/admin/index.html:60
+#: .\templates\admin\index.html:60
 msgid "Recent actions"
 msgstr "Недавние действия"
 
-#: templates/admin/index.html:61
+#: .\templates\admin\index.html:61
 msgid "My actions"
 msgstr "Мои действия"
 
-#: templates/admin/index.html:65
+#: .\templates\admin\index.html:65
 msgid "None available"
 msgstr "Нет доступных"
 
-#: templates/admin/index.html:79
+#: .\templates\admin\index.html:79
 msgid "Unknown content"
 msgstr "Неивестное содержание"
 
-#: templates/base.html:13
+#: .\templates\base.html:13
 msgid "Medical reports"
 msgstr "Медицинские отчеты"
 
-#: templates/base.html:39
+#: .\templates\base.html:39
 msgid "My profile"
 msgstr "Мой профиль"
 
-#: templates/base.html:56
+#: .\templates\base.html:56
 msgid "Requests"
 msgstr "Заявки"
 
-#: templates/base.html:88
+#: .\templates\base.html:88
 msgid "Previous"
 msgstr "Предыдущая"
 
-#: templates/base.html:99
+#: .\templates\base.html:99
 msgid "Next"
 msgstr "Следующая"
 
-#: templates/base.html:115
+#: .\templates\base.html:115
 msgid "Report requests: "
 msgstr "Запросы отчетов: "
 
-#: templates/base.html:119
+#: .\templates\base.html:119
 msgid "Admin page"
 msgstr "Администрирование"
 
-#: templates/base.html:124
+#: .\templates\base.html:124
 msgid "Logout"
 msgstr "Выйти"
 
-#: templates/registration/login.html:6
+#: .\templates\registration\login.html:6
 msgid "login"
 msgstr "Вход"
 
-#: templates/registration/login.html:16 templates/registration/login.html:24
+#: .\templates\registration\login.html:16
+#: .\templates\registration\login.html:24
 msgid "Login"
 msgstr "Войти"
 
-#: venv/lib/python3.7/site-packages/crispy_forms/tests/test_form_helper.py:129
-#: venv/lib/python3.7/site-packages/crispy_forms/tests/test_form_helper.py:139
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:53
+#: .\venv\Lib\site-packages\crispy_forms\tests\test_form_helper.py:129
+#: .\venv\Lib\site-packages\crispy_forms\tests\test_form_helper.py:139
+#: .\venv\Lib\site-packages\django\forms\fields.py:53
 msgid "This field is required."
 msgstr "Это поле обязательно"
 
-#: venv/lib/python3.7/site-packages/crispy_forms/tests/test_layout.py:360
+#: .\venv\Lib\site-packages\crispy_forms\tests\test_layout.py:360
 msgid "i18n text"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/crispy_forms/tests/test_layout.py:360
+#: .\venv\Lib\site-packages\crispy_forms\tests\test_layout.py:360
 msgid "i18n legend"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/crispy_forms/tests/test_layout_objects.py:129
-#: venv/lib/python3.7/site-packages/django/core/validators.py:32
+#: .\venv\Lib\site-packages\crispy_forms\tests\test_layout_objects.py:129
+#: .\venv\Lib\site-packages\django\core\validators.py:32
 msgid "Enter a valid value."
 msgstr "Введите допустимое значение"
 
-#: venv/lib/python3.7/site-packages/django/contrib/messages/apps.py:7
+#: .\venv\Lib\site-packages\django\contrib\messages\apps.py:7
 msgid "Messages"
 msgstr "Сообщения"
 
-#: venv/lib/python3.7/site-packages/django/contrib/sitemaps/apps.py:7
+#: .\venv\Lib\site-packages\django\contrib\sitemaps\apps.py:7
 msgid "Site Maps"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/contrib/staticfiles/apps.py:9
+#: .\venv\Lib\site-packages\django\contrib\staticfiles\apps.py:9
 msgid "Static Files"
 msgstr "Файлы статики"
 
-#: venv/lib/python3.7/site-packages/django/contrib/syndication/apps.py:7
+#: .\venv\Lib\site-packages\django\contrib\syndication\apps.py:7
 msgid "Syndication"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/paginator.py:45
+#: .\venv\Lib\site-packages\django\core\paginator.py:45
 msgid "That page number is not an integer"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/paginator.py:47
+#: .\venv\Lib\site-packages\django\core\paginator.py:47
 msgid "That page number is less than 1"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/paginator.py:52
+#: .\venv\Lib\site-packages\django\core\paginator.py:52
 msgid "That page contains no results"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:103
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:659
+#: .\venv\Lib\site-packages\django\core\validators.py:103
+#: .\venv\Lib\site-packages\django\forms\fields.py:659
 msgid "Enter a valid URL."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:155
+#: .\venv\Lib\site-packages\django\core\validators.py:155
 msgid "Enter a valid integer."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:166
+#: .\venv\Lib\site-packages\django\core\validators.py:166
 msgid "Enter a valid email address."
 msgstr "Введите допустимый email адрес"
 
 #. Translators: "letters" means latin letters: a-z and A-Z.
-#: venv/lib/python3.7/site-packages/django/core/validators.py:240
+#: .\venv\Lib\site-packages\django\core\validators.py:240
 msgid ""
 "Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:247
+#: .\venv\Lib\site-packages\django\core\validators.py:247
 msgid ""
 "Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
 "hyphens."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:256
-#: venv/lib/python3.7/site-packages/django/core/validators.py:276
+#: .\venv\Lib\site-packages\django\core\validators.py:256
+#: .\venv\Lib\site-packages\django\core\validators.py:276
 msgid "Enter a valid IPv4 address."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:261
-#: venv/lib/python3.7/site-packages/django/core/validators.py:277
+#: .\venv\Lib\site-packages\django\core\validators.py:261
+#: .\venv\Lib\site-packages\django\core\validators.py:277
 msgid "Enter a valid IPv6 address."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:271
-#: venv/lib/python3.7/site-packages/django/core/validators.py:275
+#: .\venv\Lib\site-packages\django\core\validators.py:271
+#: .\venv\Lib\site-packages\django\core\validators.py:275
 msgid "Enter a valid IPv4 or IPv6 address."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:305
+#: .\venv\Lib\site-packages\django\core\validators.py:305
 msgid "Enter only digits separated by commas."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:311
+#: .\venv\Lib\site-packages\django\core\validators.py:311
 #, python-format
 msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:343
+#: .\venv\Lib\site-packages\django\core\validators.py:343
 #, python-format
 msgid "Ensure this value is less than or equal to %(limit_value)s."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:352
+#: .\venv\Lib\site-packages\django\core\validators.py:352
 #, python-format
 msgid "Ensure this value is greater than or equal to %(limit_value)s."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:362
+#: .\venv\Lib\site-packages\django\core\validators.py:362
 #, python-format
 msgid ""
 "Ensure this value has at least %(limit_value)d character (it has "
@@ -1071,7 +1094,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:377
+#: .\venv\Lib\site-packages\django\core\validators.py:377
 #, python-format
 msgid ""
 "Ensure this value has at most %(limit_value)d character (it has "
@@ -1082,27 +1105,27 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:396
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:291
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:326
+#: .\venv\Lib\site-packages\django\core\validators.py:396
+#: .\venv\Lib\site-packages\django\forms\fields.py:291
+#: .\venv\Lib\site-packages\django\forms\fields.py:326
 msgid "Enter a number."
 msgstr "Введите число."
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:398
+#: .\venv\Lib\site-packages\django\core\validators.py:398
 #, python-format
 msgid "Ensure that there are no more than %(max)s digit in total."
 msgid_plural "Ensure that there are no more than %(max)s digits in total."
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:403
+#: .\venv\Lib\site-packages\django\core\validators.py:403
 #, python-format
 msgid "Ensure that there are no more than %(max)s decimal place."
 msgid_plural "Ensure that there are no more than %(max)s decimal places."
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:408
+#: .\venv\Lib\site-packages\django\core\validators.py:408
 #, python-format
 msgid ""
 "Ensure that there are no more than %(max)s digit before the decimal point."
@@ -1111,319 +1134,319 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:470
+#: .\venv\Lib\site-packages\django\core\validators.py:470
 #, python-format
 msgid ""
 "File extension “%(extension)s” is not allowed. Allowed extensions are: "
 "%(allowed_extensions)s."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/core/validators.py:522
+#: .\venv\Lib\site-packages\django\core\validators.py:522
 msgid "Null characters are not allowed."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/base.py:1181
-#: venv/lib/python3.7/site-packages/django/forms/models.py:759
+#: .\venv\Lib\site-packages\django\db\models\base.py:1181
+#: .\venv\Lib\site-packages\django\forms\models.py:759
 msgid "and"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/base.py:1183
+#: .\venv\Lib\site-packages\django\db\models\base.py:1183
 #, python-format
 msgid "%(model_name)s with this %(field_labels)s already exists."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:104
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:104
 #, python-format
 msgid "Value %(value)r is not a valid choice."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:105
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:105
 msgid "This field cannot be null."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:106
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:106
 msgid "This field cannot be blank."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:107
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:107
 #, python-format
 msgid "%(model_name)s with this %(field_label)s already exists."
 msgstr ""
 
 #. Translators: The 'lookup_type' is one of 'date', 'year' or 'month'.
 #. Eg: "Title must be unique for pub_date year"
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:111
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:111
 #, python-format
 msgid ""
 "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:130
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:130
 #, python-format
 msgid "Field of type: %(field_type)s"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:937
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:937
 #, python-format
 msgid "“%(value)s” value must be either True or False."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:938
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:938
 #, python-format
 msgid "“%(value)s” value must be either True, False, or None."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:940
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:940
 msgid "Boolean (Either True or False)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:981
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:981
 #, python-format
 msgid "String (up to %(max_length)s)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1045
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1045
 msgid "Comma-separated integers"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1094
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1094
 #, python-format
 msgid ""
 "“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
 "format."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1096
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1239
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1096
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1239
 #, python-format
 msgid ""
 "“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
 "date."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1099
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1099
 msgid "Date (without time)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1237
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1237
 #, python-format
 msgid ""
 "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[."
 "uuuuuu]][TZ] format."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1241
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1241
 #, python-format
 msgid ""
 "“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
 "[TZ]) but it is an invalid date/time."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1245
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1245
 msgid "Date (with time)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1393
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1393
 #, python-format
 msgid "“%(value)s” value must be a decimal number."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1395
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1395
 msgid "Decimal number"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1534
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1534
 #, python-format
 msgid ""
 "“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[."
 "uuuuuu] format."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1537
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1537
 msgid "Duration"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1587
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1587
 msgid "Email address"
 msgstr "адрес Email"
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1610
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1610
 msgid "File path"
 msgstr "Адрес файла"
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1676
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1676
 #, python-format
 msgid "“%(value)s” value must be a float."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1678
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1678
 msgid "Floating point number"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1716
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1716
 #, python-format
 msgid "“%(value)s” value must be an integer."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1718
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1718
 msgid "Integer"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1801
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1801
 msgid "Big (8 byte) integer"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1817
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1817
 msgid "IPv4 address"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1848
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1848
 msgid "IP address"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1928
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1929
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1928
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1929
 #, python-format
 msgid "“%(value)s” value must be either None, True or False."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1931
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1931
 msgid "Boolean (Either True, False or None)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1966
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1966
 msgid "Positive integer"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1979
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1979
 msgid "Positive small integer"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:1993
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:1993
 #, python-format
 msgid "Slug (up to %(max_length)s)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2025
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2025
 msgid "Small integer"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2032
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2032
 msgid "Text"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2060
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2060
 #, python-format
 msgid ""
 "“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
 "format."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2062
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2062
 #, python-format
 msgid ""
 "“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
 "invalid time."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2065
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2065
 msgid "Time"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2191
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2191
 msgid "URL"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2213
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2213
 msgid "Raw binary data"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2278
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2278
 #, python-format
 msgid "“%(value)s” is not a valid UUID."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/__init__.py:2280
+#: .\venv\Lib\site-packages\django\db\models\fields\__init__.py:2280
 msgid "Universally unique identifier"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/files.py:221
+#: .\venv\Lib\site-packages\django\db\models\fields\files.py:221
 msgid "File"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/related.py:778
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:778
 #, python-format
 msgid "%(model)s instance with %(field)s %(value)r does not exist."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/related.py:780
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:780
 msgid "Foreign Key (type determined by related field)"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/related.py:1012
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1012
 msgid "One-to-one relationship"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/related.py:1066
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1066
 #, python-format
 msgid "%(from)s-%(to)s relationship"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/related.py:1067
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1067
 #, python-format
 msgid "%(from)s-%(to)s relationships"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/db/models/fields/related.py:1109
+#: .\venv\Lib\site-packages\django\db\models\fields\related.py:1109
 msgid "Many-to-many relationship"
 msgstr ""
 
 #. Translators: If found as last label character, these punctuation
 #. characters will prevent the default label_suffix to be appended to the label
-#: venv/lib/python3.7/site-packages/django/forms/boundfield.py:149
+#: .\venv\Lib\site-packages\django\forms\boundfield.py:149
 msgid ":?.!"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:246
+#: .\venv\Lib\site-packages\django\forms\fields.py:246
 msgid "Enter a whole number."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:397
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:1127
+#: .\venv\Lib\site-packages\django\forms\fields.py:397
+#: .\venv\Lib\site-packages\django\forms\fields.py:1127
 msgid "Enter a valid date."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:421
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:1128
+#: .\venv\Lib\site-packages\django\forms\fields.py:421
+#: .\venv\Lib\site-packages\django\forms\fields.py:1128
 msgid "Enter a valid time."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:443
+#: .\venv\Lib\site-packages\django\forms\fields.py:443
 msgid "Enter a valid date/time."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:472
+#: .\venv\Lib\site-packages\django\forms\fields.py:472
 msgid "Enter a valid duration."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:473
+#: .\venv\Lib\site-packages\django\forms\fields.py:473
 #, python-brace-format
 msgid "The number of days must be between {min_days} and {max_days}."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:533
+#: .\venv\Lib\site-packages\django\forms\fields.py:533
 msgid "No file was submitted. Check the encoding type on the form."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:534
+#: .\venv\Lib\site-packages\django\forms\fields.py:534
 msgid "No file was submitted."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:535
+#: .\venv\Lib\site-packages\django\forms\fields.py:535
 msgid "The submitted file is empty."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:537
+#: .\venv\Lib\site-packages\django\forms\fields.py:537
 #, python-format
 msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
 msgid_plural ""
@@ -1431,531 +1454,531 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:540
+#: .\venv\Lib\site-packages\django\forms\fields.py:540
 msgid "Please either submit a file or check the clear checkbox, not both."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:601
+#: .\venv\Lib\site-packages\django\forms\fields.py:601
 msgid ""
 "Upload a valid image. The file you uploaded was either not an image or a "
 "corrupted image."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:763
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:853
-#: venv/lib/python3.7/site-packages/django/forms/models.py:1275
+#: .\venv\Lib\site-packages\django\forms\fields.py:763
+#: .\venv\Lib\site-packages\django\forms\fields.py:853
+#: .\venv\Lib\site-packages\django\forms\models.py:1275
 #, python-format
 msgid "Select a valid choice. %(value)s is not one of the available choices."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:854
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:969
-#: venv/lib/python3.7/site-packages/django/forms/models.py:1274
+#: .\venv\Lib\site-packages\django\forms\fields.py:854
+#: .\venv\Lib\site-packages\django\forms\fields.py:969
+#: .\venv\Lib\site-packages\django\forms\models.py:1274
 msgid "Enter a list of values."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:970
+#: .\venv\Lib\site-packages\django\forms\fields.py:970
 msgid "Enter a complete value."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/fields.py:1186
+#: .\venv\Lib\site-packages\django\forms\fields.py:1186
 msgid "Enter a valid UUID."
 msgstr ""
 
 #. Translators: This is the default suffix added to form field labels
-#: venv/lib/python3.7/site-packages/django/forms/forms.py:81
+#: .\venv\Lib\site-packages\django\forms\forms.py:81
 msgid ":"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/forms.py:207
+#: .\venv\Lib\site-packages\django\forms\forms.py:207
 #, python-format
 msgid "(Hidden field %(name)s) %(error)s"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/formsets.py:93
+#: .\venv\Lib\site-packages\django\forms\formsets.py:93
 msgid "ManagementForm data is missing or has been tampered with"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/formsets.py:345
+#: .\venv\Lib\site-packages\django\forms\formsets.py:345
 #, python-format
 msgid "Please submit %d or fewer forms."
 msgid_plural "Please submit %d or fewer forms."
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/forms/formsets.py:352
+#: .\venv\Lib\site-packages\django\forms\formsets.py:352
 #, python-format
 msgid "Please submit %d or more forms."
 msgid_plural "Please submit %d or more forms."
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/forms/formsets.py:379
-#: venv/lib/python3.7/site-packages/django/forms/formsets.py:386
+#: .\venv\Lib\site-packages\django\forms\formsets.py:379
+#: .\venv\Lib\site-packages\django\forms\formsets.py:386
 msgid "Order"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:754
+#: .\venv\Lib\site-packages\django\forms\models.py:754
 #, python-format
 msgid "Please correct the duplicate data for %(field)s."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:758
+#: .\venv\Lib\site-packages\django\forms\models.py:758
 #, python-format
 msgid "Please correct the duplicate data for %(field)s, which must be unique."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:764
+#: .\venv\Lib\site-packages\django\forms\models.py:764
 #, python-format
 msgid ""
 "Please correct the duplicate data for %(field_name)s which must be unique "
 "for the %(lookup)s in %(date_field)s."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:773
+#: .\venv\Lib\site-packages\django\forms\models.py:773
 msgid "Please correct the duplicate values below."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:1094
+#: .\venv\Lib\site-packages\django\forms\models.py:1094
 msgid "The inline value did not match the parent instance."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:1161
+#: .\venv\Lib\site-packages\django\forms\models.py:1161
 msgid "Select a valid choice. That choice is not one of the available choices."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/models.py:1277
+#: .\venv\Lib\site-packages\django\forms\models.py:1277
 #, python-format
 msgid "“%(pk)s” is not a valid value."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/utils.py:162
+#: .\venv\Lib\site-packages\django\forms\utils.py:162
 #, python-format
 msgid ""
 "%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
 "may be ambiguous or it may not exist."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/widgets.py:395
+#: .\venv\Lib\site-packages\django\forms\widgets.py:395
 msgid "Clear"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/widgets.py:396
+#: .\venv\Lib\site-packages\django\forms\widgets.py:396
 msgid "Currently"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/forms/widgets.py:709
+#: .\venv\Lib\site-packages\django\forms\widgets.py:709
 msgid "Unknown"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:788
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:788
 msgid "yes,no,maybe"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:817
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:834
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:817
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:834
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:836
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:836
 #, python-format
 msgid "%s KB"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:838
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:838
 #, python-format
 msgid "%s MB"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:840
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:840
 #, python-format
 msgid "%s GB"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:842
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:842
 #, python-format
 msgid "%s TB"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/template/defaultfilters.py:844
+#: .\venv\Lib\site-packages\django\template\defaultfilters.py:844
 #, python-format
 msgid "%s PB"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dateformat.py:62
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:62
 msgid "p.m."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dateformat.py:63
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:63
 msgid "a.m."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dateformat.py:68
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:68
 msgid "PM"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dateformat.py:69
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:69
 msgid "AM"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dateformat.py:150
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:150
 msgid "midnight"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dateformat.py:152
+#: .\venv\Lib\site-packages\django\utils\dateformat.py:152
 msgid "noon"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:6
+#: .\venv\Lib\site-packages\django\utils\dates.py:6
 msgid "Monday"
 msgstr "Понедельник"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:6
+#: .\venv\Lib\site-packages\django\utils\dates.py:6
 msgid "Tuesday"
 msgstr "Вторник"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:6
+#: .\venv\Lib\site-packages\django\utils\dates.py:6
 msgid "Wednesday"
 msgstr "Среда"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:6
+#: .\venv\Lib\site-packages\django\utils\dates.py:6
 msgid "Thursday"
 msgstr "Четверг"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:6
+#: .\venv\Lib\site-packages\django\utils\dates.py:6
 msgid "Friday"
 msgstr "Пятница"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:7
+#: .\venv\Lib\site-packages\django\utils\dates.py:7
 msgid "Saturday"
 msgstr "Суббота"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:7
+#: .\venv\Lib\site-packages\django\utils\dates.py:7
 msgid "Sunday"
 msgstr "Воскресенье"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:10
+#: .\venv\Lib\site-packages\django\utils\dates.py:10
 msgid "Mon"
 msgstr "Пон"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:10
+#: .\venv\Lib\site-packages\django\utils\dates.py:10
 msgid "Tue"
 msgstr "Втр"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:10
+#: .\venv\Lib\site-packages\django\utils\dates.py:10
 msgid "Wed"
 msgstr "Срд"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:10
+#: .\venv\Lib\site-packages\django\utils\dates.py:10
 msgid "Thu"
 msgstr "Чтв"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:10
+#: .\venv\Lib\site-packages\django\utils\dates.py:10
 msgid "Fri"
 msgstr "Птн"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:11
+#: .\venv\Lib\site-packages\django\utils\dates.py:11
 msgid "Sat"
 msgstr "Суб"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:11
+#: .\venv\Lib\site-packages\django\utils\dates.py:11
 msgid "Sun"
 msgstr "Вск"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:14
+#: .\venv\Lib\site-packages\django\utils\dates.py:14
 msgid "January"
 msgstr "Январь"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:14
+#: .\venv\Lib\site-packages\django\utils\dates.py:14
 msgid "February"
 msgstr "Февраль"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:14
+#: .\venv\Lib\site-packages\django\utils\dates.py:14
 msgid "March"
 msgstr "Март"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:14
+#: .\venv\Lib\site-packages\django\utils\dates.py:14
 msgid "April"
 msgstr "Апрель"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:14
+#: .\venv\Lib\site-packages\django\utils\dates.py:14
 msgid "May"
 msgstr "Май"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:14
+#: .\venv\Lib\site-packages\django\utils\dates.py:14
 msgid "June"
 msgstr "Июнь"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:15
+#: .\venv\Lib\site-packages\django\utils\dates.py:15
 msgid "July"
 msgstr "Июль"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:15
+#: .\venv\Lib\site-packages\django\utils\dates.py:15
 msgid "August"
 msgstr "Август"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:15
+#: .\venv\Lib\site-packages\django\utils\dates.py:15
 msgid "September"
 msgstr "Сентябрь"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:15
+#: .\venv\Lib\site-packages\django\utils\dates.py:15
 msgid "October"
 msgstr "Октябрь"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:15
+#: .\venv\Lib\site-packages\django\utils\dates.py:15
 msgid "November"
 msgstr "Ноябрь"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:16
+#: .\venv\Lib\site-packages\django\utils\dates.py:16
 msgid "December"
 msgstr "Декабрь"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:19
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
 msgid "jan"
 msgstr "янв"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:19
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
 msgid "feb"
 msgstr "фев"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:19
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
 msgid "mar"
 msgstr "мар"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:19
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
 msgid "apr"
 msgstr "апр"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:19
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
 msgid "may"
 msgstr "мая"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:19
+#: .\venv\Lib\site-packages\django\utils\dates.py:19
 msgid "jun"
 msgstr "июн"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:20
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
 msgid "jul"
 msgstr "июл"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:20
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
 msgid "aug"
 msgstr "авг"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:20
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
 msgid "sep"
 msgstr "сен"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:20
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
 msgid "oct"
 msgstr "окт"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:20
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
 msgid "nov"
 msgstr "ноя"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:20
+#: .\venv\Lib\site-packages\django\utils\dates.py:20
 msgid "dec"
 msgstr "дек"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:23
+#: .\venv\Lib\site-packages\django\utils\dates.py:23
 msgctxt "abbrev. month"
 msgid "Jan."
 msgstr "Янв."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:24
+#: .\venv\Lib\site-packages\django\utils\dates.py:24
 msgctxt "abbrev. month"
 msgid "Feb."
 msgstr "Фев."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:25
+#: .\venv\Lib\site-packages\django\utils\dates.py:25
 msgctxt "abbrev. month"
 msgid "March"
 msgstr "Мар."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:26
+#: .\venv\Lib\site-packages\django\utils\dates.py:26
 msgctxt "abbrev. month"
 msgid "April"
 msgstr "Апр."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:27
+#: .\venv\Lib\site-packages\django\utils\dates.py:27
 msgctxt "abbrev. month"
 msgid "May"
 msgstr "Мая"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:28
+#: .\venv\Lib\site-packages\django\utils\dates.py:28
 msgctxt "abbrev. month"
 msgid "June"
 msgstr "Июн."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:29
+#: .\venv\Lib\site-packages\django\utils\dates.py:29
 msgctxt "abbrev. month"
 msgid "July"
 msgstr "Июл."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:30
+#: .\venv\Lib\site-packages\django\utils\dates.py:30
 msgctxt "abbrev. month"
 msgid "Aug."
 msgstr "Авг."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:31
+#: .\venv\Lib\site-packages\django\utils\dates.py:31
 msgctxt "abbrev. month"
 msgid "Sept."
 msgstr "Сент."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:32
+#: .\venv\Lib\site-packages\django\utils\dates.py:32
 msgctxt "abbrev. month"
 msgid "Oct."
 msgstr "Окт."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:33
+#: .\venv\Lib\site-packages\django\utils\dates.py:33
 msgctxt "abbrev. month"
 msgid "Nov."
 msgstr "Ноя."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:34
+#: .\venv\Lib\site-packages\django\utils\dates.py:34
 msgctxt "abbrev. month"
 msgid "Dec."
 msgstr "Дек."
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:37
+#: .\venv\Lib\site-packages\django\utils\dates.py:37
 msgctxt "alt. month"
 msgid "January"
 msgstr "января"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:38
+#: .\venv\Lib\site-packages\django\utils\dates.py:38
 msgctxt "alt. month"
 msgid "February"
 msgstr "февраля"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:39
+#: .\venv\Lib\site-packages\django\utils\dates.py:39
 msgctxt "alt. month"
 msgid "March"
 msgstr "марта"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:40
+#: .\venv\Lib\site-packages\django\utils\dates.py:40
 msgctxt "alt. month"
 msgid "April"
 msgstr "апреля"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:41
+#: .\venv\Lib\site-packages\django\utils\dates.py:41
 msgctxt "alt. month"
 msgid "May"
 msgstr "мая"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:42
+#: .\venv\Lib\site-packages\django\utils\dates.py:42
 msgctxt "alt. month"
 msgid "June"
 msgstr "июня"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:43
+#: .\venv\Lib\site-packages\django\utils\dates.py:43
 msgctxt "alt. month"
 msgid "July"
 msgstr "июля"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:44
+#: .\venv\Lib\site-packages\django\utils\dates.py:44
 msgctxt "alt. month"
 msgid "August"
 msgstr "августа"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:45
+#: .\venv\Lib\site-packages\django\utils\dates.py:45
 msgctxt "alt. month"
 msgid "September"
 msgstr "сентября"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:46
+#: .\venv\Lib\site-packages\django\utils\dates.py:46
 msgctxt "alt. month"
 msgid "October"
 msgstr "октября"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:47
+#: .\venv\Lib\site-packages\django\utils\dates.py:47
 msgctxt "alt. month"
 msgid "November"
 msgstr "ноября"
 
-#: venv/lib/python3.7/site-packages/django/utils/dates.py:48
+#: .\venv\Lib\site-packages\django\utils\dates.py:48
 msgctxt "alt. month"
 msgid "December"
 msgstr "декабря"
 
-#: venv/lib/python3.7/site-packages/django/utils/ipv6.py:8
+#: .\venv\Lib\site-packages\django\utils\ipv6.py:8
 msgid "This is not a valid IPv6 address."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/text.py:69
+#: .\venv\Lib\site-packages\django\utils\text.py:69
 #, python-format
 msgctxt "String to return when truncating text"
 msgid "%(truncated_text)s…"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/text.py:235
+#: .\venv\Lib\site-packages\django\utils\text.py:235
 msgid "or"
 msgstr ""
 
 #. Translators: This string is used as a separator between list elements
-#: venv/lib/python3.7/site-packages/django/utils/text.py:254
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:83
+#: .\venv\Lib\site-packages\django\utils\text.py:254
+#: .\venv\Lib\site-packages\django\utils\timesince.py:83
 msgid ", "
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:9
+#: .\venv\Lib\site-packages\django\utils\timesince.py:9
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:10
+#: .\venv\Lib\site-packages\django\utils\timesince.py:10
 #, python-format
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:11
+#: .\venv\Lib\site-packages\django\utils\timesince.py:11
 #, python-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:12
+#: .\venv\Lib\site-packages\django\utils\timesince.py:12
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:13
+#: .\venv\Lib\site-packages\django\utils\timesince.py:13
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:14
+#: .\venv\Lib\site-packages\django\utils\timesince.py:14
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: venv/lib/python3.7/site-packages/django/utils/timesince.py:72
+#: .\venv\Lib\site-packages\django\utils\timesince.py:72
 msgid "0 minutes"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:110
+#: .\venv\Lib\site-packages\django\views\csrf.py:110
 msgid "Forbidden"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:111
+#: .\venv\Lib\site-packages\django\views\csrf.py:111
 msgid "CSRF verification failed. Request aborted."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:115
+#: .\venv\Lib\site-packages\django\views\csrf.py:115
 msgid ""
 "You are seeing this message because this HTTPS site requires a “Referer "
 "header” to be sent by your Web browser, but none was sent. This header is "
@@ -1963,14 +1986,14 @@ msgid ""
 "hijacked by third parties."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:120
+#: .\venv\Lib\site-packages\django\views\csrf.py:120
 msgid ""
 "If you have configured your browser to disable “Referer” headers, please re-"
 "enable them, at least for this site, or for HTTPS connections, or for “same-"
 "origin” requests."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:124
+#: .\venv\Lib\site-packages\django\views\csrf.py:124
 msgid ""
 "If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
 "including the “Referrer-Policy: no-referrer” header, please remove them. The "
@@ -1979,112 +2002,112 @@ msgid ""
 "\" …> for links to third-party sites."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:132
+#: .\venv\Lib\site-packages\django\views\csrf.py:132
 msgid ""
 "You are seeing this message because this site requires a CSRF cookie when "
 "submitting forms. This cookie is required for security reasons, to ensure "
 "that your browser is not being hijacked by third parties."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:137
+#: .\venv\Lib\site-packages\django\views\csrf.py:137
 msgid ""
 "If you have configured your browser to disable cookies, please re-enable "
 "them, at least for this site, or for “same-origin” requests."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/csrf.py:142
+#: .\venv\Lib\site-packages\django\views\csrf.py:142
 msgid "More information is available with DEBUG=True."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:41
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:41
 msgid "No year specified"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:61
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:111
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:208
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:61
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:111
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:208
 msgid "Date out of range"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:90
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:90
 msgid "No month specified"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:142
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:142
 msgid "No day specified"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:188
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:188
 msgid "No week specified"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:338
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:367
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:338
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:367
 #, python-format
 msgid "No %(verbose_name_plural)s available"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:589
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:589
 #, python-format
 msgid ""
 "Future %(verbose_name_plural)s not available because %(class_name)s."
 "allow_future is False."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/dates.py:623
+#: .\venv\Lib\site-packages\django\views\generic\dates.py:623
 #, python-format
 msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/detail.py:54
+#: .\venv\Lib\site-packages\django\views\generic\detail.py:54
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/list.py:67
+#: .\venv\Lib\site-packages\django\views\generic\list.py:67
 msgid "Page is not “last”, nor can it be converted to an int."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/list.py:72
+#: .\venv\Lib\site-packages\django\views\generic\list.py:72
 #, python-format
 msgid "Invalid page (%(page_number)s): %(message)s"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/generic/list.py:154
+#: .\venv\Lib\site-packages\django\views\generic\list.py:154
 #, python-format
 msgid "Empty list and “%(class_name)s.allow_empty” is False."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/static.py:40
+#: .\venv\Lib\site-packages\django\views\static.py:40
 msgid "Directory indexes are not allowed here."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/static.py:42
+#: .\venv\Lib\site-packages\django\views\static.py:42
 #, python-format
 msgid "“%(path)s” does not exist"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/static.py:80
+#: .\venv\Lib\site-packages\django\views\static.py:80
 #, python-format
 msgid "Index of %(directory)s"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:7
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:7
 msgid "Django: the Web framework for perfectionists with deadlines."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:346
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:346
 #, python-format
 msgid ""
 "View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
 "target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:368
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:368
 msgid "The install worked successfully! Congratulations!"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:369
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:369
 #, python-format
 msgid ""
 "You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
@@ -2093,27 +2116,27 @@ msgid ""
 "URLs."
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:384
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:384
 msgid "Django Documentation"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:385
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:385
 msgid "Topics, references, &amp; how-to’s"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:396
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:396
 msgid "Tutorial: A Polling App"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:397
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:397
 msgid "Get started with Django"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:408
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:408
 msgid "Django Community"
 msgstr ""
 
-#: venv/lib/python3.7/site-packages/django/views/templates/default_urlconf.html:409
+#: .\venv\Lib\site-packages\django\views\templates\default_urlconf.html:409
 msgid "Connect, get help, or contribute"
 msgstr ""
 
