@@ -105,6 +105,9 @@
                     <label class="form-check-label" for="id_set_ref_number">{% trans "Set ref. number" %}</label>
                 </div>
             </div>
+            <div class="spinner-border text-primary ml-4" role="status" id="id_ref_num_spinner" style="display: none;">
+                <span class="sr-only">Loading...</span>
+            </div>
             <div class="col-sm-2" id="id_ref_number">
             </div>
         </div>
@@ -118,12 +121,17 @@
         </div>
     </div>
         <div class="row ml-0">
-        <div class="col-sm-8 mb-4">
-            <a class="btn btn-secondary" href="{% url 'report_requests_list_url' %}" id="id_history">{% trans 'History' %}</a>
-        </div>
-        <div class="col-sm-4 mb-4">
-            <button class="btn btn-success" type="submit" id="id_submit_btn">{% trans 'Submit' %}</button>
-        </div>
+            <div class="col-sm-8 mb-4">
+                <a class="btn btn-secondary" href="{% url 'report_requests_list_url' %}" id="id_history">{% trans 'History' %}</a>
+            </div>
+            <div class="col-sm-2 mb-4">
+                <button class="btn btn-success" type="submit" id="id_submit_btn">{% trans 'Submit' %}</button>
+            </div>
+            <div class="col-sm-2">
+                <div class="spinner-border text-primary ml-2 mb-2" role="status" id="id_request_sending_spinner" style="display: none;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
         </div>
     </form>
 </div>
@@ -166,6 +174,9 @@
                 </form>
             </div>
             <div class="modal-footer">
+                <div class="spinner-border text-primary ml-2 mb-2" role="status" id="id_request_edit_spinner" style="display: none;">
+                    <span class="sr-only">Loading...</span>
+                </div>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
                 <button class="btn btn-success" type="submit" id="id_submit_btn_edit">{% trans 'Submit' %}</button>
             </div>
@@ -311,13 +322,15 @@
     }
 
     function loadNextRefNumber(pk){
+        $("#id_set_ref_number").prop("disabled", true);
+        $("#id_ref_num_spinner").show();
+
         $.ajax({
             url : "{% url 'report_requests_options_api_url' %}",
             dataType: "json",
             type: "GET",
             success : function (data) {
                 let company = data.companies.find(x => x.pk == pk);
-                console.log(pk);
                 a = document.createElement("input");
                 a.name = 'ref_number';
                 a.className = 'form-control';
@@ -326,9 +339,13 @@
                 a.min = 1;
                 a.value = company.ref_number_next;
                 $("#id_ref_number").html(a);
+                $("#id_set_ref_number").prop("disabled", false);
+                $("#id_ref_num_spinner").hide();
             },
             error : function(xhr, status, error) {
                 alert("{% trans 'Error while loading select options' %}\n" + xhr.responseText)
+                $("#id_set_ref_number").prop("disabled", false);
+                $("#id_ref_num_spinner").hide();
             }
         })
     }
@@ -348,6 +365,7 @@
         $.ajax({
             beforeSend: function () {
                 is_sending = true;
+                $("#id_request_sending_spinner").show();
             },
             complete: function () {
                 is_sending = false;
@@ -361,12 +379,14 @@
                     form[0].reset();
                     $("#id_ref_number").html('');
                     form.fadeIn().delay(2000);
+                    $("#id_request_sending_spinner").hide();
                     $('#id_submit_btn').removeAttr('disabled');
                     reloadRequests();
                 });
             },
-            error : function(xhr, status, error) {
+            error: function(xhr, status, error) {
                 alert("{% trans 'Error while saving report request' %}\n" + xhr.responseText);
+                $("#id_request_sending_spinner").hide();
                 $('#id_submit_btn').removeAttr('disabled');
             }
         });
@@ -386,6 +406,7 @@
         $.ajax({
             beforeSend: function () {
                 is_sending = true;
+                $("#id_request_edit_spinner").show();
             },
             complete: function () {
                 is_sending = false;
@@ -395,10 +416,12 @@
             url: post_url,
             data: post_data,
             success: function () {
+                    $("#id_request_edit_spinner").hide();
                     $('#id_edit_modal').modal('hide');
                     reloadRequests();
             },
-            function(xhr, status, error) {
+            error: function(xhr, status, error) {
+                $("#id_request_edit_spinner").hide();
                 alert("{% trans 'Error while editing report request' %}\n" + xhr.responseText)
             }
         });
