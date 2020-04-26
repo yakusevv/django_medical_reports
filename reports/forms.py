@@ -364,7 +364,7 @@ class ReportRequestForm(forms.ModelForm):
 
     class Meta:
         model = ReportRequest
-        fields = ('status', 'date_time',)
+        fields = ('ref_number', 'status', 'date_time',)
         widgets = {
             'date_time': DateTimePicker(
                 options={
@@ -384,7 +384,6 @@ class ReportRequestForm(forms.ModelForm):
         instance = super(ReportRequestForm, self).save(commit=False)
 
         if instance.has_report():
-            print('zero')
             instance.report.visit_price = 0
             instance.report.save()
             for item in instance.report.service_items.all():
