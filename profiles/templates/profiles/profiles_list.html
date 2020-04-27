@@ -17,6 +17,9 @@
     <th>
         {% trans "Region" %}
     </th>
+    <th>
+        Viber
+    </th>
   </thead>
 {% for profile in profile_list %}
   <tr {% if forloop.last %}class="border-bottom"{% endif %}>
@@ -28,6 +31,17 @@
     </td>
     <td>
       {{ profile.city.district.region }}
+    </td>
+    <td>
+      {% if profile.viber_id %}
+            <b style="color: green">
+              &#10003;
+            </b>
+      {% else %}
+            <b style="color: red">
+              &#10005;
+            </b>
+      {% endif %}
     </td>
   </tr>
 {% endfor %}

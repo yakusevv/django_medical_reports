@@ -34,7 +34,7 @@
       </div>
   </div>
   {% endif %}
-  <div class="row mb-2 border-top border-bottom">
+  <div class="row mb-2 border-top">
       <div class="col-md-3 mb-2">
         <b>{% trans "Location:" %}</b>
       </div>
@@ -42,6 +42,31 @@
         {{ profile.city.district.region.country }}, {{ profile.city.district.region }}, {{ profile.city.name }}
       </div>
   </div>
+  <div class="row mb-2 border-top">
+    <div class="col-md-3 mb-2">
+      <b>{% trans "Initials:" %}</b>
+    </div>
+    <div class="col">
+      {{ profile.initials }}
+    </div>
+  </div>
+  <div class="row mb-2 border-top border-bottom">
+    <div class="col-md-3 mb-2">
+      <b>Viber: </b>
+    </div>
+    <div class="col">
+      {% if profile.viber_id %}
+          <b style="color: green">
+            &#10003;
+          </b>
+      {% else %}
+          <b style="color: red">
+            &#10005;
+          </b>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% if not profile.user.is_staff %}
   <table class="table table-bordered mt-4" frame="vsides">
     <td class="table-primary" style="width: 20%">

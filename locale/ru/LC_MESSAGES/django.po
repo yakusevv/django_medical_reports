@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-26 21:28+0200\n"
+"POT-Creation-Date: 2020-04-27 22:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,10 +46,24 @@ msgstr "Посты"
 
 #: .\blog\templates\blog\base_blog.html:6
 #: .\blog\templates\blog\post_create_form.html:5
-#: .\blog\templates\blog\post_create_form.html:24
+#: .\blog\templates\blog\post_create_form.html:27
 #: .\blog\templates\blog\post_detail.html:10
 msgid "Create post"
 msgstr "Создать пост"
+
+#: .\blog\templates\blog\base_blog.html:8
+#: .\blog\templates\blog\post_delete_form.html:9
+#: .\blog\templates\blog\post_detail.html:18
+#: .\blog\templates\blog\post_update_form.html:14
+#: .\profiles\templates\profiles\base_profiles.html:5
+#: .\reports\templates\reports\base_reports.html:5
+#: .\reports\templates\reports\report_create.html:5
+#: .\reports\templates\reports\report_create.html:227
+#: .\reports\templates\reports\report_detail.html:13
+#: .\reports\templates\reports\report_requests_list.html:14
+#: .\reports\templates\reports\reports_list.html:14
+msgid "Create report"
+msgstr "Создать отчет"
 
 #: .\blog\templates\blog\index.html:17
 msgid "Read"
@@ -61,23 +75,23 @@ msgstr "Читать"
 msgid "Delete post"
 msgstr "Удалить пост"
 
-#: .\blog\templates\blog\post_delete_form.html:12
+#: .\blog\templates\blog\post_delete_form.html:16
 #: .\reports\templates\reports\report_delete.html:16
 msgid "Are you sure you want to delete"
 msgstr "Вы уверены, что хотите удалить"
 
-#: .\blog\templates\blog\post_delete_form.html:12
+#: .\blog\templates\blog\post_delete_form.html:16
 msgid "post?"
 msgstr "пост?"
 
-#: .\blog\templates\blog\post_delete_form.html:13
+#: .\blog\templates\blog\post_delete_form.html:17
 #: .\reports\templates\reports\report_delete.html:17
 #: .\reports\templates\reports\report_images_update.html:106
 #: .\reports\templates\reports\report_update.html:180
 msgid "Cancel"
 msgstr "Отмена"
 
-#: .\blog\templates\blog\post_delete_form.html:14
+#: .\blog\templates\blog\post_delete_form.html:18
 #: .\reports\templates\reports\report_delete.html:18
 #: .\venv\Lib\site-packages\django\forms\formsets.py:391
 msgid "Delete"
@@ -88,7 +102,7 @@ msgstr "Удалить"
 msgid "Edit post"
 msgstr "Редактировать пост"
 
-#: .\blog\templates\blog\post_update_form.html:26
+#: .\blog\templates\blog\post_update_form.html:31
 msgid "Update Post"
 msgstr "Изменить пост"
 
@@ -163,8 +177,8 @@ msgid "Profile with this Num. col. in current country is already exists."
 msgstr "Профиль с этим коллегиальным номером уже существует в данной стране"
 
 #: .\profiles\models.py:56 .\profiles\templates\profiles\profiles_list.html:12
-#: .\reports\models.py:343 .\reports\templates\reports\report_requests.html:86
-#: .\reports\templates\reports\report_requests.html:146
+#: .\reports\models.py:348 .\reports\templates\reports\report_requests.html:86
+#: .\reports\templates\reports\report_requests.html:154
 #: .\reports\templates\reports\report_requests_list.html:25
 #: .\reports\templates\reports\reports_list.html:29
 msgid "Doctor"
@@ -172,14 +186,14 @@ msgstr "Доктор"
 
 #: .\profiles\models.py:62 .\profiles\models.py:91 .\reports\models.py:41
 #: .\reports\models.py:50 .\reports\models.py:100 .\reports\models.py:126
-#: .\reports\models.py:182 .\reports\models.py:299
+#: .\reports\models.py:182 .\reports\models.py:304
 msgid "Country"
 msgstr "Страна"
 
 #: .\profiles\models.py:64 .\reports\models.py:38 .\reports\models.py:49
 #: .\reports\models.py:63 .\reports\models.py:76 .\reports\models.py:99
 #: .\reports\models.py:111 .\reports\models.py:123 .\reports\models.py:167
-#: .\reports\models.py:294
+#: .\reports\models.py:299
 msgid "Name"
 msgstr "Название"
 
@@ -233,7 +247,7 @@ msgstr "Район"
 msgid "Type of visit"
 msgstr "Тип визита"
 
-#: .\profiles\models.py:106 .\reports\models.py:155 .\reports\models.py:301
+#: .\profiles\models.py:106 .\reports\models.py:155 .\reports\models.py:306
 #: .\reports\templates\reports\price_table_view.html:70
 msgid "Price"
 msgstr "Цена"
@@ -263,15 +277,19 @@ msgstr "Кол. номер:"
 msgid "Location:"
 msgstr "Местонахождение:"
 
-#: .\profiles\templates\profiles\profile_detail.html:48
+#: .\profiles\templates\profiles\profile_detail.html:47
+msgid "Initials:"
+msgstr "Инициалы:"
+
+#: .\profiles\templates\profiles\profile_detail.html:73
 msgid "Territory coverage:"
 msgstr "Покрытие:"
 
-#: .\profiles\templates\profiles\profile_detail.html:90
+#: .\profiles\templates\profiles\profile_detail.html:115
 msgid "Autofill templates:"
 msgstr "Шаблоны автозаполнения:"
 
-#: .\profiles\templates\profiles\profile_detail.html:104
+#: .\profiles\templates\profiles\profile_detail.html:129
 #: .\profiles\templates\profiles\profile_template_create.html:5
 #: .\profiles\templates\profiles\profile_template_create.html:33
 msgid "Create template"
@@ -295,7 +313,7 @@ msgstr "Доктора"
 msgid "Region"
 msgstr "Регион"
 
-#: .\reports\apps.py:7 .\reports\models.py:216
+#: .\reports\apps.py:7 .\reports\models.py:221
 #: .\reports\templates\reports\reports_list.html:5 .\templates\base.html:36
 msgid "Reports"
 msgstr "Отчеты"
@@ -380,9 +398,9 @@ msgstr "Тариф визита"
 msgid "Visit tariffs"
 msgstr "Тариф визита"
 
-#: .\reports\models.py:172 .\reports\models.py:351
+#: .\reports\models.py:172 .\reports\models.py:356
 #: .\reports\templates\reports\report_requests.html:95
-#: .\reports\templates\reports\report_requests.html:153
+#: .\reports\templates\reports\report_requests.html:161
 #: .\reports\templates\reports\report_requests_list.html:34
 #: .\reports\templates\reports\reports_list.html:39
 msgid "Company"
@@ -440,146 +458,137 @@ msgstr "Подробное местонахождение"
 msgid "Is checked"
 msgstr "Проверен"
 
-#: .\reports\models.py:215 .\reports\models.py:281 .\reports\models.py:315
+#: .\reports\models.py:216 .\reports\models.py:361
+msgid "Report request"
+msgstr "Запрос отчета"
+
+#: .\reports\models.py:220 .\reports\models.py:286 .\reports\models.py:320
 #: .\reports\templates\reports\report_requests_list.html:60
 #: .\reports\templates\reports\report_requests_list.html:97
 #: .\reports\templates\reports\reports_list.html:77
 msgid "Report"
 msgstr "Отчет"
 
-#: .\reports\models.py:218
+#: .\reports\models.py:223
 msgid "Can download excel"
 msgstr "Может скачать excel"
 
-#: .\reports\models.py:271
+#: .\reports\models.py:276
 msgid "Full ref. number"
 msgstr "Полный реф. номер"
 
-#: .\reports\models.py:272
+#: .\reports\models.py:277
 msgid "Total price"
 msgstr "Суммарная цена"
 
-#: .\reports\models.py:273
+#: .\reports\models.py:278
 msgid "Total price for the doctor"
 msgstr "Суммарная цена для доктора"
 
-#: .\reports\models.py:283
+#: .\reports\models.py:288
 #: .\venv\Lib\site-packages\django\db\models\fields\files.py:360
 msgid "Image"
 msgstr "Изображение"
 
-#: .\reports\models.py:284
+#: .\reports\models.py:289
 msgid "Position"
 msgstr "Позиция"
 
-#: .\reports\models.py:285
+#: .\reports\models.py:290
 msgid "Expand"
 msgstr "Растянуть"
 
-#: .\reports\models.py:288
+#: .\reports\models.py:293
 msgid "Additional Image"
 msgstr "Прикрепленное изображение"
 
-#: .\reports\models.py:289
+#: .\reports\models.py:294
 msgid "Additional Images"
 msgstr "Прикрепленные зображения"
 
-#: .\reports\models.py:302
+#: .\reports\models.py:307
 msgid "Price for the doctor"
 msgstr "Цена для доктора"
 
-#: .\reports\models.py:303
+#: .\reports\models.py:308
 msgid "Unsummable price"
 msgstr "Не суммируемая цена"
 
-#: .\reports\models.py:307 .\reports\models.py:316
+#: .\reports\models.py:312 .\reports\models.py:321
 #: .\reports\templates\reports\price_table_view.html:69
 msgid "Service"
 msgstr "Сервис"
 
-#: .\reports\models.py:308
+#: .\reports\models.py:313
 msgid "Services"
 msgstr "Сервисы"
 
-#: .\reports\models.py:317
+#: .\reports\models.py:322
 msgid "Quantity"
 msgstr "Количество"
 
-#: .\reports\models.py:318
+#: .\reports\models.py:323
 msgid "Cost"
 msgstr "Цена"
 
-#: .\reports\models.py:319
+#: .\reports\models.py:324
 msgid "Cost doctor"
 msgstr "Цена для доктора"
 
-#: .\reports\models.py:323
+#: .\reports\models.py:328
 msgid "Service item"
 msgstr "Позиция сервиса"
 
-#: .\reports\models.py:324
+#: .\reports\models.py:329
 msgid "Service items"
 msgstr "Позиция сервиса"
 
-#: .\reports\models.py:334
+#: .\reports\models.py:339
 msgid "Is accepted"
 msgstr "Принята"
 
-#: .\reports\models.py:335 .\reports\serializers.py:14
+#: .\reports\models.py:340 .\reports\serializers.py:14
 msgid "Cancelled by company"
 msgstr "Отменена компанией"
 
-#: .\reports\models.py:336 .\reports\serializers.py:15
+#: .\reports\models.py:341 .\reports\serializers.py:15
 msgid "Wrong request data"
 msgstr "Неверные данные заявки"
 
-#: .\reports\models.py:337 .\reports\templates\reports\report_create.html:427
+#: .\reports\models.py:342 .\reports\templates\reports\report_create.html:427
 msgid "The visit did not take place"
 msgstr "Визит не состоялся"
 
-#: .\reports\models.py:347
+#: .\reports\models.py:352
 msgid "Date and time"
 msgstr "Дата и время"
 
-#: .\reports\models.py:348 .\reports\templates\reports\report_requests.html:112
-#: .\reports\templates\reports\report_requests.html:160
+#: .\reports\models.py:353 .\reports\templates\reports\report_requests.html:115
+#: .\reports\templates\reports\report_requests.html:168
 msgid "Message"
 msgstr "Сообщение"
 
-#: .\reports\models.py:350
+#: .\reports\models.py:355
 msgid "Ref. number"
 msgstr "Реф. номер"
 
-#: .\reports\models.py:352
+#: .\reports\models.py:357
 msgid "Sender"
 msgstr "Отправитель"
 
-#: .\reports\models.py:353
+#: .\reports\models.py:358
 #: .\reports\templates\reports\report_requests_list.html:52
 #: .\reports\templates\reports\report_requests_list.html:94
 msgid "Status"
 msgstr "Статус"
 
-#: .\reports\models.py:356
-msgid "Report request"
-msgstr "Запрос отчета"
-
-#: .\reports\models.py:357
+#: .\reports\models.py:362
 msgid "Report requests"
 msgstr "Запросы отчетов"
 
-#: .\reports\models.py:371
+#: .\reports\models.py:376
 msgid "Case {}{} is already exists"
 msgstr "Кейс {}{} уже существует"
-
-#: .\reports\templates\reports\base_reports.html:5
-#: .\reports\templates\reports\report_create.html:5
-#: .\reports\templates\reports\report_create.html:227
-#: .\reports\templates\reports\report_detail.html:13
-#: .\reports\templates\reports\report_requests_list.html:14
-#: .\reports\templates\reports\reports_list.html:14
-msgid "Create report"
-msgstr "Создать отчет"
 
 #: .\reports\templates\reports\price_table_view.html:5 .\templates\base.html:47
 msgid "Price table"
@@ -717,7 +726,7 @@ msgid "Message: "
 msgstr "Сообщение: "
 
 #: .\reports\templates\reports\report_request_update.html:32
-#: .\reports\templates\reports\report_requests.html:260
+#: .\reports\templates\reports\report_requests.html:271
 msgid "Sender: "
 msgstr "Отправитель: "
 
@@ -753,53 +762,53 @@ msgstr "Сегодня: "
 msgid "Set ref. number"
 msgstr "Задать реф. номер"
 
-#: .\reports\templates\reports\report_requests.html:122
+#: .\reports\templates\reports\report_requests.html:125
 msgid "History"
 msgstr "История"
 
-#: .\reports\templates\reports\report_requests.html:125
-#: .\reports\templates\reports\report_requests.html:170
+#: .\reports\templates\reports\report_requests.html:128
+#: .\reports\templates\reports\report_requests.html:181
 msgid "Submit"
 msgstr "Отправить"
 
-#: .\reports\templates\reports\report_requests.html:169
+#: .\reports\templates\reports\report_requests.html:180
 msgid "Close"
 msgstr "Закрыть"
 
-#: .\reports\templates\reports\report_requests.html:216
-#: .\reports\templates\reports\report_requests.html:331
+#: .\reports\templates\reports\report_requests.html:227
+#: .\reports\templates\reports\report_requests.html:346
 msgid "Error while loading select options"
 msgstr "Ошибка при загрузке опций выбора"
 
-#: .\reports\templates\reports\report_requests.html:259
+#: .\reports\templates\reports\report_requests.html:270
 msgid "edit"
 msgstr "редакт."
 
-#: .\reports\templates\reports\report_requests.html:275
+#: .\reports\templates\reports\report_requests.html:286
 msgid "Error while loading report requests"
 msgstr "Ошибка при загрузке заявок"
 
-#: .\reports\templates\reports\report_requests.html:295
+#: .\reports\templates\reports\report_requests.html:306
 msgid "Case has been closed"
 msgstr "Заявка отменена"
 
-#: .\reports\templates\reports\report_requests.html:299
+#: .\reports\templates\reports\report_requests.html:310
 msgid "Error while closing case"
 msgstr "Ошибка при отмене заявки"
 
-#: .\reports\templates\reports\report_requests.html:310
+#: .\reports\templates\reports\report_requests.html:321
 msgid "Request from "
 msgstr "Дата заявки "
 
-#: .\reports\templates\reports\report_requests.html:369
+#: .\reports\templates\reports\report_requests.html:388
 msgid "Error while saving report request"
 msgstr "Ошибка при сохранении заявки"
 
-#: .\reports\templates\reports\report_requests.html:402
+#: .\reports\templates\reports\report_requests.html:425
 msgid "Error while editing report request"
 msgstr "Ошибка при редактировании заявки"
 
-#: .\reports\templates\reports\report_requests.html:414
+#: .\reports\templates\reports\report_requests.html:437
 msgid "Do you really want to close this case?"
 msgstr "Вы уверены, что хотите отменить эту заявку?"
 
@@ -865,7 +874,9 @@ msgstr "Имя, дата рождения"
 msgid ""
 "Total price\n"
 "for the doctor"
-msgstr "Стоимость\n для доктора"
+msgstr ""
+"Стоимость\n"
+" для доктора"
 
 #: .\reports\utils.py:50
 msgid ""
