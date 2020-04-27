@@ -11,18 +11,27 @@
 {% if perms.blog.delete_post %}
 <a href="{{ admin_obj.get_delete_url }}" class="admin-panel-element btn btn-danger delete">{% trans "Delete post" %}</a>
 {% endif %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
 {% endblock %}
 
 {% block content %}
 <form action="{{ post.get_update_url }}" method="post">
   {% csrf_token %}
 
+    <div class="form-group">
   {% for field in form %}
-      <div class="form-group col-md-6 mb-0">
-        {{ field|as_crispy_field }}
-      </div>
+        <div class="form-group row">
+            <div class="form-group col-md-6 mb-0">
+                {{ field|as_crispy_field }}
+            </div>
+        </div>
   {% endfor %}
-
-  <button type="submit" class="btn btn-primary">{% trans "Update Post" %}</button>
+        <div class="form-group row">
+            <div class="form-group col-md-6 mb-0">
+                <button type="submit" class="btn btn-primary">{% trans "Update Post" %}</button>
+            </div>
+        </div>
+    </div>
+</form>
 
   {% endblock %}

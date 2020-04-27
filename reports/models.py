@@ -209,7 +209,12 @@ class Report(models.Model):
     diagnosis = models.ManyToManyField('Disease', related_name='reports', verbose_name=_("Diagnosis"))
     prescription = models.TextField(max_length=700, verbose_name=_("Prescription"))
     checked = models.BooleanField(default=False, verbose_name=_("Is checked"))
-    report_request = models.OneToOneField('ReportRequest', on_delete=models.PROTECT, related_name='report')
+    report_request = models.OneToOneField(
+                                        'ReportRequest',
+                                        on_delete=models.PROTECT,
+                                        related_name='report',
+                                        verbose_name=_("Report request")
+                                        )
 
     class Meta:
         verbose_name = _('Report')

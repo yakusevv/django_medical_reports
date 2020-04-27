@@ -5,6 +5,10 @@
 {{ block.super }} - {{ post.title|title }} - {% trans "Delete post" %}
 {% endblock %}
 
+{% block admin-panel-content %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
+{% endblock %}
+
 {% block content %}
 <form action="{{ post.get_delete_url }}" method="post">
   {% csrf_token %}

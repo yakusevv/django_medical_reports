@@ -240,11 +240,11 @@ msgstr "Цена"
 
 #: .\profiles\models.py:110 .\reports\models.py:200
 msgid "Visit price for the doctor"
-msgstr "Цена для доктора"
+msgstr "Цена визита для доктора"
 
 #: .\profiles\models.py:111
 msgid "Visit prices for the doctors"
-msgstr "Цены для докторов"
+msgstr "Цены визитов для докторов"
 
 #: .\profiles\templates\profiles\profile_detail.html:13
 msgid "Last name:"

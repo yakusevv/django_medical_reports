@@ -5,4 +5,5 @@
 {% if perms.blog.add_post %}
 <a class="admin-panel-element btn btn-success" href="{% url 'post_create_url' %}">{% trans "Create post" %}</a>
 {% endif %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
 {% endblock %}

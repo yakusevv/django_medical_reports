@@ -15,16 +15,31 @@
 {% if perms.blog.delete_post %}
 <a href="{{ admin_obj.get_delete_url }}" class="admin-panel-element btn btn-danger delete">{% trans "Delete post" %}</a>
 {% endif %}
+<a class="admin-panel-element btn btn-success" href="{% url 'report_create_url' %}">{% trans "Create report" %}</a>
 {% endblock %}
 
 {% block content %}
-<h1 class="mt-5">
-  {{ post.title }}
-</h1>
-<p>
-  {{ post.body|linebreaksbr }}
-</p>
-<p class="text-muted">
-  {{ post.date_pub }}
-</p>
+<div class="container ml-3 mt-3">
+  <div class="row">
+    <div class="col mb-4" style="text-align:center;">
+      <h3>
+        {{ post.title }}
+      </h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p>
+        {{ post.body|linebreaksbr }}
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p class="text-muted">
+        {{ post.date_pub }}
+      </p>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -364,7 +364,7 @@ class ReportRequestForm(forms.ModelForm):
 
     class Meta:
         model = ReportRequest
-        fields = ('ref_number', 'status', 'date_time',)
+        fields = ('ref_number', 'date_time', 'status',)
         widgets = {
             'date_time': DateTimePicker(
                 options={
