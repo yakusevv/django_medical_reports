@@ -132,7 +132,7 @@ def download_report_docx(request, pk, type_of_report):
             file_name = "_".join((
                             slugify(report.patients_last_name).upper(),
                             slugify(report.patients_first_name).upper(),
-                            slugify(report.company_ref_number).upper()
+                            slugify(report.get_full_company_ref_number).upper()
                             )) + '.docx'
             file.save(buffer)
             buffer.seek(0)
@@ -289,6 +289,13 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ReportDetailView, self).get_context_data(**kwargs)
         context['report_link_active'] = "active"
+        country = self.object.city.district.region.country
+        reports_queryset = Report.objects.filter(
+            city__district__region__country=country,
+            company_ref_number=self.object.company_ref_number
+        ).order_by('date_of_visit')
+        if len(reports_queryset) > 1:
+            context['same_case_reports'] = reports_queryset
         return context
 
     def post(self, request, *args, **kwargs):

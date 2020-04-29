@@ -132,7 +132,10 @@ class TypeOfVisit(models.Model):
         verbose_name_plural = _('Types of visits')
 
     def __str__(self):
-        return self.name
+        if self.short_name:
+            return self.short_name
+        else:
+            return self.name
 
 
 class Tariff(models.Model):
@@ -200,7 +203,8 @@ class Report(models.Model):
                                             verbose_name=_("Visit price for the doctor"),
                                             default=0
                                             )
-    date_of_visit = models.DateTimeField(verbose_name=_("Date of visit"))
+    date_of_visit = models.DateField(verbose_name=_("Date of visit"))
+    time_of_visit = models.TimeField(null=True, blank=True, verbose_name=_("Time of visit"))
     city = models.ForeignKey(City, on_delete=models.PROTECT, verbose_name=_("City"))
     detailed_location = models.CharField(max_length=100, blank=True, verbose_name=_("Detailed location"))
     cause_of_visit = models.TextField(max_length=700, verbose_name=_("Cause of visit"))
@@ -266,12 +270,31 @@ class Report(models.Model):
     @property
     def get_full_ref_number(self):
         ref = str(self.report_request.company.initials) + str(self.report_request.ref_number).zfill(3)
-        date_of_visit = str(self.report_request.date_time.strftime("%d%m"))
+        date_of_request = str(self.report_request.date_time.strftime("%d%m"))
         if not self.report_request.doctor.is_foreign_doctor:
             info = self.report_request.doctor.initials + self.type_of_visit.initial
         else:
             info = self.report_request.doctor.initials
-        return '-'.join((ref, date_of_visit, info))
+        return '-'.join((ref, date_of_request, info))
+
+    @property
+    def get_number_of_visit(self):
+        country = self.city.district.region.country
+        reports_queryset = Report.objects.filter(
+            city__district__region__country=country,
+            company_ref_number=self.company_ref_number
+        ).order_by('date_of_visit')
+        for index, item in enumerate(reports_queryset, 1):
+            if self.pk == item.pk:
+                return index
+
+    @property
+    def get_full_company_ref_number(self):
+        number = self.get_number_of_visit
+        if number > 1:
+            return '_'.join((self.company_ref_number, str(number)))
+        else:
+            return self.company_ref_number
 
     get_full_ref_number.fget.short_description = _('Full ref. number')
     get_total_price.fget.short_description = _('Total price')

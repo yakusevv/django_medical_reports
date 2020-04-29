@@ -36,6 +36,24 @@
           </b>
     </div>
   </div>
+  {% if same_case_reports %}
+  <div class="mb-4 ml-0">
+    <div class="row mb-2">
+      <div class="col offset-md-4">
+        <b> {% trans "Other reports for this Case:" %} </b>
+      </div>
+    </div>
+    {% for other_report in same_case_reports %}
+      {% if not other_report.pk == report.pk %}
+        <div class="row mb-1 col-md-12">
+          <div class="col offset-md-4">
+            <a href="{{ other_report.get_absolute_url }}">{{ other_report }}</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  </div>
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Report request: " %} </b>
@@ -51,7 +69,7 @@
     </div>
     <div class="col">
       {{ report.report_request.company }}
-      {{ report.company_ref_number }}
+      {{ report.get_full_company_ref_number }}
     </div>
   </div>
   <div class="row mb-2 col-md-12 border-top">
@@ -80,6 +98,16 @@
       {{ report.date_of_visit }}
     </div>
   </div>
+  {% if report.time_of_visit %}
+  <div class="row mb-2 col-md-12 border-top">
+    <div class="col-md-4">
+      <b> {% trans "Time of visit:" %} </b>
+    </div>
+    <div class="col">
+      {{ report.time_of_visit|time:"H:i" }}
+    </div>
+  </div>
+  {% endif %}
   <div class="row mb-2 col-md-12 border-top">
     <div class="col-md-4">
       <b> {% trans "Location:" %} </b>

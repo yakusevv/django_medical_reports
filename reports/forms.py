@@ -37,19 +37,29 @@ class ReportForm(forms.ModelForm):
                    'diagnosis'         : Select2MultipleWidget,
                    'city'              : Select2Widget,
                    'type_of_visit'     : Select2Widget,
-                   'date_of_visit'     : DateTimePicker(
+                   'date_of_visit'     : DatePicker(
                                         options={
-                                         #   'minDate': '-1y',
-                                            'useCurrent': 'hour',
+                                            'useCurrent': 'day',
                                             'maxDate': 'now',
-                                            'format': "DD.MM.YYYY HH:mm",
-                                            'stepping': 5
+                                            'format': "DD.MM.YYYY",
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
                                             'icon_toggle': True,
                                             'size': 'small'
                                             }
+                                    ),
+                   'time_of_visit': DatePicker(
+                                        options={
+                                            'useCurrent': 'hour',
+                                            'format': "HH:mm",
+                                            'stepping': 5
+                                            },
+                                        attrs={
+                                            'append': 'fa fa-calendar',
+                                            'icon_toggle': True,
+                                            'size': 'small'
+                                        }
                                     ),
                    'patients_date_of_birth': DatePicker(
                                         options={
