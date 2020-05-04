@@ -43,13 +43,32 @@
         <a class="nav-link {{ doctors_list_link_active }}" href="{% url 'profiles_list_url' %}">{% trans "Doctors" %}</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle {{ price_table_link_active }}" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans "Price table" %}
+        <a class="nav-link dropdown-toggle {{ price_table_link_active }}"
+                href="#"
+                id="PriceTableDropdownMenuLink"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+                                            {% trans "Price table" %}
         </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+      <div class="dropdown-menu" aria-labelledby="PriceTableDropdownMenuLink">
         {% for country in list_of_countries %}
         <a class="dropdown-item" href="{% url 'price_table_url' country.id %}">{{ country.name }}</a>
         {% endfor %}
+      </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle {{ instruments_link_active }}"
+                href="#"
+                id="InstrumentsDropdownMenuLink"
+                role="button" data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+                                            {% trans "Instruments" %}
+        </a>
+      <div class="dropdown-menu" aria-labelledby="InstrumentsDropdownMenuLink">
+        <a class="dropdown-item" href="{% url 'charts_url' %}">{% trans "Charts" %}</a>
       </div>
       </li>
       <li class="nav-item">

@@ -242,17 +242,17 @@
             dataType: "json",
             type: "GET",
             success : function (data) {
-                report_requests = data;
+                report_requests = data.filter(el => el.status === 'accepted' && !el.has_report);
 
                 $("#id_requests_count").text(report_requests.length);
                 if (report_requests.length > 0){
-                    $("#id_requests_info").style = 'color: red;'
+                    $("#id_requests_info").css('color', 'red')
                 }
                 else {
-                    $("#id_requests_info").style = 'color: green;'
+                    $("#id_requests_info").css('color', 'green')
                 }
                 $('#id_requests_list').html("");
-                data.forEach(el => {
+                report_requests.forEach(el => {
                     let div = document.createElement("div");
                     let ref_number_pad = ('000'+ el.ref_number).slice(-3);
 

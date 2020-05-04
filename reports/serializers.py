@@ -11,8 +11,8 @@ from profiles.models import Profile
 
 class ReportRequestSerializer(serializers.ModelSerializer):
     STATUS = (
+        ('accepted', _('Is accepted')),
         ('cancelled_by_company', _('Cancelled by company')),
-        ('wrong_data', _('Wrong request data')),
         )
 
     doctor = serializers.PrimaryKeyRelatedField(
@@ -28,6 +28,7 @@ class ReportRequestSerializer(serializers.ModelSerializer):
     ref_number = serializers.IntegerField(required=False)
     sender_initials = serializers.CharField(source='sender.initials', read_only=True)
     status = serializers.ChoiceField(choices=STATUS, required=False)
+    has_report = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = ReportRequest
@@ -43,6 +44,7 @@ class ReportRequestSerializer(serializers.ModelSerializer):
                   'ref_number',
                   'sender_initials',
                   'status',
+                  'has_report'
         ]
 
 

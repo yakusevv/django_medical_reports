@@ -641,12 +641,15 @@ class PriceTableView(AdminStaffRequiredMixin, DetailView):
 
 
 class ReportRequestViewSet(viewsets.ModelViewSet):
-    queryset = ReportRequest.objects.filter(
-                                            report=None,
-                                            status='accepted'
-                                            ).order_by('-date_time')
+    queryset = ReportRequest.objects.filter().exclude(status='wrong_data').order_by('-date_time')
     serializer_class = ReportRequestSerializer
     permission_classes = (permissions.IsAdminUser,)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        country = self.request.user.profile.city.district.region.country
+        query_set = queryset.filter(doctor__city__district__region__country=country)
+        return query_set
 
     @staticmethod
     def ref_number_changing(prev):
@@ -859,4 +862,13 @@ class ReportRequestUpdateView(AdminStaffRequiredMixin, UpdateView):
 
     def get_success_url(self, **kwargs):
         return reverse('report_requests_list_url')
+
+
+class ChartsView(AdminStaffRequiredMixin, TemplateView):
+    template_name = 'reports/charts_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ChartsView, self).get_context_data()
+        context['instruments_link_active'] = "active"
+        return context
 
