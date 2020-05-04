@@ -282,7 +282,9 @@ class Report(models.Model):
         country = self.city.district.region.country
         reports_queryset = Report.objects.filter(
             city__district__region__country=country,
-            company_ref_number=self.company_ref_number
+            company_ref_number=self.company_ref_number,
+            patients_first_name=self.patients_first_name,
+            patients_last_name=self.patients_last_name
         ).order_by('date_of_visit')
         for index, item in enumerate(reports_queryset, 1):
             if self.pk == item.pk:

@@ -5,6 +5,10 @@
 {% load i18n %}
 {% endblock %}
 
+{% block title %}
+  {{ block.super }} - {% trans "Requests" %}
+{% endblock %}
+
 {% block content %}
 <div class="ml-4 mb-4 mt-2 mb-2">
  <button type="button" class="btn btn-outline-secondary btn-sm ml-2" data-toggle="collapse" data-target="#id_distribution">{% trans "Distribution" %}</button>
@@ -88,6 +92,7 @@
         <div class="form-group row ml-0 mr-0">
             <div class="col-sm-6">
                 <select class="form-control" name="doctor" id="id_doctor">
+                    <option></option>
                 </select>
             </div>
         </div>
@@ -97,6 +102,7 @@
         <div class="form-group row ml-0 mr-0">
             <div class="col-sm-6">
                 <select class="form-control" name="company" id="id_company">
+                    <option></option>
                 </select>
             </div>
             <div class="col-sm-2">

@@ -80,7 +80,7 @@ class ProfileReportAutofillTemplateCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.doctor = self.request.user.profile
         form.instance.country = self.request.user.profile.city.district.region.country
-        self.object = form.save()
+        form.save()
         return super(ProfileReportAutofillTemplateCreateView, self).form_valid(form)
 
 
