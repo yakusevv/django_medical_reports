@@ -12,74 +12,182 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mt-4">
+  <label class="col-sm-3 control-label" for="id_doctor">
+    {% trans "Doctor" %}
+  </label>
+  <label class="col-sm-3 control-label" for="id_company">
+    {% trans "Company" %}
+  </label>
+  <div class="form-group row ml-0 mr-0">
+    <div class="col-sm-3">
+      <select class="form-control" name="doctor" id="id_doctor">
+        <option></option>
+      </select>
+    </div>
+    <div class="col-sm-3">
+      <select class="form-control" name="company" id="id_company">
+        <option></option>
+      </select>
+    </div>
+    <div class="col-sm-2 mb-4">
+        <button class="btn btn-success" type="button" id="id_apply_btn">{% trans 'Apply' %}</button>
+    </div>
+  </div>
+</div>
 <div class="container mb-4 mt-4">
     <div class="row">
-        <div class="col-sm-3"></div>
-            <div class="col-sm-12">
-                <canvas id="RequestsChart" width="400" height="300">
-                </canvas>
-            </div>
-        <div class="col-sm-3"></div>
+        <div class="col-sm-12" id="RequestsChartContainer">
+            <canvas id="RequestsChart" width="500" height="300">
+            </canvas>
+        </div>
     </div>
 </div>
 <script>
-var endpoint = '{% url 'requests:requests-list' %}'
-var report_requests = []
-var report_requests_data = []
+  var endpoint = '{% url 'requests:requests-list' %}';
+  var report_requests = [];
+  var colors = [
+  "#63b598", "#ce7d78", "#ea9e70", "#a48a9e", "#c6e1e8", "#648177" ,"#0d5ac1" ,
+  "#f205e6" ,"#1c0365" ,"#14a9ad" ,"#4ca2f9" ,"#a4e43f" ,"#d298e2" ,"#6119d0",
+  "#d2737d" ,"#c0a43c" ,"#f2510e" ,"#651be6" ,"#79806e" ,"#61da5e" ,"#cd2f00" ,
+  "#9348af" ,"#01ac53" ,"#c5a4fb" ,"#996635","#b11573" ,"#4bb473" ,"#75d89e" ,
+  "#2f3f94" ,"#2f7b99" ,"#da967d" ,"#34891f" ,"#b0d87b" ,"#ca4751" ,"#7e50a8" ,
+  "#c4d647" ,"#e0eeb8" ,"#11dec1" ,"#289812" ,"#566ca0" ,"#ffdbe1" ,"#2f1179" ,
+  "#935b6d" ,"#916988" ,"#513d98" ,"#aead3a", "#9e6d71", "#4b5bdc", "#0cd36d",
+  "#250662", "#cb5bea", "#228916", "#ac3e1b", "#df514a", "#539397", "#880977",
+  "#f697c1", "#ba96ce", "#679c9d", "#c6c42c", "#5d2c52", "#48b41b", "#e1cf3b",
+  "#5be4f0", "#57c4d8", "#a4d17a", "#225b8", "#be608b", "#96b00c", "#088baf",
+  "#f158bf", "#e145ba", "#ee91e3", "#05d371", "#5426e0", "#4834d0", "#802234",
+  "#6749e8", "#0971f0", "#8fb413", "#b2b4f0", "#c3c89d", "#c9a941", "#41d158",
+  "#fb21a3", "#51aed9", "#5bb32d", "#807fb", "#21538e", "#89d534", "#d36647",
+  "#7fb411", "#0023b8", "#3b8c2a", "#986b53", "#f50422", "#983f7a", "#ea24a3",
+  "#79352c", "#521250", "#c79ed2", "#d6dd92", "#e33e52", "#b2be57", "#fa06ec",
+  "#1bb699", "#6b2e5f", "#64820f", "#1c271", "#21538e", "#89d534", "#d36647",
+  "#7fb411", "#0023b8", "#3b8c2a", "#986b53", "#f50422", "#983f7a", "#ea24a3",
+  "#79352c", "#521250", "#c79ed2", "#d6dd92", "#e33e52", "#b2be57", "#fa06ec",
+  "#1bb699", "#6b2e5f", "#64820f", "#1c271", "#9cb64a", "#996c48", "#9ab9b7",
+  "#06e052", "#e3a481", "#0eb621", "#fc458e", "#b2db15", "#aa226d", "#792ed8",
+  "#73872a", "#520d3a", "#cefcb8", "#a5b3d9", "#7d1d85", "#c4fd57", "#f1ae16",
+  ]
 
-const DAYS = () => {
- const days = [];
- const thisYear = (new Date()).getFullYear();
- const start = new Date("1/1/" + thisYear);
- const dateStart = moment(start.valueOf());
- const dateEnd = moment(dateStart.valueOf()).add(1, "year").add(-1, "day");
- while (dateEnd.diff(dateStart, "days") >= 0) {
-  days.push(dateStart.format("DD/MM"));
-  dateStart.add(1, "days");
- }
- return days
-}
+  const DAYS = () => {
+    const days = [];
+    const thisYear = (new Date()).getFullYear();
+    const start = new Date("1/1/" + thisYear);
+    const dateStart = moment(start.valueOf());
+    const dateEnd = moment(dateStart.valueOf()).add(1, "year").add(-1, "day");
+    while (dateEnd.diff(dateStart, "days") >= 0) {
+      days.push(dateStart.format("DD/MM"));
+      dateStart.add(1, "days");
+    }
+    return days
+  }
 
-  $.ajax({
-      method: "GET",
-      url: endpoint,
-      success: function(data){
-         report_requests = data;
-         DAYS().forEach(day => {
-            report_requests_data.push(report_requests.filter(el => moment(el.date_time).format("DD/MM")==day).length);
-         });
-         var ctx = document.getElementById("RequestsChart").getContext('2d');
-         var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: DAYS(),
-                datasets: [{
-                label: moment().format("YYYY"),
-                data: report_requests_data,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
+  var ctx = $("#RequestsChart")[0].getContext('2d');
+  var RequestsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: DAYS(),
+      datasets: []
+    },
+    options: {
+      tooltips: {
+        mode: 'index'
+      },
+      scales: {
+            yAxes: [{
+                ticks: {
+                    min: 0,
+                    stepSize: 1
+                }
             }]
-        },
-      });
-  },
-      error: function(error_data){
-        console.log(error_data)
+        }
+    }
+  });
+
+  function loadOptions(){
+    $.ajax({
+      url : "{% url 'report_requests_options_api_url' %}",
+      dataType: "json",
+      type: "GET",
+      success : function (data) {
+        data.companies.forEach(el => {
+          let option = document.createElement("option");
+          option.value = el.pk;
+          option.innerHTML = el.name;
+          $('select[name="company"]').append(option);
+        });
+        data.doctors.forEach(el => {
+          let option = document.createElement("option");
+          option.value = el.pk;
+          option.innerHTML = el.initials;
+          $('select[name="doctor"]').append(option);
+        });
+      },
+      error : function(xhr, status, error) {
+        alert("{% trans 'Error while loading select options' %}\n" + xhr.responseText)
       }
-  })
+    })}
+
+    function getReportRequests(company, doctor){
+      $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+          var report_requests_data = [];
+
+          report_requests = data.filter(el => el.status == "accepted");
+          if (company){
+            report_requests = report_requests.filter(el => (el.company == company))
+          }
+          if (doctor){
+            report_requests = report_requests.filter(el => (el.doctor == doctor))
+          }
+          if (report_requests.length > 0){
+            let end_year = parseInt(moment(report_requests[0].date_time).format("YYYY"));
+            let start_year = parseInt(moment(report_requests[report_requests.length - 1].date_time).format("YYYY"));
+            for (let year = start_year; year <= end_year; year++){
+              let cur_year_report_requests = report_requests.filter(el => moment(el.date_time).format("YYYY") == year);
+              report_requests_data.push({
+                label: year,
+                data: [],
+                fill: false
+              });
+              DAYS().forEach(day => {
+                let count = cur_year_report_requests.filter(el => moment(el.date_time).format("DD/MM") == day).length
+                report_requests_data.find(el => el.label==year).data.push(count);
+              });
+            }
+            report_requests_data.forEach(function(item, index) {
+              item.borderColor = colors[index];
+              item.pointBackgroundColor = colors[index];
+            });
+          } else {
+            report_requests_data.push({
+              label: moment().format("YYYY"),
+              data: [],
+              fill: false,
+              borderColor: colors[0],
+              pointBackgroundColor: colors[0]
+            });
+            DAYS().forEach(day => {
+              report_requests_data[0].data.push(0);
+            });
+          };
+          RequestsChart.data.datasets = report_requests_data;
+          RequestsChart.update();
+        },
+        error : function(xhr, status, error) {
+          alert("{% trans 'Error while loading data' %}\n" + xhr.responseText)
+        }
+      });
+    }
+
+    loadOptions();
+    getReportRequests();
+
+    $("#id_apply_btn").click(function(){
+      getReportRequests($("#id_company").val(), $("#id_doctor").val());
+    });
 </script>
 {% endblock %}
