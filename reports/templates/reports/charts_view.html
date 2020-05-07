@@ -12,40 +12,70 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <label class="col-sm-3 control-label" for="id_doctor">
-    {% trans "Doctor" %}
-  </label>
-  <label class="col-sm-3 control-label" for="id_company">
-    {% trans "Company" %}
-  </label>
-  <div class="form-group row ml-0 mr-0">
+<div class="container mt-4 mb-4">
+  <div class="row mb-4">
+    <div class=col-sm-12>
+      <h4>{% trans "Line chart representing the number of accepted applications over the years" %}</h4>
+    </div>
+  </div>
+  <div class="form-group row ml-0 mr-0 align-items-end">
     <div class="col-sm-3">
+      <label class="col-sm-3 control-label" for="id_doctor">
+        {% trans "Doctor" %}
+      </label>
       <select class="form-control" name="doctor" id="id_doctor">
         <option></option>
       </select>
     </div>
     <div class="col-sm-3">
+      <label class="col-sm-3 control-label" for="id_company">
+        {% trans "Company" %}
+      </label>
       <select class="form-control" name="company" id="id_company">
         <option></option>
       </select>
     </div>
-    <div class="col-sm-2 mb-4">
+    <div class="col-sm-3 mt-4">
         <button class="btn btn-success" type="button" id="id_apply_btn">{% trans 'Apply' %}</button>
     </div>
   </div>
+  <div class="row">
+      <div class="col-sm-12" id="RequestsChartContainer">
+          <canvas id="RequestsLineChart" width="500" height="300">
+          </canvas>
+      </div>
+  </div>
 </div>
 <div class="container mb-4 mt-4">
-    <div class="row">
-        <div class="col-sm-12" id="RequestsChartContainer">
-            <canvas id="RequestsChart" width="500" height="300">
+    <div class="row mb-4">
+      <div class=col-sm-12>
+        <h4>{% trans "Pie chart showing the ratio of accepted and rejected applications" %}</h4>
+      </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-sm-3">
+          <div class="form-group row ml-0 mr-0">
+          <label class="col-sm-3 control-label" for="id_year">
+            {% trans "Year" %}
+          </label>
+          <select class="form-control" id="id_year">
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-sm-6" id="RequestsChartContainer">
+            <canvas id="RequestsPieChart" width="300" height="300">
             </canvas>
         </div>
     </div>
 </div>
+
+
 <script>
   var endpoint = '{% url 'requests:requests-list' %}';
-  var report_requests = [];
+  var req = [];
+  var req_all = [];
   var colors = [
   "#63b598", "#ce7d78", "#ea9e70", "#a48a9e", "#c6e1e8", "#648177" ,"#0d5ac1" ,
   "#f205e6" ,"#1c0365" ,"#14a9ad" ,"#4ca2f9" ,"#a4e43f" ,"#d298e2" ,"#6119d0",
@@ -83,8 +113,8 @@
     return days
   }
 
-  var ctx = $("#RequestsChart")[0].getContext('2d');
-  var RequestsChart = new Chart(ctx, {
+  var ctx = $("#RequestsLineChart")[0].getContext('2d');
+  var RequestsLineChart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: DAYS(),
@@ -104,6 +134,42 @@
         }
     }
   });
+
+  var ctx = $("#RequestsPieChart")[0].getContext('2d');
+  var RequestsPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      datasets: [{
+          data: [0],
+          backgroundColor: [
+              colors[0],
+              colors[1],
+              colors[2]
+          ],
+      }],
+      labels: [
+        '{% trans "Accepted" %}',
+        '{% trans "Cancelled by company" %}',
+        '{% trans "Failed" %}',
+    ]
+    },
+    options: {
+      responsive: true
+    },
+
+  });
+
+  function getYearsList(req){
+    let years = [];
+    if (req.length > 0){
+      let end_year = parseInt(moment(req[0].date_time).format("YYYY"));
+      let start_year = parseInt(moment(req[req.length - 1].date_time).format("YYYY"));
+      for (let year = start_year; year <= end_year; year++){
+        years.push(year)
+      }
+    }
+    return years;
+  };
 
   function loadOptions(){
     $.ajax({
@@ -129,53 +195,96 @@
       }
     })}
 
-    function getReportRequests(company, doctor){
+    function updateLineChart(req){
+      let req_data = [];
+      let years = getYearsList(req);
+      if (years.length > 0){
+        years.forEach(year => {
+          let cur_year_req = req.filter(el => moment(el.date_time).format("YYYY") == year);
+          req_data.push({
+            label: year,
+            data: [],
+            fill: false
+          });
+          DAYS().forEach(day => {
+            let count = cur_year_req.filter(el => moment(el.date_time).format("DD/MM") == day).length
+            req_data.find(el => el.label==year).data.push(count);
+          });
+        });
+        req_data.forEach(function(item, index) {
+          item.borderColor = colors[index];
+          item.pointBackgroundColor = colors[index];
+        });
+      } else {
+        req_data.push({
+          label: moment().format("YYYY"),
+          data: [],
+          fill: false,
+          borderColor: colors[0],
+          pointBackgroundColor: colors[0]
+        });
+        DAYS().forEach(day => {
+         req_data[0].data.push(0);
+        });
+      };
+      RequestsLineChart.data.datasets = req_data;
+      RequestsLineChart.update();
+    }
+
+    function updatePieChart(req, year){
+      let req_data = [];
+
+      if (year === undefined || year == ''){
+        year = moment(new Date()).format("YYYY");
+      }
+
+      if (req.length > 0){
+        let year_req = req.filter(el => moment(el.date_time).format("YYYY") == year);
+        let accepted = year_req.filter(el => (el.status == 'accepted'));
+        let cancelled = year_req.filter(el => (el.status == 'cancelled_by_company'));
+        let failed = year_req.filter(el => (el.status == 'failed'));
+        req_data = [
+                    accepted.length,
+                    cancelled.length,
+                    failed.length
+              ]
+      }
+      else {
+        req_data = [0]
+      }
+      RequestsPieChart.data.datasets[0].data = req_data;
+      RequestsPieChart.update();
+    }
+
+    function getReportRequestsData(company, doctor){
       $.ajax({
         method: "GET",
         url: endpoint,
         success: function(data){
-          var report_requests_data = [];
 
-          report_requests = data.filter(el => el.status == "accepted");
+          req = data.filter(el => el.status == "accepted");
+          req_all = data;
+
           if (company){
-            report_requests = report_requests.filter(el => (el.company == company))
+            req = req.filter(el => (el.company == company));
+            req_all = req_all.filter(el => (el.company == company));
           }
           if (doctor){
-            report_requests = report_requests.filter(el => (el.doctor == doctor))
+            req = req.filter(el => (el.doctor == doctor));
+            req_all = req_all.filter(el => (el.doctor == doctor));
           }
-          if (report_requests.length > 0){
-            let end_year = parseInt(moment(report_requests[0].date_time).format("YYYY"));
-            let start_year = parseInt(moment(report_requests[report_requests.length - 1].date_time).format("YYYY"));
-            for (let year = start_year; year <= end_year; year++){
-              let cur_year_report_requests = report_requests.filter(el => moment(el.date_time).format("YYYY") == year);
-              report_requests_data.push({
-                label: year,
-                data: [],
-                fill: false
-              });
-              DAYS().forEach(day => {
-                let count = cur_year_report_requests.filter(el => moment(el.date_time).format("DD/MM") == day).length
-                report_requests_data.find(el => el.label==year).data.push(count);
-              });
-            }
-            report_requests_data.forEach(function(item, index) {
-              item.borderColor = colors[index];
-              item.pointBackgroundColor = colors[index];
-            });
-          } else {
-            report_requests_data.push({
-              label: moment().format("YYYY"),
-              data: [],
-              fill: false,
-              borderColor: colors[0],
-              pointBackgroundColor: colors[0]
-            });
-            DAYS().forEach(day => {
-              report_requests_data[0].data.push(0);
-            });
-          };
-          RequestsChart.data.datasets = report_requests_data;
-          RequestsChart.update();
+
+          $("#id_year").html('');
+          getYearsList(req_all).reverse().forEach(year => {
+            let option = document.createElement("option");
+            option.value = year;
+            option.innerHTML = year;
+            $('#id_year').append(option);
+          });
+
+          updateLineChart(req);
+          updatePieChart(req_all);
+
         },
         error : function(xhr, status, error) {
           alert("{% trans 'Error while loading data' %}\n" + xhr.responseText)
@@ -184,10 +293,15 @@
     }
 
     loadOptions();
-    getReportRequests();
+    getReportRequestsData($("#id_company").val(), $("#id_doctor").val());
 
     $("#id_apply_btn").click(function(){
-      getReportRequests($("#id_company").val(), $("#id_doctor").val());
+      getReportRequestsData($("#id_company").val(), $("#id_doctor").val());
     });
+
+    $("#id_year").change(function(){
+      updatePieChart(req_all, $("#id_year").val());
+    });
+
 </script>
 {% endblock %}
