@@ -42,6 +42,9 @@
       <li class="nav-item">
         <a class="nav-link {{ doctors_list_link_active }}" href="{% url 'profiles_list_url' %}">{% trans "Doctors" %}</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ report_requests_link_active }}" href="{% url 'report_requests_url' %}">{% trans 'Requests' %}</a>
+      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle {{ price_table_link_active }}"
                 href="#"
@@ -54,25 +57,23 @@
         </a>
       <div class="dropdown-menu" aria-labelledby="PriceTableDropdownMenuLink">
         {% for country in list_of_countries %}
-        <a class="dropdown-item" href="{% url 'price_table_url' country.id %}">{{ country.name }}</a>
+            <a class="dropdown-item" href="{% url 'price_table_url' country.id %}">{{ country.name }}</a>
         {% endfor %}
       </div>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle {{ instruments_link_active }}"
+        <a class="nav-link dropdown-toggle {{ tools_link_active }}"
                 href="#"
-                id="InstrumentsDropdownMenuLink"
+                id="ToolsDropdownMenuLink"
                 role="button" data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">
-                                            {% trans "Instruments" %}
+                                            {% trans "Additional tools" %}
         </a>
-      <div class="dropdown-menu" aria-labelledby="InstrumentsDropdownMenuLink">
+      <div class="dropdown-menu" aria-labelledby="ToolsDropdownMenuLink">
         <a class="dropdown-item" href="{% url 'charts_url' %}">{% trans "Charts" %}</a>
+        <a class="dropdown-item" href="{% url 'report_requests_list_url' %}">{% trans "Report requests history" %}</a>
       </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ report_requests_link_active }}" href="{% url 'report_requests_url' %}">{% trans 'Requests' %}</a>
       </li>
       {% endif %}
     </ul>
@@ -82,7 +83,7 @@
         {% get_current_language as LANGUAGE_CODE %}
         {% get_available_languages as LANGUAGES %}
         {% for lang in LANGUAGES %}
-            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>
+            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected" {% endif %}>
                 {{ lang.1 }} ({{ lang.0 }})
             </option>
         {% endfor %}
@@ -105,24 +106,27 @@
             <ul class="pagination mt-3">
               <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
                 <a class="page-link" href="{% if page_obj.has_previous %}?{{queries.urlencode}}&amp;page={{ page_obj.previous_page_number }}{% endif %}">{% trans "Previous" %}</a>
+              </li>
                 {% for n in paginator.page_range %}
-                {% if page_obj.number == n %}
-                <li class="page-item active">
-                  <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a></li>
-                  {% elif n > page_obj.number|add:-3 and n < page_obj.number|add:3 %}
-                  <li class="page-item {% if page_obj.number == n %}active{% endif %}">
-                    <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a></li>
+                    {% if page_obj.number == n %}
+                        <li class="page-item active">
+                            <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a>
+                        </li>
+                    {% elif n > page_obj.number|add:-3 and n < page_obj.number|add:3 %}
+                        <li class="page-item {% if page_obj.number == n %}active{% endif %}">
+                            <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a>
+                        </li>
                     {% endif %}
-                    {% endfor %}
-                    <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
-                      <a class="page-link" href="{% if page_obj.has_next %}?{{queries.urlencode}}&amp;page={{ page_obj.next_page_number }}{% endif %}">{% trans "Next" %}</a>
-                    </li>
-                  </ul>
-                </nav>
-                {% endif %}
-              </div>
-            </div>
-          </div>
+                {% endfor %}
+                <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+                    <a class="page-link" href="{% if page_obj.has_next %}?{{queries.urlencode}}&amp;page={{ page_obj.next_page_number }}{% endif %}">{% trans "Next" %}</a>
+                </li>
+            </ul>
+          </nav>
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
      {% if user.is_authenticated %}
      <div class="admin-panel" id='admin-panel'>
@@ -135,12 +139,12 @@
          </p>
      {% endif %}
      {% if request.user.is_authenticated and request.user.is_staff %}
-     <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>
+        <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>
      {% endif %}
      {% if user.is_authenticated %}
-     {% block admin-panel-content %}
-     {% endblock %}
-     <a href="{% url 'logout' %}" class="admin-panel-element btn btn-link">{% trans "Logout" %}</a>
+        {% block admin-panel-content %}
+        {% endblock %}
+        <a href="{% url 'logout' %}" class="admin-panel-element btn btn-link">{% trans "Logout" %}</a>
      {% endif %}
    </div>
 

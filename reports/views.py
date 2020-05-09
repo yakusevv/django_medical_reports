@@ -734,7 +734,7 @@ class ReportRequestsListView(AdminStaffRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ReportRequestsListView, self).get_context_data()
-        context['report_requests_link_active'] = "active"
+        context['tools_link_active'] = "active"
         country = self.request.user.profile.city.district.region.country
         context['doctor_filter'] = Profile.objects.filter(
                                         city__district__region__country=country,
@@ -857,7 +857,7 @@ class ReportRequestUpdateView(AdminStaffRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ReportRequestUpdateView, self).get_context_data(**kwargs)
-        context['report_requests_link_active'] = "active"
+        context['instruments_link_active'] = "active"
         return context
 
     def get_success_url(self, **kwargs):
@@ -869,6 +869,6 @@ class ChartsView(AdminStaffRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ChartsView, self).get_context_data()
-        context['instruments_link_active'] = "active"
+        context['tools_link_active'] = "active"
         return context
 
