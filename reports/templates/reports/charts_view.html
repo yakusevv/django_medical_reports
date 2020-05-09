@@ -40,7 +40,7 @@
     </div>
   </div>
   <div class="row">
-      <div class="col-sm-12" id="RequestsChartContainer">
+      <div class="col-sm-12" id="RequestsLineChartContainer">
           <canvas id="RequestsLineChart" width="500" height="300">
           </canvas>
       </div>
@@ -64,7 +64,7 @@
       </div>
     </div>
     <div class="row justify-content-md-center">
-        <div class="col-sm-6" id="RequestsChartContainer">
+        <div class="col-sm-6" id="RequestsPieChartContainer">
             <canvas id="RequestsPieChart" width="300" height="300">
             </canvas>
         </div>
@@ -148,9 +148,9 @@
           ],
       }],
       labels: [
-        '{% trans "Accepted" %}',
-        '{% trans "Cancelled by company" %}',
-        '{% trans "Failed" %}',
+        '{% trans "accepted" %}',
+        '{% trans "cancelled by company" %}',
+        '{% trans "failed" %}',
     ]
     },
     options: {

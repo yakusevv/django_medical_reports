@@ -1,3 +1,6 @@
+import datetime
+import io
+
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
@@ -7,7 +10,6 @@ from django.core.files.base import ContentFile
 from tempus_dominus.widgets import DateTimePicker, DatePicker
 from django_select2.forms import Select2MultipleWidget, Select2Widget
 from PIL import Image
-import io
 
 from .models import (
                     Report,
@@ -80,6 +82,22 @@ class ReportForm(forms.ModelForm):
         patients_first_name = cleaned_data.get("patients_first_name").upper()
         patients_last_name = cleaned_data.get("patients_last_name").upper()
         company_ref_number = cleaned_data.get("company_ref_number").upper()
+        date_of_visit = cleaned_data.get("date_of_visit")
+        date_of_birth = cleaned_data.get("patients_date_of_birth")
+        report_request = cleaned_data.get("report_request")
+        country = report_request.doctor.city.district.region.country
+
+        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        first_request_date = ReportRequest.objects.filter(
+                                                    doctor__city__district__region__country=country
+                                                    ).order_by('date_time')[0].date_time.date()
+        year_too_old = datetime.date.today() - datetime.timedelta(days=365*120)
+
+        if date_of_visit > tomorrow or date_of_visit < first_request_date:
+            self.add_error('date_of_visit', _("Incorrect date"))
+        if date_of_birth > tomorrow or date_of_birth < year_too_old:
+            self.add_error('patients_date_of_birth', _("Incorrect date"))
+
         cleaned_data['patients_last_name'] = patients_last_name
         cleaned_data['patients_first_name'] = patients_first_name
         cleaned_data['company_ref_number'] = company_ref_number

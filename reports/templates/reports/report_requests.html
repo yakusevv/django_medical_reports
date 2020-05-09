@@ -122,7 +122,11 @@
         </label>
         <div class="form-group row ml-0 mr-0">
             <div class="col-sm-10">
-                <textarea name="message" class="form-control"  id="id_message"></textarea>
+                <textarea name="message"
+                          class="form-control"
+                          id="id_message"
+                          placeholder="{% trans 'Full name&#10;date of birth, location etc.' %}"
+                ></textarea>
             </div>
         </div>
     </div>
@@ -174,7 +178,11 @@
                             {% trans "Message" %}
                         </label>
                         <div class="col-sm-10">
-                            <textarea name="message" class="form-control"  id="id_message_edit"></textarea>
+                            <textarea name="message"
+                                      class="form-control"
+                                      id="id_message_edit"
+                                      placeholder="{% trans 'Full name&#10;date of birth, location etc.' %}"
+                            ></textarea>
                         </div>
                     </div>
                 </form>
