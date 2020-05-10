@@ -629,7 +629,7 @@ msgstr "принятые"
 
 #: .\reports\templates\reports\charts_view.html:152
 msgid "cancelled by company"
-msgstr "отменены компанией"
+msgstr "отмененные компанией"
 
 #: .\reports\templates\reports\charts_view.html:153
 msgid "failed"
@@ -832,7 +832,7 @@ msgstr "Задать реф. номер"
 #: .\reports\templates\reports\report_requests.html:128
 #: .\reports\templates\reports\report_requests.html:184
 msgid "Full name&#10;date of birth, location etc."
-msgstr "Фамилия имя&#10;дата рождения, местонахождение и тд."
+msgstr "Фамилия, имя&#10;Дата рождения, местонахождение, дополнительная информация"
 
 #: .\reports\templates\reports\report_requests.html:135
 msgid "History"
