@@ -7,7 +7,7 @@ from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.base import ContentFile
 
-from tempus_dominus.widgets import DateTimePicker, DatePicker
+from tempus_dominus.widgets import DateTimePicker, DatePicker, TimePicker
 from django_select2.forms import Select2MultipleWidget, Select2Widget
 from PIL import Image
 
@@ -43,7 +43,6 @@ class ReportForm(forms.ModelForm):
                                         options={
                                             'useCurrent': 'day',
                                             'maxDate': 'now',
-                                            'format': "DD.MM.YYYY",
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -51,14 +50,14 @@ class ReportForm(forms.ModelForm):
                                             'size': 'small'
                                             }
                                     ),
-                   'time_of_visit': DatePicker(
+                   'time_of_visit': TimePicker(
                                         options={
                                             'useCurrent': 'hour',
                                             'format': "HH:mm",
                                             'stepping': 5
                                             },
                                         attrs={
-                                            'append': 'fa fa-calendar',
+                                            'append': 'fa fa-clock-o',
                                             'icon_toggle': True,
                                             'size': 'small'
                                         }
@@ -67,7 +66,7 @@ class ReportForm(forms.ModelForm):
                                         options={
                                             'useCurrent': False,
                                             'viewMode': 'decades',
-                                            'maxDate': 'now'
+                                            'maxDate': 'now',
                                             },
                                         attrs={
                                             'append': 'fa fa-calendar',
@@ -92,10 +91,9 @@ class ReportForm(forms.ModelForm):
                                                     doctor__city__district__region__country=country
                                                     ).order_by('date_time')[0].date_time.date()
         year_too_old = datetime.date.today() - datetime.timedelta(days=365*120)
-
-        if date_of_visit > tomorrow or date_of_visit < first_request_date:
+        if date_of_visit >= tomorrow or date_of_visit < first_request_date:
             self.add_error('date_of_visit', _("Incorrect date"))
-        if date_of_birth > tomorrow or date_of_birth < year_too_old:
+        if date_of_birth >= tomorrow or date_of_birth < year_too_old:
             self.add_error('patients_date_of_birth', _("Incorrect date"))
 
         cleaned_data['patients_last_name'] = patients_last_name

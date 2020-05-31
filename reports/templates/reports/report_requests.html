@@ -107,7 +107,7 @@
             </div>
             <div class="col-sm-2">
                 <div class="form-check mt-2">
-                    <input type="checkbox" class="form-check-input" id="id_set_ref_number">
+                    <input type="checkbox" class="form-check-input" id="id_set_ref_number" disabled="true">
                     <label class="form-check-label" for="id_set_ref_number">{% trans "Set ref. number" %}</label>
                 </div>
             </div>
@@ -462,16 +462,22 @@
 
     $("#id_company").change(function(){
         $("#id_set_ref_number").prop('checked', false);
+        if ($(this).val() === ''){
+            $("#id_set_ref_number").prop('disabled', true);
+        }
+        else{
+            $("#id_set_ref_number").prop('disabled', false);
+        }
         $("#id_ref_number").html('');
         });
 
     $("#id_set_ref_number").change(function(){
         if ($(this).is(":checked")){
-        loadNextRefNumber($("#id_company").val())
+            loadNextRefNumber($("#id_company").val())
         }
         else
         {
-        $("#id_ref_number").html('')
+            $("#id_ref_number").html('')
         }
       }
     );

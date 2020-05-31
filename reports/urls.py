@@ -46,14 +46,14 @@ urlpatterns = [
                 name='download_report_docx_url'
                 ),
         path('download_xlsx/', download_reports_excel, name='download_reports_xlsx_url'),
+        path(
+            'report_requests_api/options/',
+            RequestOptionsViewSet.as_view({"get": "list"}),
+            name='report_requests_options_api_url'
+            ),
         path('report_requests_api/', include((router.urls, 'requests'))),
         path('report_requests_api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
         path('report_requests/', ReportRequestsView.as_view(), name='report_requests_url'),
-        path(
-            'report_requests_options_api/',
-            RequestOptionsViewSet.as_view({"get" : "list"}),
-            name='report_requests_options_api_url'
-            ),
         path('report_requests/history/', ReportRequestsListView.as_view(), name='report_requests_list_url'),
         path('report_requests/history/<int:pk>/edit/', ReportRequestUpdateView.as_view(), name='report_request_update_url'),
         path('viber/viber_webhook_27032020/', vbr_bot),

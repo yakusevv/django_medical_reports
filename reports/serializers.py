@@ -15,13 +15,7 @@ class ReportRequestSerializer(serializers.ModelSerializer):
         ('cancelled_by_company', _('Cancelled by company')),
         )
 
-    doctor = serializers.PrimaryKeyRelatedField(
-                                        queryset=Profile.objects.all(),
-                                        )
     doctor_initials = serializers.CharField(source='doctor.initials', read_only=True)
-    company = serializers.PrimaryKeyRelatedField(
-                                        queryset=Company.objects.all()
-                                        )
     company_name = serializers.CharField(source='company.name', read_only=True)
     date_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M:%S')
     seen = serializers.BooleanField(read_only=True)
