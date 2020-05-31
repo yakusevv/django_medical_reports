@@ -1,6 +1,8 @@
 import datetime
 import io
 
+from string import ascii_letters
+
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
@@ -81,10 +83,15 @@ class ReportForm(forms.ModelForm):
         patients_first_name = cleaned_data.get("patients_first_name").upper()
         patients_last_name = cleaned_data.get("patients_last_name").upper()
         company_ref_number = cleaned_data.get("company_ref_number").upper()
+        patients_policy_number = cleaned_data.get("patients_policy_number")
+        cause_of_visit = cleaned_data.get("cause_of_visit")
+        checkup = cleaned_data.get("checkup")
+        additional_checkup = cleaned_data.get("additional_checkup")
         date_of_visit = cleaned_data.get("date_of_visit")
         date_of_birth = cleaned_data.get("patients_date_of_birth")
         report_request = cleaned_data.get("report_request")
         country = report_request.doctor.city.district.region.country
+        chars = set(ascii_letters + '-')
 
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
         first_request_date = ReportRequest.objects.filter(
@@ -95,6 +102,24 @@ class ReportForm(forms.ModelForm):
             self.add_error('date_of_visit', _("Incorrect date"))
         if date_of_birth >= tomorrow or date_of_birth < year_too_old:
             self.add_error('patients_date_of_birth', _("Incorrect date"))
+        if len(patients_first_name) < 2:
+            self.add_error('patients_first_name', _("Name is too short"))
+        if len(patients_last_name) < 2:
+            self.add_error('patients_last_name', _("Name is too short"))
+        if not all(c in chars for c in patients_first_name):
+            self.add_error('patients_first_name', _("Must contain only Latin letters"))
+        if not all(c in chars for c in patients_last_name):
+            self.add_error('patients_last_name', _("Must contain only Latin letters"))
+        if len(company_ref_number) <= 2:
+            self.add_error('company_ref_number', _('Company\'s ref. number is too short'))
+        if len(patients_policy_number) and len(patients_policy_number) <= 7:
+            self.add_error('patients_policy_number', _('Policy number is too short'))
+        if len(cause_of_visit) <= 5:
+            self.add_error('cause_of_visit', _('Information about cause of visit is too short'))
+        if len(checkup) <= 5:
+            self.add_error('checkup', _('Information about patient check-up is too short'))
+        if len(additional_checkup) and len(additional_checkup) < 2:
+            self.add_error('additional_checkup', _('Information about patient additional check-up is too short'))
 
         cleaned_data['patients_last_name'] = patients_last_name
         cleaned_data['patients_first_name'] = patients_first_name
