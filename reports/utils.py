@@ -3,8 +3,10 @@ from docx.shared import Mm
 from openpyxl import Workbook
 from openpyxl.styles import Font, Border, Side, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from django.utils.translation import ugettext as _
+from django.db.models import Min, Max
 
 from .models import ReportTemplate
 
@@ -141,3 +143,83 @@ def reports_xlsx_generator(reports):
                     )
 
     return workbook
+
+
+def reports_xlsx_generator_new_format(reports, type_of_table):
+
+    def table(queryset, year):
+
+        columns = [
+            _('ref. number'),
+            _('Company ref. number'),
+            _('Full name, date of birth'),
+            _('City'),
+            _('Total price for the doctor'),
+        ]
+        if type_of_table == "staff":
+            columns.append(_('Total price'))
+
+        data = []
+
+        for report in queryset:
+
+            row = [
+                report.get_full_ref_number,
+                report.get_full_company_ref_number,
+                ' '.join((
+                    str(report.patients_last_name),
+                    str(report.patients_first_name)
+                )) + ', ' + str(report.patients_date_of_birth.strftime("%d.%m.%Y")),
+                report.city.name,
+                report.get_total_price_doctor,
+            ]
+            if type_of_table == "staff":
+                row.append(report.get_total_price)
+
+            data.append(row)
+
+        worksheet.append(columns)
+
+        worksheet.column_dimensions["A"].width = 20
+        worksheet.column_dimensions["B"].width = 25
+        worksheet.column_dimensions["C"].width = 45
+        worksheet.column_dimensions["D"].width = 25
+        worksheet.column_dimensions["E"].width = 25
+
+        if type_of_table == "staff":
+            worksheet.column_dimensions["F"].width = 25
+            table_ref = "A1:F"
+        else:
+            table_ref = "A1:E"
+        for row in data:
+            worksheet.append(row)
+
+        tab = Table(displayName='year_' + str(year), ref=table_ref + str(len(data) + 1), totalsRowShown=True)
+
+        style = TableStyleInfo(
+                               name="TableStyleMedium9",
+                               showFirstColumn=False,
+                               showLastColumn=False,
+                               showRowStripes=True,
+                               showColumnStripes=False
+                               )
+        tab.tableStyleInfo = style
+
+        worksheet.add_table(tab)
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    if reports:
+        workbook.remove_sheet(worksheet)
+        years_range = range(
+                        reports.aggregate(Min('report_request__date_time'))['report_request__date_time__min'].year,
+                        reports.aggregate(Max('report_request__date_time'))['report_request__date_time__max'].year + 1
+                        )
+        years = [year for year in years_range]
+        for year in years:
+            worksheet = workbook.create_sheet(str(year))
+            queryset_year = reports.filter(report_request__date_time__year=year)
+            table(queryset_year, year)
+
+    return workbook
+

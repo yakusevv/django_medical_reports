@@ -55,7 +55,7 @@ from .forms import (
                 DateFilterForm,
                 ReportRequestForm,
                 )
-from .utils import docx_report_generator, reports_xlsx_generator
+from .utils import docx_report_generator, reports_xlsx_generator_new_format
 from .serializers import ReportRequestSerializer, CompanyOptionsSerializer, DoctorOptionsSerializer
 
 
@@ -145,7 +145,7 @@ def download_report_docx(request, pk, type_of_report):
     else:
         return HttpResponseForbidden('403 Forbidden', content_type='text/html')
 
-
+"""
 @login_required
 @staff_member_required
 @permission_required('reports.can_download_excel')
@@ -160,6 +160,27 @@ def download_reports_excel(request):
                                     ).order_by('-date_of_visit')
     buffer = io.BytesIO()
     file = reports_xlsx_generator(reports)
+    if file:
+        file_name = datetime.datetime.now().strftime('%d-%m-%Y') + '.xlsx'
+        file.save(buffer)
+        buffer.seek(0)
+        response = HttpResponse(buffer.read())
+        response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+        return response
+"""
+
+@login_required
+def download_reports_excel(request):
+    current_country = request.user.profile.city.district.region.country
+    if request.user.is_staff:
+        reports = Report.objects.filter(city__district__region__country=current_country).order_by('-date_of_visit')
+        type_of_table = "staff"
+    else:
+        reports = Report.objects.filter(report_request__doctor__pk=request.user.profile.pk).order_by('-date_of_visit')
+        type_of_table = "doctor"
+    buffer = io.BytesIO()
+    file = reports_xlsx_generator_new_format(reports, type_of_table)
     if file:
         file_name = datetime.datetime.now().strftime('%d-%m-%Y') + '.xlsx'
         file.save(buffer)
@@ -248,7 +269,7 @@ class ReportsListView(LoginRequiredMixin, ListView):
                     Q(checkup__icontains=search_query) |
                     Q(additional_checkup__icontains=search_query) |
                     Q(prescription__icontains=search_query)
-                    )
+                    ).distinct()
             company_filter = self.request.GET.getlist('company_filter', None)
             if company_filter:
                 queryset = queryset.filter(report_request__company__in=company_filter)
@@ -267,7 +288,7 @@ class ReportsListView(LoginRequiredMixin, ListView):
                                     )
         if not self.request.user.is_staff:
             queryset = queryset.filter(report_request__doctor__pk=self.request.user.profile.pk)
-        self.request.session['filtered'] = [report.pk for report in queryset]
+#        self.request.session['filtered'] = [report.pk for report in queryset]
         return queryset
 
 
