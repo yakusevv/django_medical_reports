@@ -2,11 +2,16 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-{% load static %}
-{% load i18n %}
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% load static %}
+    {% load i18n %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
     <title>
       {% block title %}
@@ -21,76 +26,106 @@
 
     {% block toolbar %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <a class="navbar-brand" href="{% url 'reports_list_url' %}">
-        <img src='{% static "images/logo.jpg" %}' width=200 alt="">
-      </a>
-    <ul class="navbar-nav">
-      <li class="nav-item {{ news_link_active }}">
-        <a class="nav-link" href="{% url 'news_list_url' %}">{% trans "News" %}</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ report_link_active }}" href="{% url 'reports_list_url' %}">{% trans "Reports" %}</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ profile_link_active }}" href="{{ request.user.profile.get_absolute_url }}">{% trans "My profile" %}</a>
-      </li>
-      {% if request.user.is_staff %}
-      <li class="nav-item">
-        <a class="nav-link {{ doctors_list_link_active }}" href="{% url 'profiles_list_url' %}">{% trans "Doctors" %}</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ report_requests_link_active }}" href="{% url 'report_requests_url' %}">{% trans 'Requests' %}</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle {{ price_table_link_active }}"
-                href="#"
-                id="PriceTableDropdownMenuLink"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
-                                            {% trans "Price table" %}
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <a class="navbar-brand" href="{% url 'reports_list_url' %}">
+          <img src='{% static "images/logo.jpg" %}' width=200 alt="">
         </a>
-      <div class="dropdown-menu" aria-labelledby="PriceTableDropdownMenuLink">
-        {% for country in list_of_countries %}
-            <a class="dropdown-item" href="{% url 'price_table_url' country.id %}">{{ country.name }}</a>
-        {% endfor %}
-      </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle {{ tools_link_active }}"
-                href="#"
-                id="ToolsDropdownMenuLink"
-                role="button" data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
+        <ul class="navbar-nav">
+          <li class="nav-item {{ news_link_active }}">
+            <a class="nav-link" href="{% url 'news_list_url' %}">
+                {% trans "News" %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ report_link_active }}"
+               href="{% url 'reports_list_url' %}">
+                {% trans "Reports" %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ profile_link_active }}"
+               href="{{ request.user.profile.get_absolute_url }}">
+                {% trans "My profile" %}
+            </a>
+          </li>
+          {% if request.user.is_staff %}
+            <li class="nav-item">
+              <a class="nav-link {{ doctors_list_link_active }}"
+                 href="{% url 'profiles_list_url' %}">
+                  {% trans "Doctors" %}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ report_requests_link_active }}"
+                 href="{% url 'report_requests_url' %}">
+                  {% trans 'Requests' %}
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {{ price_table_link_active }}"
+                 href="#"
+                 id="PriceTableDropdownMenuLink"
+                 role="button"
+                 data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                                         {% trans "Price table" %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="PriceTableDropdownMenuLink">
+              {% for country in list_of_countries %}
+                <a class="dropdown-item"
+                   href="{% url 'price_table_url' country.id %}">
+                    {{ country.name }}
+                </a>
+              {% endfor %}
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {{ tools_link_active }}"
+                 href="#"
+                 id="ToolsDropdownMenuLink"
+                 role="button"
+                 data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">
                                             {% trans "Additional tools" %}
-        </a>
-      <div class="dropdown-menu" aria-labelledby="ToolsDropdownMenuLink">
-        <a class="dropdown-item" href="{% url 'charts_url' %}">{% trans "Charts" %}</a>
-        <a class="dropdown-item" href="{% url 'report_requests_list_url' %}">{% trans "Report requests history" %}</a>
-      </div>
-      </li>
-      {% endif %}
-    </ul>
-    <form class="ml-auto" action="{% url 'set_language' %}" id="language_form" method="post">
-    {% csrf_token %}
-      <select class="form-control-sm" name="language" onchange="changeLanguage()">
-        {% get_current_language as LANGUAGE_CODE %}
-        {% get_available_languages as LANGUAGES %}
-        {% for lang in LANGUAGES %}
-            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected" {% endif %}>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="ToolsDropdownMenuLink">
+                <a class="dropdown-item"
+                   href="{% url 'charts_url' %}">
+                    {% trans "Charts" %}
+                </a>
+                <a class="dropdown-item"
+                   href="{% url 'report_requests_list_url' %}">
+                    {% trans "Report requests history" %}
+                </a>
+              </div>
+            </li>
+          {% endif %}
+        </ul>
+        <form class="ml-auto" action="{% url 'set_language' %}" id="language_form" method="post">
+        {% csrf_token %}
+          <select class="form-control-sm" name="language" onchange="changeLanguage()">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% for lang in LANGUAGES %}
+              <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected="selected" {% endif %}>
                 {{ lang.1 }} ({{ lang.0 }})
-            </option>
-        {% endfor %}
-      </select>
-    </form>
-  </div>
-  </nav>
+              </option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+    </nav>
     {% endblock %}
 
     <div class="container mt-5">
@@ -105,21 +140,27 @@
           <nav aria-label="...">
             <ul class="pagination mt-3">
               <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
-                <a class="page-link" href="{% if page_obj.has_previous %}?{{queries.urlencode}}&amp;page={{ page_obj.previous_page_number }}{% endif %}">{% trans "Previous" %}</a>
+                <a class="page-link"
+                   href="{% if page_obj.has_previous %}?{{queries.urlencode}}&amp;page={{ page_obj.previous_page_number }}{% endif %}">
+                    {% trans "Previous" %}
+                </a>
               </li>
                 {% for n in paginator.page_range %}
-                    {% if page_obj.number == n %}
-                        <li class="page-item active">
-                            <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a>
-                        </li>
-                    {% elif n > page_obj.number|add:-3 and n < page_obj.number|add:3 %}
-                        <li class="page-item {% if page_obj.number == n %}active{% endif %}">
-                            <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a>
-                        </li>
-                    {% endif %}
+                  {% if page_obj.number == n %}
+                    <li class="page-item active">
+                      <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a>
+                    </li>
+                  {% elif n > page_obj.number|add:-3 and n < page_obj.number|add:3 %}
+                    <li class="page-item {% if page_obj.number == n %}active{% endif %}">
+                      <a class="page-link" href="?{{queries.urlencode}}&amp;page={{ n }}">{{ n }}</a>
+                    </li>
+                  {% endif %}
                 {% endfor %}
                 <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
-                    <a class="page-link" href="{% if page_obj.has_next %}?{{queries.urlencode}}&amp;page={{ page_obj.next_page_number }}{% endif %}">{% trans "Next" %}</a>
+                    <a class="page-link"
+                       href="{% if page_obj.has_next %}?{{queries.urlencode}}&amp;page={{ page_obj.next_page_number }}{% endif %}">
+                        {% trans "Next" %}
+                    </a>
                 </li>
             </ul>
           </nav>
@@ -128,52 +169,58 @@
       </div>
     </div>
 
-     {% if user.is_authenticated %}
-     <div class="admin-panel" id='admin-panel'>
-       <button class="admin-panel-collide" onclick="openPanel()">&#9776;</button>
-      <p class="admin-panel-element" style="font-weight: bold"> {{ user.username }}</p>
-      <p class="admin-panel-element">{{ user.profile.city.name }}, {{ user.profile.city.district.region.country }}</p>
-         <p class="admin-panel-element" id="id_requests_info"
-            style="color: {% if not report_requests_count %}green;{% else %}red;{% endif %}">
-             {% trans 'Report requests: ' %}<b class="admin-panel-element" id="id_requests_count">{{ report_requests_count }}</b>
-         </p>
-     {% endif %}
-     {% if request.user.is_authenticated and request.user.is_staff %}
-        <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>
-     {% endif %}
-     {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
+      <div class="admin-panel" id='admin-panel'>
+        <button class="admin-panel-collide" onclick="openPanel()">&#9776;</button>
+        <p class="admin-panel-element" style="font-weight: bold">
+            {{ user.username }}
+        </p>
+        <p class="admin-panel-element">
+            {{ user.profile.city.name }}, {{ user.profile.city.district.region.country }}
+        </p>
+        <p class="admin-panel-element" id="id_requests_info"
+           style="color: {% if not report_requests_count %}green;{% else %}red;{% endif %}">
+           {% trans 'Report requests: ' %}
+             <b class="admin-panel-element" id="id_requests_count">
+               {{ report_requests_count }}
+             </b>
+        </p>
+        {% if request.user.is_staff %}
+          <a href="/admin" class="admin-panel-element btn btn-info mb-3">{% trans "Admin page" %}</a>
+        {% endif %}
         {% block admin-panel-content %}
         {% endblock %}
         <a href="{% url 'logout' %}" class="admin-panel-element btn btn-link">{% trans "Logout" %}</a>
-     {% endif %}
-   </div>
-
-    <script type="text/javascript">
-      function changeLanguage(){
-        document.forms["language_form"].submit();
-      }
-    </script>
-
-    <script type="text/javascript">
-      function openPanel(){
-        let panel = document.getElementById('admin-panel')
-        let elements = panel.querySelectorAll(".admin-panel-element")
-        if (panel.style.width == "50px"){
-          panel.style.width = "200px";
-          for (let i = 0; i < elements.length; i++){
-            elements[i].style.display = "block"
-          }
-        }
-        else{
-          panel.style.width = "50px";
-          for (let i = 0; i < elements.length; i++){
-            elements[i].style.display = "none"
-          }
-        }
-      }
-    </script>
-   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    {% block extramedia %}
-    {% endblock %}
+      </div>
+    {% endif %}
   </body>
+  <script type="text/javascript">
+    function changeLanguage(){
+      document.forms["language_form"].submit();
+    }
+  </script>
+
+  <script type="text/javascript">
+    function openPanel(){
+      let panel = document.getElementById('admin-panel')
+      let elements = panel.querySelectorAll(".admin-panel-element")
+      if (panel.style.width == "50px"){
+        panel.style.width = "200px";
+        for (let i = 0; i < elements.length; i++){
+          elements[i].style.display = "block"
+        }
+      }
+      else{
+        panel.style.width = "50px";
+        for (let i = 0; i < elements.length; i++){
+          elements[i].style.display = "none"
+        }
+      }
+    }
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+          integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+          crossorigin="anonymous"></script>
+  {% block extramedia %}
+  {% endblock %}
 </html>
