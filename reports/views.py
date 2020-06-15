@@ -258,7 +258,8 @@ class ReportsListView(LoginRequiredMixin, ListView):
             if search_query:
                 queryset = queryset.filter(
                     Q(report_request__ref_number__icontains=search_query) |
-                    Q(report_request__company_ref_number__icontains=search_query) |
+                    Q(report_request__message__icontains=search_query) |
+                    Q(company_ref_number__icontains=search_query) |
                     Q(patients_first_name__icontains=search_query) |
                     Q(patients_last_name__icontains=search_query) |
                     Q(patients_date_of_birth__icontains=search_query) |
@@ -813,7 +814,10 @@ class ReportRequestsListView(AdminStaffRequiredMixin, ListView):
         if filter_query:
             search_query = self.request.GET.get('search_query', '')
             if search_query:
-                queryset = queryset.filter(message__icontains=search_query)
+                queryset = queryset.filter(
+                                            Q(message__icontains=search_query) |
+                                            Q(ref_number__icontains=search_query)
+                                            ).distinct()
             company_filter = self.request.GET.getlist('company_filter', None)
             if company_filter:
                 queryset = queryset.filter(company__in=company_filter)

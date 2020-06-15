@@ -1,5 +1,6 @@
 import datetime
 import io
+import re
 
 from string import ascii_letters
 
@@ -98,18 +99,16 @@ class ReportForm(forms.ModelForm):
                                                     doctor__city__district__region__country=country
                                                     ).order_by('date_time')[0].date_time.date()
         year_too_old = datetime.date.today() - datetime.timedelta(days=365*120)
+        name_regex = re.compile(r"^[^\W0-9_]+([\-'][^\W0-9_]+)*?$", re.ASCII)
+
         if date_of_visit >= tomorrow or date_of_visit < first_request_date:
             self.add_error('date_of_visit', _("Incorrect date"))
         if date_of_birth >= tomorrow or date_of_birth < year_too_old:
             self.add_error('patients_date_of_birth', _("Incorrect date"))
-        if len(patients_first_name) < 2:
-            self.add_error('patients_first_name', _("Name is too short"))
-        if len(patients_last_name) < 2:
-            self.add_error('patients_last_name', _("Name is too short"))
-        if not all(c in chars for c in patients_first_name):
-            self.add_error('patients_first_name', _("Must contain only Latin letters"))
-        if not all(c in chars for c in patients_last_name):
-            self.add_error('patients_last_name', _("Must contain only Latin letters"))
+        if not name_regex.match(patients_first_name):
+            self.add_error('patients_first_name', _("Incorrect first name format"))
+        if not name_regex.match(patients_last_name):
+            self.add_error('patients_last_name', _("Incorrect last name format"))
         if len(company_ref_number) <= 2:
             self.add_error('company_ref_number', _('Company\'s ref. number is too short'))
         if len(patients_policy_number) and len(patients_policy_number) <= 7:
