@@ -15,7 +15,7 @@ future==0.18.2
 idna==2.9
 jdcal==1.4.1
 Jinja2==2.10.1
-lxml==4.3.3
+lxml==4.6.2
 MarkupSafe==1.1.1
 mysqlclient==1.4.2.post1
 openpyxl==3.0.3
