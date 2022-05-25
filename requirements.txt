@@ -20,7 +20,7 @@ MarkupSafe==1.1.1
 mysqlclient==1.4.2.post1
 openpyxl==3.0.3
 Pillow==6.2.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 python-docx==0.8.7
 pytz==2019.1
 requests==2.23.0
